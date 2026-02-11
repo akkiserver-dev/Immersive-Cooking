@@ -1,0 +1,8 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "immersivecooking:multiblock/grill_oven"
+    }
+  ]
+}

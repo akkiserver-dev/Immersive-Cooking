@@ -1,0 +1,157 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic": false,
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "automatic_culling": false,
+    "flip_v": true,
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
+    "textures": {
+      "front": "immersivecooking:block/multiblock/grill_oven_off",
+      "particle": "immersivecooking:block/multiblock/grill_oven_off",
+      "side": "immersivecooking:block/multiblock/grill_oven"
+    }
+  },
+  "loader": "immersiveengineering:basic_split",
+  "split_parts": [
+    [
+      -1,
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      -1,
+      0,
+      -1
+    ],
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      1,
+      0,
+      -1
+    ],
+    [
+      -1,
+      1,
+      -1
+    ],
+    [
+      0,
+      1,
+      -1
+    ],
+    [
+      1,
+      1,
+      -1
+    ],
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      -1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      1
+    ],
+    [
+      0,
+      -1,
+      1
+    ],
+    [
+      1,
+      -1,
+      1
+    ],
+    [
+      -1,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      -1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1
+    ]
+  ],
+  "textures": {
+    "particle": "immersivecooking:block/multiblock/grill_oven_off"
+  }
+}
