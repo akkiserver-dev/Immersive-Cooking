@@ -36,6 +36,7 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
+import uk.akkiserver.immersivecooking.common.crafting.FCCookpotRecipeProvider;
 import uk.akkiserver.immersivecooking.common.crafting.FDCookpotRecipeProvider;
 
 import java.util.*;
@@ -45,8 +46,7 @@ import java.util.function.Supplier;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 
-public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
-        implements IServerTickableComponent<State>, IClientTickableComponent<State> {
+public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implements IServerTickableComponent<State>, IClientTickableComponent<State> {
     public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
     public static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
     public static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
@@ -62,6 +62,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
 
     public CookpotLogic() {
         this.recipeProviders.add(new FDCookpotRecipeProvider());
+        this.recipeProviders.add(new FCCookpotRecipeProvider());
     }
 
     @Override

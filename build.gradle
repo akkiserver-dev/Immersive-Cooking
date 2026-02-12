@@ -142,6 +142,11 @@ dependencies {
 
     implementation fg.deobf("curse.maven:immersive-petroleum-268250:7512547")
     implementation fg.deobf("curse.maven:farmers-delight-398521:7596353")
+
+    // let's do
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:lets-do-vinery-704465:6854288")
+    implementation fg.deobf("curse.maven:lets-do-farm-charm-1038103:7088013")
 }
 
 publishing {

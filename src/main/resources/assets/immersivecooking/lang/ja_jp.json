@@ -5,5 +5,8 @@
     "manual.immersivecooking.entry.cookpot": "工業用調理鍋",
     "manual.immersivecooking.entry.grill_oven": "グリルオーブン",
     "block.immersivecooking.cookpot": "工業用調理鍋",
-    "block.immersivecooking.grill_oven": "グリルオーブン"
+    "block.immersivecooking.grill_oven": "グリルオーブン",
+    "fluid_type.immersivecooking.apple_juice": "リンゴ果汁",
+    "fluid.immersivecooking.apple_juice": "リンゴ果汁",
+    "item.immersivecooking.apple_juice_bucket": "リンゴ果汁入りバケツ"
 }

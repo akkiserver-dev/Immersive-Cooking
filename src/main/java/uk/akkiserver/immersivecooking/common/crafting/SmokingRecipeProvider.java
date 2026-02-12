@@ -11,8 +11,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmokingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
+import net.satisfy.farm_and_charm.core.registry.RecipeTypeRegistry;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,5 +46,10 @@ public class SmokingRecipeProvider implements IMultiblockRecipeProvider<SmokingR
     @Override
     public SmokingRecipe byKey(ResourceLocation id, Level level) {
         return (SmokingRecipe) level.getRecipeManager().byKey(id).filter(r -> r instanceof SmokingRecipe).orElse(null);
+    }
+
+    @Override
+    public List<SmokingRecipe> getAllRecipes(Level level) {
+        return level.getRecipeManager().getAllRecipesFor(RecipeType.SMOKING);
     }
 }

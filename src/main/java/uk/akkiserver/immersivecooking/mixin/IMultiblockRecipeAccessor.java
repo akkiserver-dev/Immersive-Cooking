@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.mixin.accessor;
+package uk.akkiserver.immersivecooking.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

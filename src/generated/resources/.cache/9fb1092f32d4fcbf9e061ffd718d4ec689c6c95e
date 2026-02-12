@@ -1,0 +1,5 @@
+// 1.20.1	2026-02-12T21:09:24.189757	Recipes
+9f16bdc53ec70e53989ab133a77941e112830c36 data/immersivecooking/recipes/bottling/compat/vinery/apple_juice.json
+334ca10294d527ec94cc2580265c5edd802c1123 data/immersivecooking/recipes/bottling/compat/vinery/apple_juicebucket.json
+e8ad86d2f9c28375835e8de3ad8420efd27a03e3 data/immersivecooking/recipes/crusher/compat/vinery/apple_mash.json
+85b2ed025f3d668731982fcb15e5a4fbe2f01fd5 data/immersivecooking/recipes/squeezer/compat/vinery/apple_juice_fluid.json

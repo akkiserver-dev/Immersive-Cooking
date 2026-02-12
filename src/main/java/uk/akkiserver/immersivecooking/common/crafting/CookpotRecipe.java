@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.Lazy;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import java.util.ArrayList;
-import uk.akkiserver.immersivecooking.mixin.accessor.IMultiblockRecipeAccessor;
+import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;
 
 public class CookpotRecipe extends MultiblockRecipe {
     public static final CachedRecipeList<CookpotRecipe> RECIPES = new CachedRecipeList<>(ICRecipes.Types.COOKPOT);

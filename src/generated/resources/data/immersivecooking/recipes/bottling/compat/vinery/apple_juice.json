@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 250,
+    "fluid": "immersivecooking:apple_juice"
+  },
+  "input": {
+    "item": "vinery:wine_bottle"
+  },
+  "results": [
+    {
+      "item": "vinery:apple_juice"
+    }
+  ]
+}

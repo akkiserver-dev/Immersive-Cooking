@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:crusher",
+  "result": {
+    "item": "vinery:apple_mash"
+  },
+  "secondaries": [
+    {
+      "chance": 0.1,
+      "output": {
+        "item": "vinery:apple_mash"
+      }
+    }
+  ]
+}

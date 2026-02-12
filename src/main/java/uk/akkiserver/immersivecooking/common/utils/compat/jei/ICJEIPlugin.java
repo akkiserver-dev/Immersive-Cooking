@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.common.ICContent;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
@@ -57,41 +58,9 @@ public class ICJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering recipes to JEI...");
-        List<CookpotRecipe> recipes = new ArrayList<>(getFiltered(CookpotRecipe.RECIPES, IJEIRecipe::listInJEI));
-
-        // Farmer's Delight integration
-        if (ModList.get().isLoaded("farmersdelight")) {
-            try {
-                recipes.addAll(getFDRecipes());
-            } catch (Exception e) {
-                ImmersiveCooking.LOGGER.error("Failed to load Farmer's Delight recipes for JEI", e);
-            }
-        }
-
-        ImmersiveCooking.LOGGER.info("Found " + recipes.size() + " Cookpot recipes (including FD).");
+        List<CookpotRecipe> recipes = ((CookpotLogic) ICContent.Multiblock.COOKPOT.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
+        ImmersiveCooking.LOGGER.info("Found {} Cookpot recipes.", recipes.size());
         registration.addRecipes(ICJEIRecipeTypes.COOKPOT, recipes);
-    }
-
-    private List<CookpotRecipe> getFDRecipes() {
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null)
-            return Collections.emptyList();
-
-        return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COOKING.get()).stream()
-                .map(r -> {
-                    NonNullList<IngredientWithSize> inputs = r
-                            .getIngredients().stream()
-                            .map(IngredientWithSize::new)
-                            .collect(Collectors.toCollection(NonNullList::create));
-
-                    ResourceLocation id = Resource.mod(r.getId().getPath());
-
-                    return new CookpotRecipe(id, inputs,
-                            r.getResultItem(level.registryAccess()), r.getOutputContainer(),
-                            (int) (r.getCookTime() * 0.75),
-                            r.getCookTime() * 4);
-                })
-                .toList();
     }
 
     private <T extends Recipe<?>> List<T> getRecipes(CachedRecipeList<T> cachedList) {

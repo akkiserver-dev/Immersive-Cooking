@@ -7,6 +7,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IMultiblockRecipeProvider<R extends Recipe<?>> {
@@ -15,4 +16,5 @@ public interface IMultiblockRecipeProvider<R extends Recipe<?>> {
     Optional<R> findRecipe(Container container, Level level);
     Optional<R> findRecipe(ItemStack stack, Level level);
     R byKey(ResourceLocation id, Level level);
+    List<R> getAllRecipes(Level level);
 }

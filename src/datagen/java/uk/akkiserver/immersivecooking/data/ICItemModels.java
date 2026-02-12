@@ -32,8 +32,17 @@ public class ICItemModels extends TRSRItemModelProvider {
                 .parent(blockStates.grillOvenOn)
                 .transforms(Resource.ie("item/blastfurnace"));
 
+        simpleItem(ICContent.Fluids.APPLE_JUICE.bucket().get());
 
         obj(ICContent.Multiblock.COOKPOT.blockItem().get(), Resource.mod("block/multiblock/cookpot.obj")).transforms(Resource.mod("item/multiblock"));
+    }
+
+    private void simpleItem(ItemLike item) {
+        String path = name(item);
+        getBuilder(path)
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", mcLoc("item/bucket"))
+                .texture("layer1", Resource.mod("item/" + path));
     }
 
     private TRSRModelBuilder obj(ItemLike item, ResourceLocation model) {

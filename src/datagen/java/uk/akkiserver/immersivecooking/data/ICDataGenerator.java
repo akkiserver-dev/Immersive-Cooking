@@ -27,6 +27,7 @@ public class ICDataGenerator {
             ICBlockStates blockStates = new ICBlockStates(output, existing);
             generator.addProvider(true, blockStates);
             generator.addProvider(true, new ICItemModels(output, existing, blockStates));
+            generator.addProvider(true, new ICRecipeProvider(output));
         }
     }
 }

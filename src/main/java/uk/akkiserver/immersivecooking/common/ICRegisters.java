@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -76,6 +77,7 @@ public final class ICRegisters {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTER = createRegister(ForgeRegistries.BLOCK_ENTITY_TYPES);
     public static final DeferredRegister<Item> ITEM_REGISTER = createRegister(ForgeRegistries.ITEMS);
     public static final DeferredRegister<Fluid> FLUID_REGISTER = createRegister(ForgeRegistries.FLUIDS);
+    public static final DeferredRegister<FluidType> FLUID_TYPE_REGISTER = createRegister(ForgeRegistries.Keys.FLUID_TYPES);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = createRegister(ForgeRegistries.RECIPE_TYPES);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = createRegister(ForgeRegistries.RECIPE_SERIALIZERS);
     private static final DeferredRegister<SoundEvent> SOUND_EVENT = createRegister(ForgeRegistries.SOUND_EVENTS);

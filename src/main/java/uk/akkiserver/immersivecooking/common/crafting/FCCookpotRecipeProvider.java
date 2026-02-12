@@ -5,28 +5,26 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.satisfy.farm_and_charm.core.recipe.CookingPotRecipe;
+import net.satisfy.farm_and_charm.core.registry.RecipeTypeRegistry;
 import uk.akkiserver.immersivecooking.common.utils.Compat;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
-import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<CookpotRecipe> {
-    private static final Lazy<RecipeManager.CachedCheck<RecipeWrapper, CookingPotRecipe>> cookingPotCheckerLazySupplier = Lazy
-            .of(() -> RecipeManager.createCheck(ModRecipeTypes.COOKING.get()));
+public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<CookpotRecipe> {
+    private static final int DEFAULT_COOK_TIME = 200;
+    private static final int DEFAULT_ENERGY = 800;
 
     @Override
     public boolean canProvide() {
-        return Compat.isFarmersDelightInstalled();
+        return Compat.isFarmCharmInstalled();
     }
 
     @Override
@@ -40,15 +38,15 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
             return Optional.empty();
 
         RecipeWrapper wrapper;
-        if (container instanceof RecipeWrapper) {
-            wrapper = (RecipeWrapper) container;
+        if (container instanceof RecipeWrapper rw) {
+            wrapper = rw;
         } else {
             wrapper = new RecipeWrapper(new InvWrapper(container));
         }
 
-        return cookingPotCheckerLazySupplier.get()
-                .getRecipeFor(wrapper, level)
-                .map(fdRecipe -> toCookpotRecipe(fdRecipe, level));
+        return level.getRecipeManager()
+                .getRecipeFor(RecipeTypeRegistry.COOKING_POT_RECIPE_TYPE.get(), wrapper, level)
+                .map(facRecipe -> toCookpotRecipe(facRecipe, level));
     }
 
     @Override
@@ -56,10 +54,12 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
         if (!canProvide() || stack.isEmpty())
             return Optional.empty();
 
-        return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COOKING.get()).stream()
-                .filter(fdRecipe -> ItemStack.isSameItem(fdRecipe.getResultItem(level.registryAccess()), stack))
+        return level.getRecipeManager()
+                .getAllRecipesFor(RecipeTypeRegistry.COOKING_POT_RECIPE_TYPE.get())
+                .stream()
+                .filter(r -> ItemStack.isSameItem(r.getResultItem(level.registryAccess()), stack))
                 .findFirst()
-                .map(fdRecipe -> toCookpotRecipe(fdRecipe, level, fdRecipe.getCookTime() * 8));
+                .map(facRecipe -> toCookpotRecipe(facRecipe, level));
     }
 
     @Override
@@ -76,29 +76,31 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
 
     @Override
     public List<CookpotRecipe> getAllRecipes(Level level) {
-        return level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.COOKING.get()).stream()
-                .map(fdRecipe -> toCookpotRecipe(fdRecipe, level))
+        return level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.COOKING_POT_RECIPE_TYPE.get()).stream()
+                .map(r -> toCookpotRecipe(r, level))
                 .collect(Collectors.toList());
     }
 
-    private CookpotRecipe toCookpotRecipe(CookingPotRecipe fdRecipe, Level level) {
-        return toCookpotRecipe(fdRecipe, level, fdRecipe.getCookTime() * 4);
-    }
-
-    private CookpotRecipe toCookpotRecipe(CookingPotRecipe fdRecipe, Level level, int energy) {
-        NonNullList<IngredientWithSize> inputs = fdRecipe.getIngredients().stream()
+    private CookpotRecipe toCookpotRecipe(CookingPotRecipe facRecipe, Level level) {
+        NonNullList<IngredientWithSize> inputs = facRecipe.getIngredients().stream()
                 .map(IngredientWithSize::new)
                 .collect(Collectors.toCollection(NonNullList::create));
 
-        ResourceLocation id = Resource.mod(fdRecipe.getId().getPath());
+        ItemStack output = facRecipe.getResultItem(level.registryAccess());
+
+        ItemStack container = facRecipe.isContainerRequired()
+                ? facRecipe.getContainerItem()
+                : ItemStack.EMPTY;
+
+        ResourceLocation id = Resource.mod(facRecipe.getId().getPath());
 
         return new CookpotRecipe(
                 id,
                 inputs,
-                fdRecipe.getResultItem(level.registryAccess()),
-                fdRecipe.getOutputContainer(),
-                (int) (fdRecipe.getCookTime() * 0.75),
-                energy
+                output,
+                container,
+                DEFAULT_COOK_TIME,
+                DEFAULT_ENERGY
         );
     }
 }

@@ -3,6 +3,7 @@ package uk.akkiserver.immersivecooking.common;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultibloc
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.GrillOvenMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
+import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
 import uk.akkiserver.immersivecooking.common.gui.GrillOvenMenu;
 
@@ -71,7 +73,14 @@ public final class ICContent {
     }
 
     public static class Sounds {
-        public static final RegistryObject<net.minecraft.sounds.SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.boil");
+        public static final RegistryObject<SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.boil");
+
+        public static void forceClassLoad() {
+        }
+    }
+
+    public static class Fluids {
+        public static final ICFluids.FluidEntry APPLE_JUICE = ICFluids.FluidEntry.make("apple_juice", 0xFFFFE74B);
 
         public static void forceClassLoad() {
         }
@@ -82,6 +91,7 @@ public final class ICContent {
         MenuTypes.forceClassLoad();
         Tabs.forceClassLoad();
         Sounds.forceClassLoad();
+        Fluids.forceClassLoad();
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
     }
