@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public abstract class ICContainerScreen<M extends AbstractContainerMenu> extends IEContainerScreen<M> {
-    public ICContainerScreen(M inventorySlotsIn, Inventory inv, Component title, ResourceLocation background) {
-        super(inventorySlotsIn, inv, title, background);
+    public ICContainerScreen(M menu, Inventory playerInventory, Component title, ResourceLocation background) {
+        super(menu, playerInventory, title, background);
     }
 }

@@ -15,6 +15,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
 
 import javax.annotation.Nonnull;
@@ -43,29 +44,30 @@ public class GrillOvenMenu extends ICContainerMenu {
         super(ctx);
 
         final Level level = inventoryPlayer.player.level();
+        final GrillOvenLogic logic = (GrillOvenLogic) ICContent.Multiblock.GRILL_OVEN.logic();
 
-        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_0, 26, 30) {
+        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_0, 62, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return GrillOvenLogic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(itemStack, level).isPresent();
             }
         });
 
-        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_1, 44, 30) {
+        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_1, 80, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return GrillOvenLogic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(itemStack, level).isPresent();
             }
         });
 
-        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_2, 62, 30) {
+        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_2, 98, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return GrillOvenLogic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(itemStack, level).isPresent();
             }
         });
 
-        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.FUEL_SLOT, 44, 48) {
+        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.FUEL_SLOT, 80, 53) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
                 return ForgeHooks.getBurnTime(itemStack, RecipeType.SMOKING) > 0;

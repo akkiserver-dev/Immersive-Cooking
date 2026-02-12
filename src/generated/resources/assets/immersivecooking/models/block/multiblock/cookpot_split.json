@@ -1,0 +1,120 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic": false,
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "automatic_culling": false,
+    "flip_v": true,
+    "loader": "forge:obj",
+    "model": "immersivecooking:models/block/multiblock/cookpot.obj",
+    "textures": {
+      "particle": "immersivecooking:block/multiblock/cookpot"
+    }
+  },
+  "loader": "immersiveengineering:basic_split",
+  "split_parts": [
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      1
+    ],
+    [
+      0,
+      -1,
+      -1
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      -1,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      -1,
+      1
+    ],
+    [
+      1,
+      -1,
+      -1
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      1,
+      -1,
+      1
+    ],
+    [
+      -1,
+      0,
+      -1
+    ],
+    [
+      -1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      -1
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      -1,
+      1,
+      -1
+    ],
+    [
+      -1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      -1
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      -1
+    ],
+    [
+      1,
+      0,
+      0
+    ]
+  ],
+  "textures": {
+    "particle": "immersivecooking:block/multiblock/cookpot"
+  }
+}

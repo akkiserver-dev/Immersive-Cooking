@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:block/grill_oven_on_split",
+  "parent": "immersivecooking:block/grill_oven_on_split",
   "display": {
     "firstperson_lefthand": {
       "right_rotation": [

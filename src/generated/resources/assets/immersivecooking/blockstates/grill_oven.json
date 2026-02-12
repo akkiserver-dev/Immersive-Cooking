@@ -1,40 +1,40 @@
 {
   "variants": {
     "active=false,facing=east": {
-      "model": "immersiveengineering:block/grill_oven_off_split",
+      "model": "immersivecooking:block/grill_oven_off_split",
       "uvlock": true,
       "y": 90
     },
     "active=false,facing=north": {
-      "model": "immersiveengineering:block/grill_oven_off_split",
+      "model": "immersivecooking:block/grill_oven_off_split",
       "uvlock": true
     },
     "active=false,facing=south": {
-      "model": "immersiveengineering:block/grill_oven_off_split",
+      "model": "immersivecooking:block/grill_oven_off_split",
       "uvlock": true,
       "y": 180
     },
     "active=false,facing=west": {
-      "model": "immersiveengineering:block/grill_oven_off_split",
+      "model": "immersivecooking:block/grill_oven_off_split",
       "uvlock": true,
       "y": 270
     },
     "active=true,facing=east": {
-      "model": "immersiveengineering:block/grill_oven_on_split",
+      "model": "immersivecooking:block/grill_oven_on_split",
       "uvlock": true,
       "y": 90
     },
     "active=true,facing=north": {
-      "model": "immersiveengineering:block/grill_oven_on_split",
+      "model": "immersivecooking:block/grill_oven_on_split",
       "uvlock": true
     },
     "active=true,facing=south": {
-      "model": "immersiveengineering:block/grill_oven_on_split",
+      "model": "immersivecooking:block/grill_oven_on_split",
       "uvlock": true,
       "y": 180
     },
     "active=true,facing=west": {
-      "model": "immersiveengineering:block/grill_oven_on_split",
+      "model": "immersivecooking:block/grill_oven_on_split",
       "uvlock": true,
       "y": 270
     }

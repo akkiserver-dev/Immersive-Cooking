@@ -1,0 +1,6 @@
+{
+  "grill_oven0": {
+    "type": "multiblock",
+    "name": "immersivecooking:multiblocks/grill_oven"
+  }
+}

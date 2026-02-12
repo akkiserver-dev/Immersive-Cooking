@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "immersivecooking.refmap.json",
   "mixins": [
+    "accessor.IMultiblockRecipeAccessor"
   ],
   "client": [
   ],

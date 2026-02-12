@@ -14,6 +14,7 @@ plugins {
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'maven-publish'
 }
 
 apply plugin: 'org.spongepowered.mixin'
@@ -141,6 +142,27 @@ dependencies {
 
     implementation fg.deobf("curse.maven:immersive-petroleum-268250:7512547")
     implementation fg.deobf("curse.maven:farmers-delight-398521:7596353")
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = mod_group_id
+            artifactId = mod_id
+            version = mod_version
+        }
+    }
+    repositories {
+        maven {
+            url = "https://maven.akkiserver.uk/repository/maven-snapshots/"
+            allowInsecureProtocol = false
+            credentials {
+                username = System.getenv("USER")
+                password = System.getenv("PASS")
+            }
+        }
+    }
 }
 
 tasks.named('processResources', ProcessResources).configure {

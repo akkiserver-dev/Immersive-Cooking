@@ -3,7 +3,7 @@ package uk.akkiserver.immersivecooking.common.blocks.multiblocks;
 import net.minecraft.core.BlockPos;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
-import uk.akkiserver.immersivecooking.utils.Resource;
+import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 public class GrillOvenMultiblock extends StoneMultiblock {
     public static final GrillOvenMultiblock INSTANCE = new GrillOvenMultiblock();

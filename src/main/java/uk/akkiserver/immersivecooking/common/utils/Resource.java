@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.utils;
+package uk.akkiserver.immersivecooking.common.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.resources.ResourceLocation;

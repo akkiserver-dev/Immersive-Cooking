@@ -1,0 +1,3 @@
+Industrial Cookpot
+No chefs needed!
+<&cookpot0>

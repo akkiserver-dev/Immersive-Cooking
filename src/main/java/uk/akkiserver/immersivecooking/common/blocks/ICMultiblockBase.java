@@ -23,6 +23,5 @@ public class ICMultiblockBase<T extends IMultiblockState> extends MultiblockPart
     protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder){
         super.createBlockStateDefinition(builder);
         builder.add(IEProperties.MIRRORED);
-        builder.add(IEProperties.ACTIVE);
     }
 }

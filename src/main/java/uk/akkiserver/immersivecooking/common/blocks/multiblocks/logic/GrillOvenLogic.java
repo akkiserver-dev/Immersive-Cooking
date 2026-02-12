@@ -3,7 +3,6 @@ package uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
@@ -12,8 +11,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapabil
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -25,18 +22,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
+import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic.State;
+import uk.akkiserver.immersivecooking.common.crafting.SmokingRecipeProvider;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class GrillOvenLogic implements IMultiblockLogic<State>, IServerTickableComponent<State> {
+public class GrillOvenLogic extends ICMultiblockLogic<State, SmokingRecipe> implements IServerTickableComponent<State> {
     public static final BlockPos MASTER_OFFSET = new BlockPos(1, 1, 1);
-    private static final RecipeManager.CachedCheck<Container, SmokingRecipe> smokingChecker = RecipeManager.createCheck(RecipeType.SMOKING);
 
     public static final int IO_SLOT_0 = 0;
     public static final int IO_SLOT_1 = 1;
@@ -46,13 +42,7 @@ public class GrillOvenLogic implements IMultiblockLogic<State>, IServerTickableC
     public static final int DATA_SLOTS = 8;
 
     public GrillOvenLogic() {
-
-    }
-
-    public synchronized static Optional<SmokingRecipe> findRecipe(ItemStack stack, Level level) {
-        if (stack.isEmpty()) return Optional.empty();
-
-        return smokingChecker.getRecipeFor(new SimpleContainer(stack), level);
+        this.recipeProviders.add(new SmokingRecipeProvider());
     }
 
     @Nullable
@@ -139,7 +129,7 @@ public class GrillOvenLogic implements IMultiblockLogic<State>, IServerTickableC
     private void finishCooking(State state, Level level, int slot, SmokingRecipe recipe) {
         ItemStack currentOutput = state.inventory.getStackInSlot(slot);
         int itemSize = currentOutput.getCount();
-        ItemStack result = recipe.getResultItem(level.registryAccess()).copyWithCount(itemSize);
+        ItemStack result = getRecipeResult(recipe, level).copyWithCount(itemSize);
 
         currentOutput.shrink(itemSize);
 
@@ -165,7 +155,7 @@ public class GrillOvenLogic implements IMultiblockLogic<State>, IServerTickableC
         return $ -> Shapes.block();
     }
 
-    public static class State implements IMultiblockState, ContainerData {
+    public static class State implements ContainerData, IMultiblockState {
         private final SlotwiseItemHandler inventory;
         private final StoredCapability<IItemHandler> invCap;
         public int burnTime;
