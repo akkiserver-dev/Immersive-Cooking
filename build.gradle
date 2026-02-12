@@ -93,7 +93,7 @@ minecraft {
             ideaModule project.name+".datagen"
 
             mods {
-                immersivecooking {
+                immersivecookfarm {
                     source sourceSets.main
                     source sourceSets.datagen
                 }
