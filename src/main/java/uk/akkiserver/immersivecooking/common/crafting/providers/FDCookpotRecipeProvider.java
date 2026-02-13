@@ -39,16 +39,9 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
         if (!canProvide() || container.isEmpty())
             return Optional.empty();
 
-        RecipeWrapper wrapper;
-        if (container instanceof RecipeWrapper) {
-            wrapper = (RecipeWrapper) container;
-        } else {
-            wrapper = new RecipeWrapper(new InvWrapper(container));
-        }
-
-        return cookingPotCheckerLazySupplier.get()
-                .getRecipeFor(wrapper, level)
-                .map(fdRecipe -> toCookpotRecipe(fdRecipe, level));
+        return getAllRecipes(level).stream()
+                .filter(recipe -> recipe.matches(container, level))
+                .findFirst();
     }
 
     @Override

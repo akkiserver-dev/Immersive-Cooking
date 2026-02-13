@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class DefaultCookpotRecipeProvider implements IMultiblockRecipeProvider<CookpotRecipe> {
-    private static final Lazy<RecipeManager.CachedCheck<Container, CookpotRecipe>> cookpotRecipeLazySupplier = Lazy.of(() -> RecipeManager.createCheck(ICRecipes.Types.COOKPOT.get()));
+    private static final Lazy<RecipeManager.CachedCheck<Container, CookpotRecipe>> cookpotRecipeLazySupplier = Lazy
+            .of(() -> RecipeManager.createCheck(ICRecipes.Types.COOKPOT.get()));
 
     @Override
     public boolean canProvide() {
@@ -29,7 +30,9 @@ public class DefaultCookpotRecipeProvider implements IMultiblockRecipeProvider<C
 
     @Override
     public Optional<CookpotRecipe> findRecipe(Container container, Level level) {
-        return cookpotRecipeLazySupplier.get().getRecipeFor(container, level);
+        return getAllRecipes(level).stream()
+                .filter(recipe -> recipe.matches(container, level))
+                .findFirst();
     }
 
     @Override

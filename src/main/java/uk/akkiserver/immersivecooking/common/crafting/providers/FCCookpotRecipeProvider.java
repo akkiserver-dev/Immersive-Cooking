@@ -37,16 +37,9 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
         if (!canProvide() || container.isEmpty())
             return Optional.empty();
 
-        RecipeWrapper wrapper;
-        if (container instanceof RecipeWrapper rw) {
-            wrapper = rw;
-        } else {
-            wrapper = new RecipeWrapper(new InvWrapper(container));
-        }
-
-        return level.getRecipeManager()
-                .getRecipeFor(RecipeTypeRegistry.COOKING_POT_RECIPE_TYPE.get(), wrapper, level)
-                .map(facRecipe -> toCookpotRecipe(facRecipe, level));
+        return getAllRecipes(level).stream()
+                .filter(recipe -> recipe.matches(container, level))
+                .findFirst();
     }
 
     @Override

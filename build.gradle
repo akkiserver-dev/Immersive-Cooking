@@ -156,6 +156,7 @@ dependencies {
     implementation fg.deobf("curse.maven:lets-do-farm-charm-1038103:7088013")
 }
 
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -174,6 +175,35 @@ publishing {
                 password = System.getenv("PASS")
             }
         }
+    }
+}
+
+tasks.register('updateBuildNumber') {
+    mustRunAfter 'clean'
+    doLast {
+        def buildFile = file('build.txt')
+        if (!buildFile.exists()) buildFile.text = '0'
+        def nextNum = buildFile.text.trim().toInteger() + 1
+        buildFile.text = nextNum.toString()
+    }
+}
+
+tasks.named('build') {
+    dependsOn updateBuildNumber
+}
+
+tasks.named('publish') {
+    dependsOn build
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    def buildFile = file('build.txt')
+    def buildNum = buildFile.exists() ? buildFile.text.trim() : "0"
+
+    if (taskGraph.hasTask(':updateBuildNumber')) {
+        project.version = "${minecraft_version}-${mod_version}-${buildNum.toInteger() + 1}"
+    } else {
+        project.version = "${minecraft_version}-${mod_version}-${buildNum}"
     }
 }
 

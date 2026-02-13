@@ -40,4 +40,45 @@ public class CookpotRecipe extends MultiblockRecipe {
     protected IERecipeSerializer<?> getIESerializer() {
         return ICRecipes.Serializers.COOKPOT.get();
     }
+
+    @Override
+    public boolean matches(net.minecraft.world.Container inv, net.minecraft.world.level.Level level) {
+        java.util.List<ItemStack> inventoryCopy = new java.util.ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty()) {
+                inventoryCopy.add(stack.copy());
+            }
+        }
+
+        for (IngredientWithSize required : this.inputs) {
+            int amountNeeded = required.getCount();
+
+            java.util.Iterator<ItemStack> it = inventoryCopy.iterator();
+            while (it.hasNext()) {
+                ItemStack stack = it.next();
+
+                if (required.test(stack)) {
+                    int amountTaken = Math.min(amountNeeded, stack.getCount());
+
+                    amountNeeded -= amountTaken;
+                    stack.shrink(amountTaken);
+
+                    if (stack.isEmpty()) {
+                        it.remove();
+                    }
+
+                    if (amountNeeded <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (amountNeeded > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -120,3 +120,5 @@ runs/
 gradle/
 src_mods/
 .agents/
+
+build.txt
