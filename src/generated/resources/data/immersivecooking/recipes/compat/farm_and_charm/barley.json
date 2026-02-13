@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:cloche",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "farm_and_charm"
+    }
+  ],
+  "input": {
+    "item": "farm_and_charm:barley_seeds"
+  },
+  "render": {
+    "type": "crop",
+    "block": "farm_and_charm:barley_crop"
+  },
+  "results": [
+    {
+      "count": 2,
+      "item": "farm_and_charm:barley"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800
+}

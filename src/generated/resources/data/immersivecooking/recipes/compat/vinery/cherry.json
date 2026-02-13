@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:cloche",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "input": {
+    "item": "vinery:dark_cherry_sapling"
+  },
+  "render": {
+    "type": "crop",
+    "block": "vinery:dark_cherry_leaves"
+  },
+  "results": [
+    {
+      "count": 3,
+      "item": "vinery:cherry"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800
+}

@@ -31,6 +31,7 @@ public final class ICTags {
         public static final TagKey<Item> WHITE_JUNGLE_GRAPE_INGREDIENT = createJuiceTag("white_jungle_grapejuice");
         public static final TagKey<Item> RED_SAVANNA_GRAPE_INGREDIENT = createJuiceTag("red_savanna_grapejuice");
         public static final TagKey<Item> WHITE_SAVANNA_GRAPE_INGREDIENT = createJuiceTag("white_savanna_grapejuice");
+        public static final TagKey<Item> GRAIN = create(forge("grain"));
 
         private static TagKey<Item> create(ResourceLocation name) {
             TagKey<Item> tag = ItemTags.create(name);

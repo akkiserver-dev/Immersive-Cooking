@@ -56,7 +56,7 @@ public class CookpotRecipeSerializer extends IERecipeSerializer<CookpotRecipe> {
         for (IngredientWithSize i : recipe.inputs) {
             i.write(buffer);
         }
-        buffer.writeItem(recipe.itemOutput);
+        buffer.writeItem(recipe.result);
         buffer.writeItem(recipe.container);
         buffer.writeVarInt(recipe.getTotalProcessTime());
         buffer.writeVarInt(recipe.getTotalProcessEnergy());

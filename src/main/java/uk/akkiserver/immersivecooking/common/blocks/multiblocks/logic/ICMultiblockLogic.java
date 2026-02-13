@@ -87,7 +87,9 @@ public abstract class ICMultiblockLogic<S extends IMultiblockState, R extends Re
     public List<R> getAllProvidedRecipes(Level level) {
         List<R> recipes = new ArrayList<>();
         for (var provider : recipeProviders) {
-            recipes.addAll(provider.getAllRecipes(level));
+            if (provider.canProvide()) {
+                recipes.addAll(provider.getAllRecipes(level));
+            }
         }
         return recipes;
     }

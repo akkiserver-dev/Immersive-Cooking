@@ -4,7 +4,7 @@ import net.minecraftforge.fml.ModList;
 
 public final class Compat {
     public static boolean isFarmCharmInstalled() {
-        return ModList.get().isLoaded("farm_and_charm");
+        return ModList.get().isLoaded("farmcharm");
     }
 
     public static boolean isFarmersDelightInstalled() {

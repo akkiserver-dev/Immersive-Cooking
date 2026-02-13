@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:cloche",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "input": {
+    "item": "vinery:apple_tree_sapling"
+  },
+  "render": {
+    "type": "crop",
+    "block": "vinery:apple_leaves"
+  },
+  "results": [
+    {
+      "count": 3,
+      "item": "minecraft:apple"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800
+}

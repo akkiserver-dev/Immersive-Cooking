@@ -16,7 +16,7 @@ import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
-public enum Juices {
+public enum VineryJuices {
     RED("red_grapejuice", "red_grape", ICContent.Fluids.RED_GRAPE_JUICE, ICTags.Fluids.RED_GRAPE_JUICE),
     WHITE("white_grapejuice", "white_grape", ICContent.Fluids.WHITE_GRAPE_JUICE, ICTags.Fluids.WHITE_GRAPE_JUICE),
     RED_TAIGA("red_taiga_grapejuice", "taiga_grapes_red", ICContent.Fluids.RED_TAIGA_GRAPE_JUICE, ICTags.Fluids.RED_TAIGA_GRAPE_JUICE),
@@ -34,7 +34,7 @@ public enum Juices {
     private final ResourceLocation ingredientId;
     private final TagKey<Fluid> fluidTag;
 
-    Juices(String juicePath, String ingredientPath, ICFluids.FluidEntry juiceFluid, TagKey<Fluid> fluidTag) {
+    VineryJuices(String juicePath, String ingredientPath, ICFluids.FluidEntry juiceFluid, TagKey<Fluid> fluidTag) {
         this.juiceId = ResourceLocation.fromNamespaceAndPath("vinery", juicePath);
         this.ingredientId = ResourceLocation.fromNamespaceAndPath("vinery", ingredientPath);
         this.juiceItem = Lazy.of(() -> vineryItem(juicePath));

@@ -50,7 +50,7 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
         }
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 127, 48)
-                .addItemStack(recipe.itemOutput);
+                .addItemStack(recipe.result);
     }
 
     @Override

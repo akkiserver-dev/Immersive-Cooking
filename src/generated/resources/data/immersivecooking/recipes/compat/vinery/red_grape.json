@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:cloche",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "input": {
+    "item": "vinery:red_grape_seeds"
+  },
+  "render": {
+    "type": "crop",
+    "block": "vinery:red_grape_bush"
+  },
+  "results": [
+    {
+      "count": 2,
+      "item": "vinery:red_grape"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200
+}

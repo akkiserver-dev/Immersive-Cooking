@@ -63,7 +63,7 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
 
         ResourceLocation facId = id;
         if (id.getNamespace().equals("immersivecooking")) {
-            facId = ResourceLocation.fromNamespaceAndPath("farm_and_charm", id.getPath());
+            facId = ResourceLocation.fromNamespaceAndPath("farmcharm", id.getPath());
         }
 
         return level.getRecipeManager().byKey(facId)

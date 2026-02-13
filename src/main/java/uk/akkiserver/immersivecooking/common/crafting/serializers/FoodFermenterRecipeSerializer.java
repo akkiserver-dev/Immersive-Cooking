@@ -76,7 +76,7 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
         if (recipe.fluidInput != null) {
             recipe.fluidInput.write(buffer);
         }
-        buffer.writeItem(recipe.itemOutput);
+        buffer.writeItem(recipe.result);
         buffer.writeItem(recipe.container);
 
         buffer.writeVarInt(recipe.getTotalProcessTime());

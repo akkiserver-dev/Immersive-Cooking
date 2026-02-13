@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:cloche",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "input": {
+    "item": "vinery:savanna_grape_seeds_red"
+  },
+  "render": {
+    "type": "crop",
+    "block": "vinery:savanna_grape_bush_red"
+  },
+  "results": [
+    {
+      "count": 2,
+      "item": "vinery:savanna_grapes_red"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200
+}

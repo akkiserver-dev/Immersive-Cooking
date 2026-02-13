@@ -201,9 +201,9 @@ gradle.taskGraph.whenReady { taskGraph ->
     def buildNum = buildFile.exists() ? buildFile.text.trim() : "0"
 
     if (taskGraph.hasTask(':updateBuildNumber')) {
-        project.version = "${minecraft_version}-${mod_version}-${buildNum.toInteger() + 1}"
+        project.version = "${mod_version}-${buildNum.toInteger() + 1}"
     } else {
-        project.version = "${minecraft_version}-${mod_version}-${buildNum}"
+        project.version = "${mod_version}-${buildNum}"
     }
 }
 
@@ -223,7 +223,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 tasks.named('jar', Jar).configure {
     manifest {
-        attributes(["Specification-Title"     : mod_id,
+        attributes(["Specification-Title"     : jar_name,
                     "Specification-Vendor"    : mod_authors,
                     "Specification-Version"   : "1",
                     "Implementation-Title"    : project.name,

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICTags;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
-import uk.akkiserver.immersivecooking.common.utils.compat.vinery.Juices;
+import uk.akkiserver.immersivecooking.common.utils.compat.vinery.VineryJuices;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,7 +27,7 @@ public class ICFluidTags extends FluidTagsProvider {
             tag(TagKey.create(Registries.FLUID, entry.type().getId())).add(entry.getStill(), entry.getFlowing());
         }
 
-        for (Juices juice : Juices.values()) {
+        for (VineryJuices juice : VineryJuices.values()) {
             TagKey<Fluid> forgeTag = ICTags.Fluids.create(ResourceLocation.fromNamespaceAndPath("forge", juice.getName()));
 
             tag(forgeTag).add(

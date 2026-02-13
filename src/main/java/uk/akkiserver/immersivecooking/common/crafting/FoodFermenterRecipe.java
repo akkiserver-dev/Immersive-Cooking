@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;
 
 import java.util.ArrayList;
@@ -28,15 +27,15 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     @Nullable
     public final FluidTagInput fluidInput;
     public final ItemStack container;
-    public final ItemStack itemOutput;
+    public final ItemStack result;
 
     public FoodFermenterRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs,
-            @Nullable FluidTagInput fluidInput,
-            ItemStack itemOutput, ItemStack container, int time, int energy) {
-        super(Lazy.of(() -> itemOutput), ICRecipes.Types.FOOD_FERMENTER, id);
+                               @Nullable FluidTagInput fluidInput,
+                               ItemStack result, ItemStack container, int time, int energy) {
+        super(Lazy.of(() -> result), ICRecipes.Types.FOOD_FERMENTER, id);
         this.fluidInput = fluidInput;
         this.container = container;
-        this.itemOutput = itemOutput;
+        this.result = result;
         this.inputs = inputs;
 
         ((IMultiblockRecipeAccessor) this).invokeSetTimeAndEnergy(time, energy);
@@ -90,7 +89,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
 
     @Override
     public NonNullList<ItemStack> getItemOutputs() {
-        return NonNullList.of(ItemStack.EMPTY, itemOutput);
+        return NonNullList.of(ItemStack.EMPTY, result);
     }
 
     @Override

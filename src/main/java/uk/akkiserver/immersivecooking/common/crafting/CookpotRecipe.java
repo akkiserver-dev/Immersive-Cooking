@@ -15,20 +15,20 @@ public class CookpotRecipe extends MultiblockRecipe {
     public static final CachedRecipeList<CookpotRecipe> RECIPES = new CachedRecipeList<>(ICRecipes.Types.COOKPOT);
 
     public final NonNullList<IngredientWithSize> inputs;
-    public final ItemStack itemOutput;
+    public final ItemStack result;
     public final ItemStack container;
 
-    public CookpotRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs, ItemStack itemOutput,
+    public CookpotRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs, ItemStack result,
             ItemStack container, int cookTime, int energy) {
-        super(Lazy.of(() -> itemOutput), ICRecipes.Types.COOKPOT, id);
+        super(Lazy.of(() -> result), ICRecipes.Types.COOKPOT, id);
         this.inputs = inputs;
-        this.itemOutput = itemOutput;
+        this.result = result;
         this.container = container;
 
         this.setInputListWithSizes(new ArrayList<>(this.inputs));
         ((IMultiblockRecipeAccessor) this).invokeSetTimeAndEnergy(cookTime, energy);
 
-        this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.itemOutput));
+        this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.result));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CookpotRecipeCategory extends ICRecipeCategory<CookpotRecipe> {
 
         // Output slot at (113,53) relative to GUI -> (107,41) relative to helper
         builder.addSlot(RecipeIngredientRole.OUTPUT, 107, 41)
-                .addItemStack(recipe.itemOutput);
+                .addItemStack(recipe.result);
 
         // Container slot at (91,53) relative to GUI -> (85,41) relative to helper
         if (!recipe.container.isEmpty())
