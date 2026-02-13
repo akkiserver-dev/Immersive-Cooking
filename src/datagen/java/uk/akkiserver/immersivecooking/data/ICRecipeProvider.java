@@ -43,12 +43,16 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
                 .addCondition(new ModLoadedCondition("vinery"))
                 .setFluidInput(FluidTags.WATER, 1000)
                 .addInput(ModBlocks.ORGANIC_COMPOST.get())
+                .setEnergy(12800)
+                .setTime(6000)
                 .build(writer, fd("food_fermenting/rich_soil"));
 
         for (Wines wine : Wines.values()) {
             FoodFermenterRecipeBuilder builder = FoodFermenterRecipeBuilder.builder(wine.getItem())
                     .addCondition(new ModLoadedCondition("vinery"))
                     .setFluidInput(wine.getJuice().getFluidTag(), 250)
+                    .setTime(4800)
+                    .setEnergy(9600)
                     .setContainer(ObjectRegistry.WINE_BOTTLE.get());
 
             for (ItemStack ingredient : wine.getIngredients()) {

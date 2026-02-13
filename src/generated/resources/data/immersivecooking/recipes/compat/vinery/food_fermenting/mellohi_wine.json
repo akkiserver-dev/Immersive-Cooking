@@ -9,6 +9,7 @@
   "container": {
     "item": "vinery:wine_bottle"
   },
+  "energy": 9600,
   "fluid": {
     "amount": 250,
     "tag": "forge:white_grapejuice"
@@ -23,5 +24,6 @@
   ],
   "result": {
     "item": "vinery:mellohi_wine"
-  }
+  },
+  "time": 4800
 }

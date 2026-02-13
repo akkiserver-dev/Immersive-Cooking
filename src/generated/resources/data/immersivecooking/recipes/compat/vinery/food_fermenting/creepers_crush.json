@@ -9,6 +9,7 @@
   "container": {
     "item": "vinery:wine_bottle"
   },
+  "energy": 9600,
   "fluid": {
     "amount": 250,
     "tag": "forge:white_savanna_grapejuice"
@@ -20,5 +21,6 @@
   ],
   "result": {
     "item": "vinery:creepers_crush"
-  }
+  },
+  "time": 4800
 }
