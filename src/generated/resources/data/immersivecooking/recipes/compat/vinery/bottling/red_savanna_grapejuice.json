@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "energy": 6400,
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:red_savanna_grapejuice"
+  },
+  "input": {
+    "item": "vinery:wine_bottle"
+  },
+  "results": [
+    {
+      "item": "vinery:red_savanna_grapejuice"
+    }
+  ]
+}

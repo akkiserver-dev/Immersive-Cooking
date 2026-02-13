@@ -1,0 +1,17 @@
+{
+  "type": "immersiveengineering:squeezer",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "fluid": "immersivecooking:red_savanna_grapejuice"
+  },
+  "input": {
+    "tag": "immersivecooking:juice_ingredients/red_savanna_grapejuice"
+  }
+}

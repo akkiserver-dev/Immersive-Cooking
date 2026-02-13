@@ -1,0 +1,10 @@
+{
+  "block.cookpot.boil": {
+    "subtitle": "subtitle.immersivecooking.cookpot.boil",
+    "sounds": [
+      "immersivecooking:block/cookpot/boil_soup1",
+      "immersivecooking:block/cookpot/boil_soup2",
+      "immersivecooking:block/cookpot/boil_soup3"
+    ]
+  }
+}

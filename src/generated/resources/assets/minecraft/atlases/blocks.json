@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "immersivecooking:block/multiblock/grill_oven"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "immersivecooking:block/multiblock/cookpot"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "immersivecooking:block/multiblock/multiblock_base"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "immersivecooking:block/multiblock/multiblock_components"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "energy": 6400,
+  "fluid": {
+    "amount": 1000,
+    "tag": "forge:red_grapejuice"
+  },
+  "input": {
+    "item": "minecraft:bucket"
+  },
+  "results": [
+    {
+      "item": "immersivecooking:red_grapejuice_bucket"
+    }
+  ]
+}

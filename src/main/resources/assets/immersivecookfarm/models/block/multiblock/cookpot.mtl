@@ -1,8 +1,0 @@
-newmtl m_1ad2ec67-72f7-1384-ba00-2df0bb66a7f6
-map_Kd immersivecookfarm:block/multiblock/multiblock_base
-
-newmtl m_22778df7-5533-224e-dee0-912e3a1ffbcf
-map_Kd immersivecookfarm:block/multiblock/cookpot
-
-newmtl m_782eb0aa-5cc2-1557-d681-881ca9c8f77b
-map_Kd immersivecookfarm:block/multiblock/multiblock_components

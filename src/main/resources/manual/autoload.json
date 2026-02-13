@@ -1,10 +1,10 @@
 {
     "autoload_priority": 2,
-    "immersivecookfarm:cooking": {
+    "immersivecooking:cooking": {
         "category_weight": 100,
         "entry_list": [
-            "immersivecookfarm:cookpot",
-            "immersivecookfarm:grill_oven"
+            "immersivecooking:cookpot",
+            "immersivecooking:grill_oven"
         ]
     }
 }

@@ -1,0 +1,17 @@
+{
+  "type": "immersiveengineering:squeezer",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "fluid": "immersivecooking:white_grapejuice"
+  },
+  "input": {
+    "tag": "immersivecooking:juice_ingredients/white_grapejuice"
+  }
+}
