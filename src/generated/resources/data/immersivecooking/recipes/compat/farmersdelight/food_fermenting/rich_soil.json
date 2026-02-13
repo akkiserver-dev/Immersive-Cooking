@@ -1,0 +1,21 @@
+{
+  "type": "immersivecooking:food_fermenter",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "fluid": {
+    "amount": 1000,
+    "tag": "minecraft:water"
+  },
+  "inputs": [
+    {
+      "item": "farmersdelight:organic_compost"
+    }
+  ],
+  "result": {
+    "item": "farmersdelight:rich_soil"
+  }
+}

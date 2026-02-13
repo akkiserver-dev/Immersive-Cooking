@@ -1,0 +1,27 @@
+{
+  "type": "immersivecooking:food_fermenter",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "container": {
+    "item": "vinery:wine_bottle"
+  },
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:white_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "result": {
+    "item": "vinery:mellohi_wine"
+  }
+}

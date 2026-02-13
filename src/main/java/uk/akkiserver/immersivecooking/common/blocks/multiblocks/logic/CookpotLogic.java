@@ -133,21 +133,13 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implem
         }
     }
 
-    /**
-     * Returns int[2][] where [0] = slot indices, [1] = amounts per slot.
-     * Aggregates all ingredients of the same type, then distributes evenly across
-     * all matching slots.
-     */
     private int[][] resolveSlotsForRecipe(IItemHandler handler, CookpotRecipe recipe, int offset) {
         List<ItemStack> simulatedInv = new ArrayList<>();
         for (int i = 0; i < handler.getSlots(); i++) {
             simulatedInv.add(handler.getStackInSlot(i).copy());
         }
 
-        // Aggregate total required count per ingredient type
-        // Key: ingredient index in recipe.inputs, Value: total count needed
-        // Group ingredients that match the same items together
-        List<int[]> aggregated = new ArrayList<>(); // [ingredientIndex, totalCount]
+        List<int[]> aggregated = new ArrayList<>();
         boolean[] merged = new boolean[recipe.inputs.size()];
 
         for (int i = 0; i < recipe.inputs.size(); i++) {
@@ -157,7 +149,6 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implem
             for (int j = i + 1; j < recipe.inputs.size(); j++) {
                 if (merged[j])
                     continue;
-                // Check if these ingredients match the same items
                 if (ingredientsMatch(recipe.inputs.get(i), recipe.inputs.get(j), simulatedInv)) {
                     total += recipe.inputs.get(j).getCount();
                     merged[j] = true;
@@ -166,14 +157,12 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implem
             aggregated.add(new int[] { i, total });
         }
 
-        // Track per-slot consumption
         LinkedHashMap<Integer, Integer> slotAmounts = new LinkedHashMap<>();
 
         for (int[] entry : aggregated) {
             IngredientWithSize component = recipe.inputs.get(entry[0]);
             int remaining = entry[1];
 
-            // Find all matching slots
             List<int[]> matchingSlots = new ArrayList<>();
             for (int i = 0; i < simulatedInv.size(); i++) {
                 ItemStack stack = simulatedInv.get(i);
@@ -185,7 +174,6 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implem
             if (matchingSlots.isEmpty() || matchingSlots.stream().mapToInt(s -> s[1]).sum() < remaining)
                 return null;
 
-            // Distribute evenly across matching slots
             while (remaining > 0 && !matchingSlots.isEmpty()) {
                 int perSlot = Math.max(1, remaining / matchingSlots.size());
                 Iterator<int[]> it = matchingSlots.iterator();

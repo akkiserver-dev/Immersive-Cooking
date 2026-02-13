@@ -20,6 +20,7 @@ public class ICMBTextureSourceApplier extends SpriteSourceProvider{
 		
 		blockAtlas.addSource(new SingleFile(Resource.mod("block/multiblock/grill_oven"), Optional.empty()));
 		blockAtlas.addSource(new SingleFile(Resource.mod("block/multiblock/cookpot"), Optional.empty()));
+		blockAtlas.addSource(new SingleFile(Resource.mod("block/multiblock/food_fermenter"), Optional.empty()));
 		blockAtlas.addSource(new SingleFile(Resource.mod("block/multiblock/multiblock_base"), Optional.empty()));
 		blockAtlas.addSource(new SingleFile(Resource.mod("block/multiblock/multiblock_components"), Optional.empty()));
 	}

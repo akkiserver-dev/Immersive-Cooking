@@ -1,0 +1,24 @@
+{
+  "type": "immersivecooking:food_fermenter",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "container": {
+    "item": "vinery:wine_bottle"
+  },
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:red_savanna_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ],
+  "result": {
+    "item": "vinery:jo_special_mixture"
+  }
+}

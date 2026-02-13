@@ -12,9 +12,12 @@ import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
+import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
+import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import java.util.List;
@@ -36,21 +39,20 @@ public class ICJEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
         ImmersiveCooking.LOGGER.info("Registering categories to JEI...");
-        try {
-            IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
-            registry.addRecipeCategories(new CookpotRecipeCategory(guiHelper));
-            ImmersiveCooking.LOGGER.info("Registered CookpotRecipeCategory.");
-        } catch (Exception e) {
-            ImmersiveCooking.LOGGER.error("Failed to register CookpotRecipeCategory!", e);
-        }
+        IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
+        registry.addRecipeCategories(new CookpotRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new FoodFermenterRecipeCategory(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering recipes to JEI...");
-        List<CookpotRecipe> recipes = ((CookpotLogic) ICContent.Multiblock.COOKPOT.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
-        ImmersiveCooking.LOGGER.info("Found {} Cookpot recipes.", recipes.size());
-        registration.addRecipes(ICJEIRecipeTypes.COOKPOT, recipes);
+        List<CookpotRecipe> cookpotRecipes = ((CookpotLogic) ICContent.Multiblock.COOKPOT.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
+        ImmersiveCooking.LOGGER.info("Found {} Cookpot recipes.", cookpotRecipes.size());
+        registration.addRecipes(ICJEIRecipeTypes.COOKPOT, cookpotRecipes);
+        List<FoodFermenterRecipe> foodFermenterRecipes = ((FoodFermenterLogic) ICContent.Multiblock.FOOD_FERMENTER.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
+        ImmersiveCooking.LOGGER.info("Found {} Food Fermenter recipes.", foodFermenterRecipes.size());
+        registration.addRecipes(ICJEIRecipeTypes.FOOD_FERMENTER, foodFermenterRecipes);
     }
 
     private <T extends Recipe<?>> List<T> getRecipes(CachedRecipeList<T> cachedList) {
@@ -66,19 +68,20 @@ public class ICJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering recipe transfer handlers to JEI...");
-        registration.addRecipeTransferHandler(new GrillOvenRecipeTransferHandler(registration.getTransferHelper()),
-                RecipeTypes.SMOKING);
+        registration.addRecipeTransferHandler(new GrillOvenRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.SMOKING);
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering recipe catalysts to JEI...");
         registration.addRecipeCatalyst(ICContent.Multiblock.COOKPOT.iconStack(), ICJEIRecipeTypes.COOKPOT);
+        registration.addRecipeCatalyst(ICContent.Multiblock.FOOD_FERMENTER.iconStack(), ICJEIRecipeTypes.FOOD_FERMENTER);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering gui handlers to JEI...");
         registration.addRecipeClickArea(CookpotScreen.class, 91, 19, 16, 12, ICJEIRecipeTypes.COOKPOT);
+        registration.addRecipeClickArea(FoodFermenterScreen.class, 91, 19, 16, 12, ICJEIRecipeTypes.FOOD_FERMENTER);
     }
 }

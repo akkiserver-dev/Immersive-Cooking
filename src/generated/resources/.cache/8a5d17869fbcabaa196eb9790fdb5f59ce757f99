@@ -1,7 +1,10 @@
-// 1.20.1	2026-02-13T09:33:00.9405329	Immersive Cooking Blockstates
+// 1.20.1	2026-02-13T12:53:34.7003893	Immersive Cooking Blockstates
 af75ac69ed45528a9fc92aadfbc65252a7e1603d assets/immersivecooking/blockstates/cookpot.json
+cedc63d31e30a21997fa442174201ebb6a628c90 assets/immersivecooking/blockstates/food_fermenter.json
 28a72c1b150c475122a958ef5a9c26ac75c86a2d assets/immersivecooking/blockstates/grill_oven.json
 7b282046ce240731f4cc064feb5262fb4369bfbb assets/immersivecooking/models/block/grill_oven_off_split.json
 8fb9ad3d57cb1a483b8f109a89df1f62a46a41fe assets/immersivecooking/models/block/grill_oven_on_split.json
 7ca0d102d3c70f9d3ed639ee8ceb3b87bcf5d1c4 assets/immersivecooking/models/block/multiblock/cookpot_mirrored_split.json
 a9c801162d5f1ca2a46e0206dace4604af38a299 assets/immersivecooking/models/block/multiblock/cookpot_split.json
+c0f19f3c42c36444a740e308f11a6c3da91710b1 assets/immersivecooking/models/block/multiblock/food_fermenter_mirrored_split.json
+3dfe79b54a90a9a1f5ebd8297e16d60e4aa70092 assets/immersivecooking/models/block/multiblock/food_fermenter_split.json

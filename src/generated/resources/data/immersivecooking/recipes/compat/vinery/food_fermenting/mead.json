@@ -1,0 +1,27 @@
+{
+  "type": "immersivecooking:food_fermenter",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "container": {
+    "item": "vinery:wine_bottle"
+  },
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:apple_juice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:honey_bottle"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
+  ],
+  "result": {
+    "item": "vinery:mead"
+  }
+}

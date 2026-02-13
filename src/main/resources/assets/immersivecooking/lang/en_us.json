@@ -1,9 +1,11 @@
 {
-    "itemGroup.immersivecooking": "Immersive Cooking",
-    "manual.immersivecooking.main": "Immersive Cooking",
+    "itemGroup.immersivecooking": "Immersive Cooking & Farming",
+    "manual.immersivecooking.main": "Immersive Cooking & Farming",
     "manual.immersivecooking.multiblocks": "Multiblocks",
     "manual.immersivecooking.entry.cookpot": "Industrial Cookpot",
     "manual.immersivecooking.entry.grill_oven": "Grill Oven",
+    "subtitle.immersivecooking.cookpot.active": "Cookpot Boiling",
+    "subtitle.immersivecooking.food_fermenter.active": "Food Fermenter Cooling down",
     "block.immersivecooking.cookpot": "Industrial Cookpot",
     "block.immersivecooking.grill_oven": "Grill Oven",
     "block.immersivecooking.food_fermenter": "Industrial Food Fermenter",

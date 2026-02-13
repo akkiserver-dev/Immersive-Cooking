@@ -27,6 +27,15 @@ public class FoodFermenterRecipeBuilder extends IEFinishedRecipe<FoodFermenterRe
         return addFluid("fluid", fluid);
     }
 
+    public FoodFermenterRecipeBuilder setFluidInput(TagKey<Fluid> fluid, int amount) {
+        return addWriter(json -> {
+            var jsonObject = new com.google.gson.JsonObject();
+            jsonObject.addProperty("tag", fluid.location().toString());
+            jsonObject.addProperty("amount", amount);
+            json.add("fluid", jsonObject);
+        });
+    }
+
     public FoodFermenterRecipeBuilder setFluidInput(Fluid fluid, int amount) {
         return setFluidInput(new FluidStack(fluid, amount));
     }

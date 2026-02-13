@@ -1,19 +1,27 @@
 package uk.akkiserver.immersivecooking.data;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.builders.BottlingMachineRecipeBuilder;
 import blusunrize.immersiveengineering.api.crafting.builders.CrusherRecipeBuilder;
 import blusunrize.immersiveengineering.api.crafting.builders.SqueezerRecipeBuilder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.WaterFluid;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import net.satisfy.vinery.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
+import uk.akkiserver.immersivecooking.common.crafting.builders.FoodFermenterRecipeBuilder;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 import uk.akkiserver.immersivecooking.common.utils.compat.vinery.Juices;
+import uk.akkiserver.immersivecooking.common.utils.compat.vinery.Wines;
+import vectorwing.farmersdelight.common.registry.ModBlocks;
+import vectorwing.farmersdelight.common.registry.ModItems;
 
 import java.util.function.Consumer;
 
@@ -27,6 +35,28 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
         buildSqueezerRecipes(writer);
         buildBottlingRecipes(writer);
         buildCrusherRecipes(writer);
+        buildFoodFermenterRecipes(writer);
+    }
+
+    private void buildFoodFermenterRecipes(Consumer<FinishedRecipe> writer) {
+        FoodFermenterRecipeBuilder.builder(ModBlocks.RICH_SOIL.get())
+                .addCondition(new ModLoadedCondition("vinery"))
+                .setFluidInput(FluidTags.WATER, 1000)
+                .addInput(ModBlocks.ORGANIC_COMPOST.get())
+                .build(writer, fd("food_fermenting/rich_soil"));
+
+        for (Wines wine : Wines.values()) {
+            FoodFermenterRecipeBuilder builder = FoodFermenterRecipeBuilder.builder(wine.getItem())
+                    .addCondition(new ModLoadedCondition("vinery"))
+                    .setFluidInput(wine.getJuice().getFluidTag(), 250)
+                    .setContainer(ObjectRegistry.WINE_BOTTLE.get());
+
+            for (ItemStack ingredient : wine.getIngredients()) {
+                builder.addInput(ingredient);
+            }
+
+            builder.build(writer, vinery("food_fermenting/" + wine.getId().getPath()));
+        }
     }
 
     private void buildCrusherRecipes(Consumer<FinishedRecipe> writer) {
@@ -36,7 +66,7 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
                 .addInput(Items.APPLE)
                 .addSecondary(appleMash, 0.1f)
                 .setEnergy(9600)
-                .build(writer, Resource.mod("compat/vinery/crusher/apple_mash"));
+                .build(writer, vinery("crusher/apple_mash"));
     }
 
     private void buildSqueezerRecipes(Consumer<FinishedRecipe> writer) {
@@ -45,7 +75,7 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
                     .addCondition(new ModLoadedCondition("vinery"))
                     .addInput(juice.getJuiceTag())
                     .setEnergy(9600)
-                    .build(writer, Resource.mod("compat/vinery/squeezer/" + juice.getName()));
+                    .build(writer, vinery("squeezer/" + juice.getName()));
         }
     }
 
@@ -56,14 +86,22 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
                     .addFluidTag(juice.getFluidTag(), 1000)
                     .addInput(Items.BUCKET)
                     .setEnergy(6400)
-                    .build(writer, Resource.mod("compat/vinery/bottling/" + juice.getName() + "_bucket"));
+                    .build(writer, vinery("bottling/" + juice.getName() + "_bucket"));
 
             BottlingMachineRecipeBuilder.builder(juice.getItem())
                     .addCondition(new ModLoadedCondition("vinery"))
                     .addFluidTag(juice.getFluidTag(), 250)
                     .addInput(ObjectRegistry.WINE_BOTTLE.get())
                     .setEnergy(6400)
-                    .build(writer, Resource.mod("compat/vinery/bottling/" + juice.getName()));
+                    .build(writer, vinery("bottling/" + juice.getName()));
         }
+    }
+
+    private ResourceLocation fd(String id) {
+        return Resource.mod("compat/farmersdelight/" + id);
+    }
+
+    private ResourceLocation vinery(String id) {
+        return Resource.mod("compat/vinery/" + id);
     }
 }

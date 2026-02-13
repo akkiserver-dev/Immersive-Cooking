@@ -1,0 +1,30 @@
+{
+  "type": "immersivecooking:food_fermenter",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "container": {
+    "item": "vinery:wine_bottle"
+  },
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:red_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "result": {
+    "item": "vinery:cristel_wine"
+  }
+}

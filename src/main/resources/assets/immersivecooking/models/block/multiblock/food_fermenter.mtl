@@ -1,0 +1,11 @@
+# Blender 5.0.1 MTL File: 'None'
+# www.blender.org
+
+newmtl m_1ad2ec67-72f7-1384-ba00-2df0bb66a7f6
+map_Kd immersivecooking:block/multiblock/multiblock_base
+
+newmtl m_782eb0aa-5cc2-1557-d681-881ca9c8f77b
+map_Kd immersivecooking:block/multiblock/multiblock_components
+
+newmtl m_a1c48303-a332-6793-0543-1c8860e240a9
+map_Kd immersivecooking:block/multiblock/food_fermenter

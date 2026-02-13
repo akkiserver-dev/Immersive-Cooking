@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
+import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
 import uk.akkiserver.immersivecooking.client.gui.GrillOvenScreen;
 import uk.akkiserver.immersivecooking.client.utils.ICBasicClientProperties;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -34,6 +35,7 @@ public class ClientSetup {
         event.enqueueWork(() -> {
             MenuScreens.register(ICContent.MenuTypes.GRILL_OVEN.getType(), GrillOvenScreen::new);
             MenuScreens.register(ICContent.MenuTypes.COOKPOT.getType(), CookpotScreen::new);
+            MenuScreens.register(ICContent.MenuTypes.FOOD_FERMENTER.getType(), FoodFermenterScreen::new);
             ICBasicClientProperties.initModels();
         });
 

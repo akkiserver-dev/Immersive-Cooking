@@ -10,6 +10,10 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "immersivecooking:block/multiblock/food_fermenter"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "immersivecooking:block/multiblock/multiblock_base"
     },
     {

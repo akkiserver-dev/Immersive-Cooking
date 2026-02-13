@@ -1,6 +1,7 @@
-// 1.20.1	2026-02-13T09:33:00.9380405	Item models
+// 1.20.1	2026-02-13T12:53:34.6990651	Item models
 43905a86e38c7e229e1a9cb5d645e8cbf6d413f1 assets/immersivecooking/models/item/apple_juice_bucket.json
 48a2332e526c21e34a4c13e23527df011663031b assets/immersivecooking/models/item/cookpot.json
+cf9f657e897f2498209c401cb239435510e34b62 assets/immersivecooking/models/item/food_fermenter.json
 b25947c8e0e1c2b68be750b11f66e6f50d4a6cfe assets/immersivecooking/models/item/grill_oven.json
 f7a896b0e81f1f359c62556d34efd6e3de6f2705 assets/immersivecooking/models/item/red_grapejuice_bucket.json
 f7a896b0e81f1f359c62556d34efd6e3de6f2705 assets/immersivecooking/models/item/red_jungle_grapejuice_bucket.json

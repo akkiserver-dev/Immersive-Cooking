@@ -1,6 +1,6 @@
 package uk.akkiserver.immersivecooking.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
@@ -13,7 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
@@ -26,15 +26,15 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
 
     @Override
     public FoodFermenterRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-        JsonArray ingredientArray = GsonHelper.getAsJsonArray(json, "ingredients");
+        JsonArray ingredientArray = GsonHelper.getAsJsonArray(json, "inputs");
         NonNullList<IngredientWithSize> inputs = NonNullList.create();
         for (JsonElement e : ingredientArray) {
             inputs.add(IngredientWithSize.deserialize(e));
         }
 
-        FluidStack fluidInput = FluidStack.EMPTY;
-        if (json.has("fluidInput")) {
-            fluidInput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "fluidInput"));
+        FluidTagInput fluidInput = null;
+        if (json.has("fluid")) {
+            fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
         }
 
         ItemStack output = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
@@ -49,14 +49,14 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
     }
 
     @Override
-    public @Nullable FoodFermenterRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public @Nullable FoodFermenterRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
         NonNullList<IngredientWithSize> inputs = NonNullList.withSize(size, IngredientWithSize.of(ItemStack.EMPTY));
         for (int i = 0; i < size; i++) {
             inputs.set(i, IngredientWithSize.read(buffer));
         }
 
-        FluidStack fluidInput = buffer.readFluidStack();
+        FluidTagInput fluidInput = FluidTagInput.read(buffer);
         ItemStack output = buffer.readItem();
         ItemStack container = buffer.readItem();
 
@@ -73,7 +73,9 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
             i.write(buffer);
         }
 
-        buffer.writeFluidStack(recipe.fluidInput);
+        if (recipe.fluidInput != null) {
+            recipe.fluidInput.write(buffer);
+        }
         buffer.writeItem(recipe.itemOutput);
         buffer.writeItem(recipe.container);
 

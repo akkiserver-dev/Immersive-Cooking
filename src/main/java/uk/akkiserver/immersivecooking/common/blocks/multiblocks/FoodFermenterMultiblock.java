@@ -5,7 +5,7 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 public class FoodFermenterMultiblock extends ICTemplateMultiblock {
-    public static final CookpotMultiblock INSTANCE = new CookpotMultiblock();
+    public static final FoodFermenterMultiblock INSTANCE = new FoodFermenterMultiblock();
 
     public FoodFermenterMultiblock() {
         super(Resource.mod("multiblocks/food_fermenter"),

@@ -1,9 +1,11 @@
 {
-    "itemGroup.immersivecooking": "Immersive Cooking",
-    "manual.immersivecooking.main": "Immersive Cooking",
+    "itemGroup.immersivecooking": "Immersive Cooking & Farming",
+    "manual.immersivecooking.main": "Immersive Cooking & Farming",
     "manual.immersivecooking.multiblocks": "マルチブロック",
     "manual.immersivecooking.entry.cookpot": "工業用調理鍋",
     "manual.immersivecooking.entry.grill_oven": "グリルオーブン",
+    "subtitle.immersivecooking.cookpot.active": "調理鍋が沸騰している",
+    "subtitle.immersivecooking.food_fermenter.active": "食品発酵槽の冷却用コンプレッサーが動いている",
     "block.immersivecooking.food_fermenter": "工業用食品発酵槽",
     "block.immersivecooking.cookpot": "工業用調理鍋",
     "block.immersivecooking.grill_oven": "グリルオーブン",

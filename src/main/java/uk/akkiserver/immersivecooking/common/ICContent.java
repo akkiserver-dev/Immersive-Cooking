@@ -101,7 +101,8 @@ public final class ICContent {
     }
 
     public static class Sounds {
-        public static final RegistryObject<SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.boil");
+        public static final RegistryObject<SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.active");
+        public static final RegistryObject<SoundEvent> FOOD_FERMENTER_ACTIVE = ICRegisters.registerSoundEvent("block.food_fermenter.active");
 
         public static void forceClassLoad() {
         }
@@ -134,5 +135,6 @@ public final class ICContent {
         Fluids.forceClassLoad();
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
+        MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
     }
 }

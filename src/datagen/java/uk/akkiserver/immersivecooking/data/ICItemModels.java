@@ -45,6 +45,7 @@ public class ICItemModels extends TRSRItemModelProvider {
         }
 
         obj(ICContent.Multiblock.COOKPOT.blockItem().get(), Resource.mod("block/multiblock/cookpot.obj")).transforms(Resource.mod("item/multiblock"));
+        obj(ICContent.Multiblock.FOOD_FERMENTER.blockItem().get(), Resource.mod("block/multiblock/food_fermenter.obj")).transforms(Resource.mod("item/multiblock"));
     }
 
     private TRSRModelBuilder obj(ItemLike item, ResourceLocation model) {
