@@ -46,7 +46,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implements IServerTickableComponent<State>, IClientTickableComponent<State> {
+public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
+        implements IServerTickableComponent<State>, IClientTickableComponent<State> {
     public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
     public static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
     public static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
@@ -127,8 +128,16 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe> implem
             if (slotData != null) {
                 MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipe,
                         slotData[0]);
-                process.setInputAmounts(slotData[1]);
-                state.processor.addProcessToQueue(process, level, false);
+                process.setInputAmounts(new int[slotData[1].length]);
+                if (state.processor.addProcessToQueue(process, level, false)) {
+                    for (int i = 0; i < slotData[0].length; i++) {
+                        int slot = slotData[0][i];
+                        int amount = slotData[1][i];
+                        if (amount > 0) {
+                            inputOnly.getStackInSlot(slot).shrink(amount);
+                        }
+                    }
+                }
             }
         }
     }

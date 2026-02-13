@@ -35,5 +35,8 @@
     "item.immersivecooking.white_jungle_grapejuice_bucket": "ジャングル白ブドウの果汁入りバケツ",
     "fluid_type.immersivecooking.white_savanna_grapejuice": "サバンナ白ブドウの果汁",
     "fluid.immersivecooking.white_savanna_grapejuice": "サバンナ白ブドウの果汁",
-    "item.immersivecooking.white_savanna_grapejuice_bucket": "サバンナ白ブドウの果汁入りバケツ"
+    "item.immersivecooking.white_savanna_grapejuice_bucket": "サバンナ白ブドウの果汁入りバケツ",
+    "config.jade.plugin_immersivecooking.food_fermenter_data": "食品発酵機の詳細情報",
+    "tooltip.immersivecooking.fermenting": "発酵中",
+    "tooltip.immersivecooking.remaining_time": "残り時間: %s秒"
 }

@@ -1,11 +1,15 @@
 package uk.akkiserver.immersivecooking.common.utils.compat.jei;
 
-import mezz.jei.api.constants.VanillaTypes;
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -47,5 +51,17 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 127, 48)
                 .addItemStack(recipe.itemOutput);
+    }
+
+    @Override
+    public void draw(FoodFermenterRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        String time = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.getTotalProcessTime() / 20f, "#.##"));
+        graphics.drawString(
+                ClientUtils.font(),
+                time,
+                1,
+                1,
+                0xFFFFFF,
+                false);
     }
 }

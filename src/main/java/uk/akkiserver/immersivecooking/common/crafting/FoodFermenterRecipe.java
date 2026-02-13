@@ -107,4 +107,9 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     public int getMultipleProcessTicks() {
         return 0;
     }
+
+    @Override
+    public boolean shouldCheckItemAvailability() {
+        return false;
+    }
 }

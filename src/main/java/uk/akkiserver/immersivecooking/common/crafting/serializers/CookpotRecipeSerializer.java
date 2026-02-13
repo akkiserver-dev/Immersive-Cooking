@@ -24,7 +24,7 @@ public class CookpotRecipeSerializer extends IERecipeSerializer<CookpotRecipe> {
 
     @Override
     public CookpotRecipe readFromJson(ResourceLocation recipeId, JsonObject json, ICondition.IContext context) {
-        JsonArray ingredientArray = GsonHelper.getAsJsonArray(json, "ingredients");
+        JsonArray ingredientArray = GsonHelper.getAsJsonArray(json, "inputs");
         NonNullList<IngredientWithSize> inputs = NonNullList.create();
         for (JsonElement e : ingredientArray) {
             inputs.add(IngredientWithSize.deserialize(e));

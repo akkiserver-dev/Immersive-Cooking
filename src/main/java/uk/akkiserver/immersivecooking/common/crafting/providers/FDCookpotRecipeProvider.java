@@ -21,7 +21,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<CookpotRecipe> {
-    private static final Lazy<RecipeManager.CachedCheck<RecipeWrapper, CookingPotRecipe>> cookingPotCheckerLazySupplier = Lazy.of(() -> RecipeManager.createCheck(ModRecipeTypes.COOKING.get()));
+    private static final Lazy<RecipeManager.CachedCheck<RecipeWrapper, CookingPotRecipe>> cookingPotCheckerLazySupplier = Lazy
+            .of(() -> RecipeManager.createCheck(ModRecipeTypes.COOKING.get()));
 
     @Override
     public boolean canProvide() {
@@ -67,7 +68,12 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
         if (cached != null)
             return cached;
 
-        return level.getRecipeManager().byKey(id)
+        ResourceLocation fdId = id;
+        if (id.getNamespace().equals("immersivecooking")) {
+            fdId = ResourceLocation.fromNamespaceAndPath("farmersdelight", id.getPath());
+        }
+
+        return level.getRecipeManager().byKey(fdId)
                 .filter(r -> r instanceof CookingPotRecipe)
                 .map(r -> toCookpotRecipe((CookingPotRecipe) r, level))
                 .orElse(null);
@@ -97,7 +103,6 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
                 fdRecipe.getResultItem(level.registryAccess()),
                 fdRecipe.getOutputContainer(),
                 (int) (fdRecipe.getCookTime() * 0.75),
-                energy
-        );
+                energy);
     }
 }

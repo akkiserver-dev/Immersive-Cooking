@@ -131,16 +131,23 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
+    // JEI/EMI
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+    // for multiblock definition check
     runtimeOnly fg.deobf("curse.maven:just-enough-immersive-multiblocks-634571:7131221")
 
+    // jade
+    implementation fg.deobf("curse.maven:jade-324717:6855440")
+
+    // IE (IP compat for planned)
     implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
     implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
-
     implementation fg.deobf("curse.maven:immersive-petroleum-268250:7512547")
+
+    // Farmersdelight
     implementation fg.deobf("curse.maven:farmers-delight-398521:7596353")
 
     // let's do

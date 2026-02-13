@@ -57,7 +57,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
     public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
     public static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
     public static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
-    public static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(0, 1, 1, RelativeBlockFace.LEFT);
+    public static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(0, 1, 1, RelativeBlockFace.RIGHT);
     public static final BlockPos ITEM_INPUT = new BlockPos(0, 1, 0);
     public static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 
@@ -114,7 +114,8 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
             ctx.requestMasterBESync();
         }
 
-        if (FluidUtils.drainFluidContainer(state.tank, FILLED_FLUID_SLOT, EMPTY_FLUID_SLOT, state.inventory)) ctx.markMasterDirty();
+        if (FluidUtils.drainFluidContainer(state.tank, FILLED_FLUID_SLOT, EMPTY_FLUID_SLOT, state.inventory))
+            ctx.markMasterDirty();
 
         enqueueProcesses(state, level);
         handleItemOutput(ctx);
@@ -138,7 +139,6 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
         Optional<FoodFermenterRecipe> recipeOpt = findRecipe(wrapper, state.tank.getFluid(), level);
 
         if (recipeOpt.isPresent()) {
-            System.out.println("recipe present");
             FoodFermenterRecipe recipe = recipeOpt.get();
 
             if (!ItemStack.isSameItem(containerStack, recipe.container))
@@ -146,10 +146,20 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slotData[0]);
-                process.setInputAmounts(slotData[1]);
+                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(recipe,
+                        slotData[0]);
+                process.setInputAmounts(new int[slotData[1].length]);
 
                 if (state.processor.addProcessToQueue(process, level, false)) {
+                    // Consume items immediately at start
+                    for (int i = 0; i < slotData[0].length; i++) {
+                        int slot = slotData[0][i];
+                        int amount = slotData[1][i];
+                        if (amount > 0) {
+                            inputOnly.getStackInSlot(slot).shrink(amount);
+                        }
+                    }
+
                     if (recipe.fluidInput != null) {
                         FluidStack toDrain = new FluidStack(state.tank.getFluid(), recipe.fluidInput.getAmount());
                         state.tank.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
@@ -271,8 +281,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
                     context.isValid(),
                     soundPos,
                     ICContent.Sounds.FOOD_FERMENTER_ACTIVE,
-                    0.5f
-            );
+                    0.5f);
         }
     }
 
@@ -306,7 +315,8 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT,
                             NUM_INPUT_SLOTS),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(new SlotwiseItemHandler.IOConstraint(true, Utils::isFluidRelatedItemStack), 1),
+                    new SlotwiseItemHandler.IOConstraintGroup(
+                            new SlotwiseItemHandler.IOConstraint(true, Utils::isFluidRelatedItemStack), 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)), markDirty);
 
@@ -315,8 +325,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
 
             this.itemOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
             this.fluidInput = new StoredCapability<>(new ArrayFluidHandler(
-                    false, true, markDirty, tank
-            ));
+                    false, true, markDirty, tank));
             this.energyCap = new StoredCapability<>(energy);
 
             this.itemInputCap = new StoredCapability<>(new WrappingItemHandler(inventory, true, false,

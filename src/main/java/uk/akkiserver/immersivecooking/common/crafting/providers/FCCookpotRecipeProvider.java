@@ -68,7 +68,12 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
         if (cached != null)
             return cached;
 
-        return level.getRecipeManager().byKey(id)
+        ResourceLocation facId = id;
+        if (id.getNamespace().equals("immersivecooking")) {
+            facId = ResourceLocation.fromNamespaceAndPath("farm_and_charm", id.getPath());
+        }
+
+        return level.getRecipeManager().byKey(facId)
                 .filter(r -> r instanceof CookingPotRecipe)
                 .map(r -> toCookpotRecipe((CookingPotRecipe) r, level))
                 .orElse(null);
@@ -100,7 +105,6 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
                 output,
                 container,
                 DEFAULT_COOK_TIME,
-                DEFAULT_ENERGY
-        );
+                DEFAULT_ENERGY);
     }
 }

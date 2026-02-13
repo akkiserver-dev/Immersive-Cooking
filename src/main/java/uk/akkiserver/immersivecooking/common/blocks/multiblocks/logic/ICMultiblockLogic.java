@@ -18,12 +18,14 @@ import uk.akkiserver.immersivecooking.common.crafting.providers.IMultiblockRecip
 
 import java.util.*;
 
-public abstract class ICMultiblockLogic<S extends IMultiblockState, R extends Recipe<?>> implements IMultiblockLogic<S> {
+public abstract class ICMultiblockLogic<S extends IMultiblockState, R extends Recipe<?>>
+        implements IMultiblockLogic<S> {
     protected final List<IMultiblockRecipeProvider<R>> recipeProviders = new ArrayList<>();
 
     public Optional<R> findRecipe(ItemStack stack, FluidStack fluid, Level level) {
         for (var normalProvider : recipeProviders) {
-            if (normalProvider.canProvide() && normalProvider instanceof IFluidContainingMultiblockRecipeProvider<R> provider) {
+            if (normalProvider.canProvide()
+                    && normalProvider instanceof IFluidContainingMultiblockRecipeProvider<R> provider) {
                 Optional<R> recipe = provider.findRecipe(stack, fluid, level);
                 if (recipe.isPresent()) {
                     return recipe;
@@ -35,7 +37,8 @@ public abstract class ICMultiblockLogic<S extends IMultiblockState, R extends Re
 
     public Optional<R> findRecipe(Container container, FluidStack fluid, Level level) {
         for (var normalProvider : recipeProviders) {
-            if (normalProvider.canProvide() && normalProvider instanceof IFluidContainingMultiblockRecipeProvider<R> provider) {
+            if (normalProvider.canProvide()
+                    && normalProvider instanceof IFluidContainingMultiblockRecipeProvider<R> provider) {
                 Optional<R> recipe = provider.findRecipe(container, fluid, level);
                 if (recipe.isPresent()) {
                     return recipe;
@@ -71,8 +74,11 @@ public abstract class ICMultiblockLogic<S extends IMultiblockState, R extends Re
 
     public R byKey(ResourceLocation id, Level level) {
         for (var provider : recipeProviders) {
-            if (provider.canProvide() && provider.hasMultiInput()) {
-                return provider.byKey(id, level);
+            if (provider.canProvide()) {
+                R recipe = provider.byKey(id, level);
+                if (recipe != null) {
+                    return recipe;
+                }
             }
         }
         return null;
