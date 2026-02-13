@@ -37,9 +37,7 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.DefaultCookpotRecipeProvider;
-import uk.akkiserver.immersivecooking.common.crafting.providers.FCCookpotRecipeProvider;
-import uk.akkiserver.immersivecooking.common.crafting.providers.FDCookpotRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -62,9 +60,14 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
     public static final int ENERGY_CAPACITY = 16000;
 
     public CookpotLogic() {
+        /* Default Registry */
         this.recipeProviders.add(new DefaultCookpotRecipeProvider());
+        /* Farmer's Delight */
         this.recipeProviders.add(new FDCookpotRecipeProvider());
+        /* Farm & Charm */
         this.recipeProviders.add(new FCCookpotRecipeProvider());
+        this.recipeProviders.add(new FCCookpotRoasterRecipeProvider());
+        this.recipeProviders.add(new FCCookpotStoveRecipeProvider());
     }
 
     @Override
