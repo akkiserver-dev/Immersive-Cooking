@@ -1,0 +1,7 @@
+Industrial Food Fermenter
+Is it just me, or does it smell?
+<&food_fermenter0>
+The Food Fermenter is a large multiblock designed to ferment crops and juices into high-quality food, wine, or agricultural materials.<np>
+The machine features three input hatches at the back. Solid materials and containers (like wine bottles) are inserted here. The hatch on the right (when viewed from the back) is dedicated to fluid input for fermentation. The orange-marked hatch at the bottom automatically outputs finished products. Energy is input through the connection at the top.
+Supplying the control panel at the front with a redstone signal will turn off the machine. This behavior can be inverted by clicking the panel with an Engineer's Hammer.
+With mods like Vinery, this machine excels at mass-producing a vast variety of wine vintages.

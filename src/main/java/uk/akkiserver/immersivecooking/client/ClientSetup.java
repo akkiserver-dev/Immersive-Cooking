@@ -18,7 +18,9 @@ import uk.akkiserver.immersivecooking.client.gui.GrillOvenScreen;
 import uk.akkiserver.immersivecooking.client.utils.ICBasicClientProperties;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultiblock;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodFermenterMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.GrillOvenMultiblock;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.ICTemplateMultiblock;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 @OnlyIn(Dist.CLIENT)
@@ -36,7 +38,6 @@ public class ClientSetup {
             MenuScreens.register(ICContent.MenuTypes.GRILL_OVEN.getType(), GrillOvenScreen::new);
             MenuScreens.register(ICContent.MenuTypes.COOKPOT.getType(), CookpotScreen::new);
             MenuScreens.register(ICContent.MenuTypes.FOOD_FERMENTER.getType(), FoodFermenterScreen::new);
-            ICBasicClientProperties.initModels();
         });
 
         setupManual();
@@ -44,21 +45,21 @@ public class ClientSetup {
 
     public static void setupManual() {
         ManualInstance manual = ManualHelper.getManual();
-        ResourceLocation main = Resource.mod("main");
-        ResourceLocation multiblocks = Resource.mod("multiblocks");
-
         ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(manual);
-        builder.readFromFile(Resource.mod("cookpot"));
-        builder.addSpecialElement(new ManualEntry.SpecialElementData("cookpot0", 0,
-                () -> new ManualElementMultiblock(manual, CookpotMultiblock.INSTANCE)));
-        ManualEntry entry = builder.create();
-        manual.addEntry(manual.getRoot().getOrCreateSubnode(main).getOrCreateSubnode(multiblocks), entry);
 
-        builder = new ManualEntry.ManualEntryBuilder(manual);
-        builder.readFromFile(Resource.mod("grill_oven"));
-        builder.addSpecialElement(new ManualEntry.SpecialElementData("grill_oven0", 0,
-                () -> new ManualElementMultiblock(manual, GrillOvenMultiblock.INSTANCE)));
-        entry = builder.create();
-        manual.addEntry(manual.getRoot().getOrCreateSubnode(main).getOrCreateSubnode(multiblocks), entry);
+
+
+        registerMultiblockManualPage(manual, builder, "cookpot", CookpotMultiblock.INSTANCE);
+        registerMultiblockManualPage(manual, builder, "food_fermenter", FoodFermenterMultiblock.INSTANCE);
+        registerMultiblockManualPage(manual, builder, "grill_oven", GrillOvenMultiblock.INSTANCE);
+    }
+
+    public static void registerMultiblockManualPage(ManualInstance manual, ManualEntry.ManualEntryBuilder builder, String id, ICTemplateMultiblock multiblock) {
+        builder.readFromFile(Resource.mod(id));
+        builder.addSpecialElement(new ManualEntry.SpecialElementData(id + 0, 0,
+                () -> new ManualElementMultiblock(manual, multiblock)));
+        ManualEntry entry = builder.create();
+        manual.addEntry(manual.getRoot().getOrCreateSubnode(Resource.mod("main")).getOrCreateSubnode(Resource.mod("multiblocks")), entry);
+
     }
 }

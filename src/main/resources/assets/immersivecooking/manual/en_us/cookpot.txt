@@ -1,3 +1,7 @@
 Industrial Cookpot
-No chefs needed!
+No chefs required!
 <&cookpot0>
+The Industrial Cookpot is a massive multiblock used to automate the production of various gourmet meals. It is designed to integrate with popular farming mods like Farmer's Delight and Farm & Charm.<np>
+To form the structure, assemble it as shown on the previous page, then click the cauldron with an Engineer's Hammer.
+Input items are inserted through the two blue-marked hatches at the back. The orange-marked hatch at the bottom serves as the output port. Energy is supplied through the connector at the top.
+Supplying the control panel at the front with a redstone signal will turn off the machine. This behavior can be inverted by clicking the panel with an Engineer's Hammer.
