@@ -14,6 +14,7 @@
 - [x] Industrial Food Fermenter (for Vinery, and some)
 - [ ] Advanced Wine Cellar
 - [ ] Industrial Deep Fryer
+- [ ] Food Processor
 
 ## Contribution
 - Bug Reports
