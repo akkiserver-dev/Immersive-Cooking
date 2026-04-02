@@ -16,13 +16,16 @@ import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodFermenterMultiblock;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodProcessorMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.GrillOvenMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodProcessorLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodFermenterMenu;
+import uk.akkiserver.immersivecooking.common.gui.FoodProcessorMenu;
 import uk.akkiserver.immersivecooking.common.gui.GrillOvenMenu;
 
 import java.util.Collection;
@@ -54,6 +57,13 @@ public final class ICContent {
                         () -> FoodFermenterMultiblock.INSTANCE,
                         builder -> builder.gui(MenuTypes.FOOD_FERMENTER));
 
+        public static final MultiblockRegistration<FoodProcessorLogic.State> FOOD_PROCESSOR = ICRegisters
+                .registerMetalMultiblock(
+                        "food_processor",
+                        new FoodProcessorLogic(),
+                        () -> FoodProcessorMultiblock.INSTANCE,
+                        builder -> builder.gui(MenuTypes.FOOD_PROCESSOR));
+
         public static void forceClassLoad() {
         }
     }
@@ -76,6 +86,12 @@ public final class ICContent {
                         "food_fermenter",
                         FoodFermenterMenu::makeServer,
                         FoodFermenterMenu::makeClient);
+
+        public static final IEMenuTypes.MultiblockContainer<FoodProcessorLogic.State, FoodProcessorMenu> FOOD_PROCESSOR = IEMenuTypes
+                .registerMultiblock(
+                        "food_processor",
+                        FoodProcessorMenu::makeServer,
+                        FoodProcessorMenu::makeClient);
 
         public static void forceClassLoad() {
         }
@@ -136,5 +152,6 @@ public final class ICContent {
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
+        MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
     }
 }

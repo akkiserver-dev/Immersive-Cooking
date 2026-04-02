@@ -14,6 +14,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
+import uk.akkiserver.immersivecooking.client.gui.FoodProcessorScreen;
 import uk.akkiserver.immersivecooking.client.gui.GrillOvenScreen;
 import uk.akkiserver.immersivecooking.client.utils.ICBasicClientProperties;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -30,6 +31,8 @@ public class ClientSetup {
     public static void registerAdditionalModels(net.minecraftforge.client.event.ModelEvent.RegisterAdditional event) {
         event.register(Resource.mod("block/multiblock/cookpot.obj"));
         event.register(Resource.mod("block/multiblock/grill_oven.obj"));
+        event.register(Resource.mod("block/multiblock/food_fermenter.obj"));
+        event.register(Resource.mod("block/multiblock/food_processor.obj"));
     }
 
     @SubscribeEvent
@@ -38,6 +41,7 @@ public class ClientSetup {
             MenuScreens.register(ICContent.MenuTypes.GRILL_OVEN.getType(), GrillOvenScreen::new);
             MenuScreens.register(ICContent.MenuTypes.COOKPOT.getType(), CookpotScreen::new);
             MenuScreens.register(ICContent.MenuTypes.FOOD_FERMENTER.getType(), FoodFermenterScreen::new);
+            MenuScreens.register(ICContent.MenuTypes.FOOD_PROCESSOR.getType(), FoodProcessorScreen::new);
         });
 
         setupManual();

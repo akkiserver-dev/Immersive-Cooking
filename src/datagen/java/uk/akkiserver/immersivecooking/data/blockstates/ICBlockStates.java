@@ -32,6 +32,7 @@ import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodFermenterMultiblock;
+import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodProcessorMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.ICTemplateMultiblock;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
@@ -87,6 +88,7 @@ public class ICBlockStates extends BlockStateProvider {
 
         createMultiblock(innerObj("block/multiblock/cookpot.obj"), CookpotMultiblock.INSTANCE);
         createMultiblock(innerObj("block/multiblock/food_fermenter.obj"), FoodFermenterMultiblock.INSTANCE);
+        createMultiblock(innerObj("block/multiblock/food_processor.obj"), FoodProcessorMultiblock.INSTANCE);
     }
 
     protected NongeneratedModel innerObj(String loc, @Nullable RenderType layer) {
