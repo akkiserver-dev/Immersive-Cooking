@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.MixerShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
@@ -39,7 +40,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import uk.akkiserver.immersivecooking.common.ICContent;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.FoodProcessorShape;
 import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
 import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 
@@ -78,7 +78,7 @@ public class FoodProcessorLogic extends ICMultiblockLogic<FoodProcessorLogic.Sta
 
     @Override
     public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType) {
-        return FoodProcessorShape.SHAPE_GETTER;
+        return MixerShapes.SHAPE_GETTER;
     }
 
     @Override

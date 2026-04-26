@@ -5,6 +5,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
@@ -22,7 +23,7 @@ public class CookpotRecipeCategory extends ICRecipeCategory<CookpotRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, CookpotRecipe recipe, IFocusGroup focuses) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, CookpotRecipe recipe, @NotNull IFocusGroup focuses) {
         // Inputs 3x2 grid starting at (23,19) relative to GUI -> (17,7) relative to
         // helper
         for (int i = 0; i < recipe.inputs.size(); i++) {
