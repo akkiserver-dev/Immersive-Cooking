@@ -1,7 +1,8 @@
 package uk.akkiserver.immersivecooking;
 
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -13,9 +14,9 @@ public class ImmersiveCooking {
     public static final String MODID = "immersivecooking";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
-    public ImmersiveCooking(FMLJavaModLoadingContext ctx) {
+    public ImmersiveCooking(IEventBus bus, ModContainer container) {
         ICRecipes.init();
-        ICRegisters.init(ctx.getModEventBus());
+        ICRegisters.init(bus);
         ICContent.init();
     }
 }

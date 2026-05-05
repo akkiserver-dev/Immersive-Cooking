@@ -1,6 +1,6 @@
 package uk.akkiserver.immersivecooking.common.utils;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.fml.ModList;
 
 public final class Compat {
     public static boolean isFarmCharmInstalled() {

@@ -2,8 +2,10 @@ package uk.akkiserver.immersivecooking.common;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.RegistryObject;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
@@ -20,7 +22,7 @@ public final class ICRecipes {
         public static final IERecipeTypes.TypeWithClass<FoodProcessorRecipe> FOOD_PROCESSOR = register("food_processor", FoodProcessorRecipe.class);
 
         private static <T extends Recipe<?>> IERecipeTypes.TypeWithClass<T> register(String name, Class<T> type) {
-            RegistryObject<RecipeType<T>> regObj = RECIPE_TYPES.register(name, () -> new RecipeType<>(){});
+            DeferredHolder<RecipeType<T>> regObj = RECIPE_TYPES.register(name, () -> new RecipeType<>(){});
             return new IERecipeTypes.TypeWithClass<>(regObj, type);
         }
 
@@ -28,9 +30,9 @@ public final class ICRecipes {
     }
 
     public static class Serializers {
-        public static final RegistryObject<CookpotRecipeSerializer> COOKPOT = ICRegisters.registerSerializer("cookpot", CookpotRecipeSerializer::new);
-        public static final RegistryObject<FoodFermenterRecipeSerializer> FOOD_FERMENTER = ICRegisters.registerSerializer("food_fermenter", FoodFermenterRecipeSerializer::new);
-        public static final RegistryObject<FoodProcessorRecipeSerializer> FOOD_PROCESSOR = ICRegisters.registerSerializer("food_processor", FoodProcessorRecipeSerializer::new);
+        public static final DeferredHolder<RecipeSerializer<?>, CookpotRecipeSerializer> COOKPOT = ICRegisters.registerSerializer("cookpot", CookpotRecipeSerializer::new);
+        public static final DeferredHolder<RecipeSerializer<?>, FoodFermenterRecipeSerializer> FOOD_FERMENTER = ICRegisters.registerSerializer("food_fermenter", FoodFermenterRecipeSerializer::new);
+        public static final DeferredHolder<RecipeSerializer<?>, FoodProcessorRecipeSerializer> FOOD_PROCESSOR = ICRegisters.registerSerializer("food_processor", FoodProcessorRecipeSerializer::new);
         
         public static void forceClassLoad() {}
     }

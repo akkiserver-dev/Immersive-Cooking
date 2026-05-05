@@ -1,23 +1,9 @@
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7.38'
-    }
-}
-
 plugins {
     id 'eclipse'
     id 'idea'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.moddev' version '2.0.141'
     id 'maven-publish'
 }
-
-apply plugin: 'org.spongepowered.mixin'
 
 group = mod_group_id
 version = mod_version
@@ -26,9 +12,7 @@ base {
     archivesName = mod_id
 }
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 sourceSets {
     main {
@@ -47,65 +31,43 @@ sourceSets {
     }
 }
 
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+neoForge {
+    version = project.neoforge_version
 
-    copyIdeResources = true
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
 
     runs {
-        configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
         client {
-            property 'forge.enabledGameTestNamespaces', mod_id
+            client()
+
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         data {
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            data()
 
-            args '--mod', mod_id,
-                    '--all',
-                    '--output', file('src/generated/resources/'),
-                    '--validate',
-                    '--existing', sourceSets.main.resources.srcDirs[0],
-                    '--existing-mod', 'immersiveengineering'
-            ideaModule project.name+".datagen"
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
 
-            mods {
-                immersivecooking {
-                    source sourceSets.main
-                    source sourceSets.datagen
-                }
-            }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
         }
     }
-}
-
-mixin {
-    add sourceSets.main, "${mod_id}.refmap.json"
-
-    config "${mod_id}.mixins.json"
 }
 
 repositories {
@@ -125,35 +87,39 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+    maven {
+        name = "Greenhouse Maven"
+        url = "https://maven.greenhouse.lgbt/releases/"
+    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
     // JEI/EMI
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    //runtimeOnly("dev.emi:emi-forge:${emi_version}")
     // for multiblock definition check
-    runtimeOnly fg.deobf("curse.maven:just-enough-immersive-multiblocks-634571:7131221")
+    runtimeOnly("curse.maven:just-enough-immersive-multiblocks-634571:7131221")
 
     // jade
-    implementation fg.deobf("curse.maven:jade-324717:6855440")
+    implementation("curse.maven:jade-324717:6855440")
 
     // IE (IP compat for planned)
-    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
-    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
-    implementation fg.deobf("curse.maven:immersive-petroleum-268250:7512547")
+    implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
+    implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
+    implementation("curse.maven:immersive-petroleum-268250:7512547")
 
     // Farmersdelight
-    implementation fg.deobf("curse.maven:farmers-delight-398521:7596353")
+    implementation("curse.maven:farmers-delight-398521:7596353")
 
-    // let's do
-    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
-    implementation fg.deobf("curse.maven:lets-do-vinery-704465:6854288")
-    implementation fg.deobf("curse.maven:lets-do-farm-charm-1038103:7088013")
+    // Let's Do
+    implementation("curse.maven:architectury-api-419699:5137938")
+    implementation("curse.maven:lets-do-vinery-704465:6854288")
+    implementation("curse.maven:lets-do-farm-charm-1038103:7088013")
+
+    // Brewin' And Chewin'
+    implementation("curse.maven:brewin-and-chewin-637808:6237884")
 }
 
 
@@ -207,32 +173,22 @@ gradle.taskGraph.whenReady { taskGraph ->
     }
 }
 
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-                             forge_version       : forge_version, forge_version_range: forge_version_range,
-                             loader_version_range: loader_version_range,
-                             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-                             mod_authors         : mod_authors, mod_description: mod_description,]
-
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [minecraft_version      : minecraft_version,
+                             minecraft_version_range: minecraft_version_range,
+                             neo_version            : neo_version,
+                             neo_version_range      : neo_version_range,
+                             loader_version_range   : loader_version_range,
+                             mod_id                 : mod_id,
+                             mod_name               : mod_name,
+                             mod_license            : mod_license,
+                             mod_version            : mod_version,
+                             mod_authors            : mod_authors,
+                             mod_description        : mod_description]
     inputs.properties replaceProperties
-
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties + [project: project]
-    }
-}
-
-tasks.named('jar', Jar).configure {
-    manifest {
-        attributes(["Specification-Title"     : mod_id,
-                    "Specification-Vendor"    : mod_authors,
-                    "Specification-Version"   : "1",
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
-                    "Implementation-Vendor"   : mod_authors,
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
-    }
-
-    finalizedBy 'reobfJar'
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
 }
 
 tasks.withType(JavaCompile).configureEach {

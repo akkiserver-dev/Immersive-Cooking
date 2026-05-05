@@ -1,6 +1,5 @@
 package uk.akkiserver.immersivecooking.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
@@ -10,7 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;
@@ -25,12 +25,12 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
 
     public NonNullList<IngredientWithSize> inputs; // 6 slots
     @Nullable
-    public final FluidTagInput fluidInput;
+    public final SizedFluidIngredient fluidInput;
     public final ItemStack container;
     public final ItemStack result;
 
     public FoodFermenterRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs,
-                               @Nullable FluidTagInput fluidInput,
+                               @Nullable SizedFluidIngredient fluidInput,
                                ItemStack result, ItemStack container, int time, int energy) {
         super(Lazy.of(() -> result), ICRecipes.Types.FOOD_FERMENTER, id);
         this.fluidInput = fluidInput;
@@ -84,7 +84,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
 
     @Override
     protected IERecipeSerializer<?> getIESerializer() {
-        return ICRecipes.Serializers.FOOD_FERMENTER.get();
+        return ICRecipes.Serializers.FOOD_FERMENTER;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     }
 
     @Override
-    public List<FluidTagInput> getFluidInputs() {
+    public List<SizedFluidIngredient> getFluidInputs() {
         return fluidInput == null ? List.of() : List.of(fluidInput);
     }
 

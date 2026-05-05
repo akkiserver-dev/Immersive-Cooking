@@ -3,8 +3,9 @@ package uk.akkiserver.immersivecooking.common.crafting.providers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class DefaultFoodFermenterRecipeProvider implements IFluidContainingMulti
 
     @Override
     public Optional<FoodFermenterRecipe> findRecipe(Container container, FluidStack fluid, Level level) {
-        // キャッシュチェック（ここもログ出力）
         if (lastRecipe != null && lastRecipe.matches(container, level) && lastRecipe.fluidInput != null) {
             if (lastRecipe.fluidInput.test(fluid) && fluid.getAmount() >= lastRecipe.fluidInput.getAmount()) {
                 return Optional.of(lastRecipe);
@@ -64,7 +64,6 @@ public class DefaultFoodFermenterRecipeProvider implements IFluidContainingMulti
         }
 
         List<FoodFermenterRecipe> allRecipes = getAllRecipes(level);
-        // レシピがロードされているか確認
         if (allRecipes.isEmpty()) {
             System.out.println("[DEBUG] No FoodFermenter recipes found in registry!");
         }
@@ -104,6 +103,27 @@ public class DefaultFoodFermenterRecipeProvider implements IFluidContainingMulti
 
     @Override
     public Optional<FoodFermenterRecipe> findRecipe(ItemStack stack, FluidStack fluid, Level level) {
+        if (lastRecipe != null && lastRecipe.container.getItem() == stack.getItem()
+                && lastRecipe.fluidInput != null) {
+            if (lastRecipe.fluidInput.test(fluid)
+                    && fluid.getAmount() >= lastRecipe.fluidInput.getAmount()) {
+                return Optional.of(lastRecipe);
+            }
+        }
+        for (FoodFermenterRecipe recipe : getAllRecipes(level)) {
+            if (recipe.container.getItem() == stack.getItem() && recipe.fluidInput != null) {
+                if (recipe.fluidInput.test(fluid)
+                        && fluid.getAmount() >= recipe.fluidInput.getAmount()) {
+                    lastRecipe = recipe;
+                    return Optional.of(recipe);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<FoodFermenterRecipe> findRecipe(RecipeInput stack, FluidStack fluid, Level level) {
         if (lastRecipe != null && lastRecipe.container.getItem() == stack.getItem()
                 && lastRecipe.fluidInput != null) {
             if (lastRecipe.fluidInput.test(fluid)

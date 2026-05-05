@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -98,13 +98,13 @@ public final class ICContent {
     }
 
     public static class Tabs {
-        public static final RegistryObject<CreativeModeTab> CREATIVE_TAB = ICRegisters.registerCreativeTab("main",
+        public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = ICRegisters.registerCreativeTab("main",
                 () -> CreativeModeTab.builder()
                         .title(Component.translatable("itemGroup." + MODID))
                         .icon(() -> new ItemStack(IEItems.Tools.STEEL_HOE))
                         .displayItems((params, output) -> {
-                            Collection<RegistryObject<Item>> itemRegistries = ICRegisters.ITEM_REGISTER.getEntries();
-                            for (RegistryObject<Item> itemRegistryObject : itemRegistries) {
+                            Collection<DeferredHolder<Item, ? extends Item>> itemRegistries = ICRegisters.ITEM_REGISTER.getEntries();
+                            for (var itemRegistryObject : itemRegistries) {
                                 if (!(itemRegistryObject.get() instanceof MultiblockItem)) {
                                     output.accept(itemRegistryObject.get());
                                 }
@@ -117,8 +117,8 @@ public final class ICContent {
     }
 
     public static class Sounds {
-        public static final RegistryObject<SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.active");
-        public static final RegistryObject<SoundEvent> FOOD_FERMENTER_ACTIVE = ICRegisters.registerSoundEvent("block.food_fermenter.active");
+        public static final DeferredHolder<SoundEvent, SoundEvent> COOKPOT_ACTIVE = ICRegisters.registerSoundEvent("block.cookpot.active");
+        public static final DeferredHolder<SoundEvent, SoundEvent> FOOD_FERMENTER_ACTIVE = ICRegisters.registerSoundEvent("block.food_fermenter.active");
 
         public static void forceClassLoad() {
         }

@@ -1,13 +1,16 @@
 package uk.akkiserver.immersivecooking.common.utils.compat.farmcharm;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import uk.akkiserver.immersivecooking.common.utils.compat.ICropCompatProvider;
 
 public enum FarmCharmCrops implements ICropCompatProvider {
@@ -58,13 +61,11 @@ public enum FarmCharmCrops implements ICropCompatProvider {
     }
 
     private static ItemStack getItemStack(ResourceLocation location) {
-        Item item = ForgeRegistries.ITEMS.getValue(location);
-        return new ItemStack(item != null ? item : Items.AIR);
+        return new ItemStack(BuiltInRegistries.ITEM.get(location));
     }
 
-    private static net.minecraft.world.level.block.Block getBlock(ResourceLocation location) {
-        net.minecraft.world.level.block.Block block = ForgeRegistries.BLOCKS.getValue(location);
-        return block != null ? block : net.minecraft.world.level.block.Blocks.AIR;
+    private static Block getBlock(ResourceLocation location) {
+        return BuiltInRegistries.BLOCK.get(location);
     }
 
     @Override
@@ -78,7 +79,7 @@ public enum FarmCharmCrops implements ICropCompatProvider {
     }
 
     @Override
-    public net.minecraft.world.level.block.Block getBlock() {
+    public Block getBlock() {
         return block.get();
     }
 

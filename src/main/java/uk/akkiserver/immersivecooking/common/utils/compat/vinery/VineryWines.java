@@ -1,12 +1,12 @@
 package uk.akkiserver.immersivecooking.common.utils.compat.vinery;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.util.Lazy;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 
 public enum VineryWines {
@@ -66,8 +66,7 @@ public enum VineryWines {
     }
 
     private static ItemStack getItemStack(ResourceLocation location) {
-        Item item = ForgeRegistries.ITEMS.getValue(location);
-        return new ItemStack(item != null ? item : Items.AIR);
+        return new ItemStack(BuiltInRegistries.ITEM.get(location));
     }
 
     public ResourceLocation getId() {

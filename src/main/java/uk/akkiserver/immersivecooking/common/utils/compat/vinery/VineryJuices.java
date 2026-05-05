@@ -1,13 +1,12 @@
 package uk.akkiserver.immersivecooking.common.utils.compat.vinery;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.ICTags;
@@ -44,8 +43,7 @@ public enum VineryJuices {
     }
 
     private static ItemStack vineryItem(String path) {
-        var item = ForgeRegistries.ITEMS.getValue(ResourceLocation.fromNamespaceAndPath("vinery", path));
-        return new ItemStack(item != null ? item : Items.AIR);
+        return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("vinery", path)));
     }
 
     public String getName() {

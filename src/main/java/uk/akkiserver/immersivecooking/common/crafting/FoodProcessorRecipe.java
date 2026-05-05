@@ -7,7 +7,7 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;

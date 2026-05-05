@@ -4,9 +4,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
+import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 
@@ -14,10 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DefaultCookpotRecipeProvider implements IMultiblockRecipeProvider<CookpotRecipe> {
-    private static final Lazy<RecipeManager.CachedCheck<Container, CookpotRecipe>> cookpotRecipeLazySupplier = Lazy
-            .of(() -> RecipeManager.createCheck(ICRecipes.Types.COOKPOT.get()));
-
+public class DefaultCookpotRecipeProvider extends AbstractMultiblockRecipeProvider<CookpotRecipe> {
     @Override
     public boolean canProvide() {
         return true;
@@ -29,27 +30,12 @@ public class DefaultCookpotRecipeProvider implements IMultiblockRecipeProvider<C
     }
 
     @Override
-    public Optional<CookpotRecipe> findRecipe(Container container, Level level) {
-        return getAllRecipes(level).stream()
-                .filter(recipe -> recipe.matches(container, level))
-                .findFirst();
+    protected RecipeType<CookpotRecipe> getRecipeType() {
+        return ICRecipes.Types.COOKPOT.get();
     }
 
     @Override
-    public Optional<CookpotRecipe> findRecipe(ItemStack stack, Level level) {
-        return cookpotRecipeLazySupplier.get().getRecipeFor(new SimpleContainer(stack), level);
-    }
-
-    @Override
-    public CookpotRecipe byKey(ResourceLocation id, Level level) {
-        return (CookpotRecipe) level.getRecipeManager()
-                .byKey(id)
-                .filter(r -> r instanceof CookpotRecipe)
-                .orElse(null);
-    }
-
-    @Override
-    public List<CookpotRecipe> getAllRecipes(Level level) {
-        return new ArrayList<>(level.getRecipeManager().getAllRecipesFor(ICRecipes.Types.COOKPOT.get()));
+    protected Class<CookpotRecipe> getRecipeClass() {
+        return CookpotRecipe.class;
     }
 }

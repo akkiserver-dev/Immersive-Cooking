@@ -9,8 +9,8 @@
 package uk.akkiserver.immersivecooking.data.models;
 
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.client.model.generators.ModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 
 public abstract class TRSRItemModelProvider extends ModelProvider<TRSRModelBuilder> {

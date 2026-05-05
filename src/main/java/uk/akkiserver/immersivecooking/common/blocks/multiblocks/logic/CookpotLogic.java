@@ -9,7 +9,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
@@ -18,21 +18,20 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.wrapper.RangedWrapper;
+import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
@@ -81,22 +80,6 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position,
-            Capability<T> cap) {
-        final State state = ctx.getState();
-        if (cap == ForgeCapabilities.ENERGY && ENERGY_POS.equalsOrNullFace(position)) {
-            return state.energyCap.cast();
-        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (ITEM_INPUT.equals(position.posInMultiblock())) {
-                return state.itemInputCap.cast();
-            } else if (ITEM_OUTPUT_CAP.equals(position)) {
-                return state.itemOutputCap.cast();
-            }
-        }
-        return LazyOptional.empty();
-    }
-
-    @Override
     public void tickServer(IMultiblockContext<State> context) {
         final State state = context.getState();
         final Level level = context.getLevel().getRawLevel();
@@ -129,8 +112,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
             CookpotRecipe recipe = recipeOpt.get();
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipe,
-                        slotData[0]);
+                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(new RecipeHolder<>(), slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
                 if (state.processor.addProcessToQueue(process, level, false)) {
                     for (int i = 0; i < slotData[0].length; i++) {
@@ -367,7 +349,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
         }
 
         @Override
-        public void writeSaveNBT(CompoundTag nbt) {
+        public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             nbt.putBoolean("active", active);
             nbt.put("energy", energy.serializeNBT());
             nbt.put("inventory", inventory.serializeNBT());
@@ -375,27 +357,27 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
         }
 
         @Override
-        public void readSaveNBT(CompoundTag nbt) {
+        public void readSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             active = nbt.getBoolean("active");
-            energy.deserializeNBT(nbt.get("energy"));
-            inventory.deserializeNBT(nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+            energy.deserializeNBT(provider, nbt.get("energy"));
+            inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new, provider);
         }
 
         @Override
-        public void writeSyncNBT(CompoundTag nbt) {
+        public void writeSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             nbt.putBoolean("active", active);
-            nbt.put("energy", energy.serializeNBT());
-            nbt.put("inventory", inventory.serializeNBT());
-            nbt.put("processor", processor.toNBT());
+            nbt.put("energy", energy.serializeNBT(provider));
+            nbt.put("inventory", inventory.serializeNBT(provider));
+            nbt.put("processor", processor.toNBT(provider));
         }
 
         @Override
-        public void readSyncNBT(CompoundTag nbt) {
+        public void readSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             active = nbt.getBoolean("active");
-            energy.deserializeNBT(nbt.get("energy"));
-            inventory.deserializeNBT(nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+            energy.deserializeNBT(provider, nbt.get("energy"));
+            inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new, provider);
         }
 
         @Override
@@ -424,7 +406,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
                         .getQueue();
 
                 if (!queue.isEmpty()) {
-                    return queue.get(0);
+                    return queue.getFirst();
                 }
             }
             return null;

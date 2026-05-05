@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -36,12 +37,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.common.blocks.ICFurnaceLikeMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.ICMultiblockBase;
@@ -59,8 +59,9 @@ import static uk.akkiserver.immersivecooking.ImmersiveCooking.MODID;
 
 public final class ICRegisters {
     private static final List<DeferredRegister<?>> REGISTERS = new ArrayList<>();
+    private static final List<Consumer<IEventBus>> LAZY_MOD_BUS_REGISTRATION = new ArrayList<>();
 
-    public static <B> DeferredRegister<B> createRegister(@NotNull IForgeRegistry<B> reg) {
+    public static <B> DeferredRegister<B> createRegister(@NotNull Registry<B> reg) {
         DeferredRegister<B> register = DeferredRegister.create(reg, MODID);
         REGISTERS.add(register);
         return register;
@@ -72,22 +73,23 @@ public final class ICRegisters {
         return register;
     }
 
-    public static final DeferredRegister<Block> BLOCK_REGISTER = createRegister(ForgeRegistries.BLOCKS);
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTER = createRegister(ForgeRegistries.BLOCK_ENTITY_TYPES);
-    public static final DeferredRegister<Item> ITEM_REGISTER = createRegister(ForgeRegistries.ITEMS);
-    public static final DeferredRegister<Fluid> FLUID_REGISTER = createRegister(ForgeRegistries.FLUIDS);
-    public static final DeferredRegister<FluidType> FLUID_TYPE_REGISTER = createRegister(ForgeRegistries.Keys.FLUID_TYPES);
-    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = createRegister(ForgeRegistries.RECIPE_TYPES);
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = createRegister(ForgeRegistries.RECIPE_SERIALIZERS);
-    private static final DeferredRegister<SoundEvent> SOUND_EVENT = createRegister(ForgeRegistries.SOUND_EVENTS);
+    public static final DeferredRegister<Block> BLOCK_REGISTER = createRegister(BuiltInRegistries.BLOCK);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTER = createRegister(BuiltInRegistries.BLOCK_ENTITY_TYPE);
+    public static final DeferredRegister<Item> ITEM_REGISTER = createRegister(BuiltInRegistries.ITEM);
+    public static final DeferredRegister<Fluid> FLUID_REGISTER = createRegister(BuiltInRegistries.FLUID);
+    public static final DeferredRegister<FluidType> FLUID_TYPE_REGISTER = createRegister(NeoForgeRegistries.Keys.FLUID_TYPES);
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = createRegister(BuiltInRegistries.RECIPE_TYPE);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = createRegister(BuiltInRegistries.RECIPE_SERIALIZER);
+    private static final DeferredRegister<SoundEvent> SOUND_EVENT = createRegister(BuiltInRegistries.SOUND_EVENT);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = createRegister(Registries.CREATIVE_MODE_TAB);
-    public static final DeferredRegister<MenuType<?>> MENU_REGISTER = createRegister(ForgeRegistries.MENU_TYPES);
+    public static final DeferredRegister<MenuType<?>> MENU_REGISTER = createRegister(BuiltInRegistries.MENU);
 
     public static void init(IEventBus eventBus) {
         for (var reg : REGISTERS) {
             reg.register(eventBus);
             LOGGER.info("Registered {}", reg.getRegistryName());
         }
+        LAZY_MOD_BUS_REGISTRATION.forEach((registration) -> registration.accept(eventBus));
     }
 
     //
@@ -133,7 +135,7 @@ public final class ICRegisters {
             extras.accept(builder);
         }
 
-        return builder.build();
+        return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
     public static <S extends IMultiblockState> MultiblockRegistration<S> registerMultiblock(String name,
@@ -149,7 +151,7 @@ public final class ICRegisters {
             extras.accept(builder);
         }
 
-        return builder.build();
+        return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
     protected static class MultiblockBuilder<S extends IMultiblockState>
@@ -179,33 +181,33 @@ public final class ICRegisters {
         }
     }
 
-    public static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> blockConstructor) {
+    public static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> blockConstructor) {
         return registerBlock(name, blockConstructor, null);
     }
 
-    public static <T extends Block> RegistryObject<T> registerMultiblockBlock(String name,
+    public static <T extends Block> DeferredHolder<Block, T> registerMultiblockBlock(String name,
             Supplier<T> blockConstructor) {
         return registerBlock(name, blockConstructor, block -> new BlockItem(block, new Item.Properties()));
     }
 
-    public static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> blockConstructor,
+    public static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> blockConstructor,
             @Nullable Function<T, ? extends BlockItem> blockItem) {
-        RegistryObject<T> block = BLOCK_REGISTER.register(name, blockConstructor);
+        DeferredHolder<Block, T> block = BLOCK_REGISTER.register(name, blockConstructor);
         if (blockItem != null) {
             registerItem(name, () -> blockItem.apply(block.get()));
         }
         return block;
     }
 
-    public static <T extends Item> RegistryObject<T> registerItem(String name, Supplier<T> itemConstructor) {
+    public static <T extends Item> DeferredHolder<Item, T> registerItem(String name, Supplier<T> itemConstructor) {
         return ITEM_REGISTER.register(name, itemConstructor);
     }
 
-    public static <T extends Fluid> RegistryObject<T> registerFluid(String name, Supplier<T> fluidConstructor) {
+    public static <T extends Fluid> DeferredHolder<Fluid, T> registerFluid(String name, Supplier<T> fluidConstructor) {
         return FLUID_REGISTER.register(name, fluidConstructor);
     }
 
-    public static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> registerBlockEntity(String name,
+    public static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> registerBlockEntity(String name,
             BlockEntityType.BlockEntitySupplier<T> factory, Supplier<? extends Block> valid) {
         return BLOCK_ENTITY_TYPE_REGISTER.register(name,
                 () -> new BlockEntityType<>(factory, ImmutableSet.of(valid.get()), null));
@@ -218,21 +220,21 @@ public final class ICRegisters {
                         && !state.getValue(IEProperties.MULTIBLOCKSLAVE));
     }
 
-    public static <T extends RecipeSerializer<?>> RegistryObject<T> registerSerializer(String name,
+    public static <T extends RecipeSerializer<?>> DeferredHolder<RecipeSerializer<?>, T> registerSerializer(String name,
             Supplier<T> serializer) {
         return RECIPE_SERIALIZERS.register(name, serializer);
     }
 
-    public static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenu(String name,
+    public static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenu(String name,
             Supplier<MenuType<T>> factory) {
         return MENU_REGISTER.register(name, factory);
     }
 
-    public static RegistryObject<SoundEvent> registerSoundEvent(String name) {
+    public static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String name) {
         return SOUND_EVENT.register(name, () -> SoundEvent.createVariableRangeEvent(Resource.mod(name)));
     }
 
-    public static RegistryObject<CreativeModeTab> registerCreativeTab(String name, Supplier<CreativeModeTab> tab) {
+    public static DeferredHolder<CreativeModeTab, CreativeModeTab> registerCreativeTab(String name, Supplier<CreativeModeTab> tab) {
         return CREATIVE_TABS.register(name, tab);
     }
 }
