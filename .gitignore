@@ -122,3 +122,4 @@ src_mods/
 .agents/
 
 build.txt
+src/generated/resources/.cache/

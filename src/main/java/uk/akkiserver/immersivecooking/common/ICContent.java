@@ -5,12 +5,17 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.SoundActions;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -22,13 +27,18 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLog
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodProcessorLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
+import uk.akkiserver.immersivecooking.common.crafting.providers.fluid.BnCFluidRelationProvider;
+import uk.akkiserver.immersivecooking.common.fluids.ICFluid;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodFermenterMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodProcessorMenu;
 import uk.akkiserver.immersivecooking.common.gui.GrillOvenMenu;
+import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
+import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import java.util.Collection;
+import java.util.List;
 
 import static uk.akkiserver.immersivecooking.ImmersiveCooking.MODID;
 
@@ -139,19 +149,39 @@ public final class ICContent {
         public static final ICFluids.FluidEntry WHITE_JUNGLE_GRAPE_JUICE = ICFluids.FluidEntry.make("white_jungle_grapejuice", 0xFF70812D);
         public static final ICFluids.FluidEntry WHITE_SAVANNA_GRAPE_JUICE = ICFluids.FluidEntry.make("white_savanna_grapejuice", 0xFF70812D);
 
+        // Utilities
+        public static final ICFluids.FluidEntry HONEY = ICFluids.FluidEntry.make(
+                "honey", 0,
+                Resource.mc("block/honey_block_top"),
+                Resource.mc("block/honey_block_top"),
+                ICFluid::new, ICFluid.Flowing::new,
+                p -> p.canSwim(false).density(3000).viscosity(6000),
+                ImmutableList.of(),
+                0xBFFFFFFF,
+                Resource.mc("textures/block/honey_block_top.png"),
+                new Vector3f(1.0f, 0.8f, 0.0f),
+                0,
+                24
+        );
+
         public static void forceClassLoad() {
         }
     }
 
     public static void init() {
+        /* Basic Contents */
         Multiblock.forceClassLoad();
         MenuTypes.forceClassLoad();
         Tabs.forceClassLoad();
         Sounds.forceClassLoad();
         Fluids.forceClassLoad();
+        /* Multiblocks */
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
-        MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
+        //Food processor still wip, so temporary removing for release
+        //MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
+        /* FluidRelationProvider */
+        FluidUtils.registerFluidRelationProvider(new BnCFluidRelationProvider());
     }
 }

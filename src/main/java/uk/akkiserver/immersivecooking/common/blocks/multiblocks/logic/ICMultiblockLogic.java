@@ -1,7 +1,5 @@
 package uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import net.minecraft.resources.ResourceLocation;
@@ -9,12 +7,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.IItemHandler;
-import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.IFluidContainingMultiblockRecipeProvider;
-import uk.akkiserver.immersivecooking.common.crafting.providers.IMultiblockRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.IFluidContainingMultiblockRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.IMultiblockRecipeProvider;
 
 import java.util.*;
 

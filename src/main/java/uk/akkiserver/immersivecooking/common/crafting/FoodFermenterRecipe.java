@@ -104,7 +104,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
 
     @Override
     public int getMultipleProcessTicks() {
-        return 0;
+        return -1;
     }
 
     @Override

@@ -152,7 +152,7 @@ public final class ICRegisters {
         return builder.build();
     }
 
-    protected static class MultiblockBuilder<S extends IMultiblockState>
+    static class MultiblockBuilder<S extends IMultiblockState>
             extends MultiblockRegistrationBuilder<S, MultiblockBuilder<S>> {
         public MultiblockBuilder(IMultiblockLogic<S> logic, String name) {
             super(logic, Resource.mod(name));

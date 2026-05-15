@@ -25,7 +25,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic.State;
-import uk.akkiserver.immersivecooking.common.crafting.providers.SmokingRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.SmokingRecipeProvider;
 
 import java.util.List;
 import java.util.function.Consumer;

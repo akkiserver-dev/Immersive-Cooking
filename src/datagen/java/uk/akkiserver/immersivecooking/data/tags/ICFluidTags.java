@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICTags;
@@ -22,9 +23,10 @@ public class ICFluidTags extends FluidTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.@NotNull Provider provider) {
         for (ICFluids.FluidEntry entry : ICFluids.ALL_ENTRIES) {
             tag(TagKey.create(Registries.FLUID, entry.type().getId())).add(entry.getStill(), entry.getFlowing());
+            tag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("forge", entry.type().getId().getPath()))).add(entry.getStill(), entry.getFlowing());
         }
 
         for (VineryJuices juice : VineryJuices.values()) {

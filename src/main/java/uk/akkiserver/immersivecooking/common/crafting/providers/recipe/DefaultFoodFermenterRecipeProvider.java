@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.common.crafting.providers;
+package uk.akkiserver.immersivecooking.common.crafting.providers.recipe;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -56,7 +56,6 @@ public class DefaultFoodFermenterRecipeProvider implements IFluidContainingMulti
 
     @Override
     public Optional<FoodFermenterRecipe> findRecipe(Container container, FluidStack fluid, Level level) {
-        // キャッシュチェック（ここもログ出力）
         if (lastRecipe != null && lastRecipe.matches(container, level) && lastRecipe.fluidInput != null) {
             if (lastRecipe.fluidInput.test(fluid) && fluid.getAmount() >= lastRecipe.fluidInput.getAmount()) {
                 return Optional.of(lastRecipe);
@@ -64,38 +63,20 @@ public class DefaultFoodFermenterRecipeProvider implements IFluidContainingMulti
         }
 
         List<FoodFermenterRecipe> allRecipes = getAllRecipes(level);
-        // レシピがロードされているか確認
-        if (allRecipes.isEmpty()) {
-            System.out.println("[DEBUG] No FoodFermenter recipes found in registry!");
-        }
 
         for (FoodFermenterRecipe recipe : allRecipes) {
-            // 1. アイテム判定
             boolean itemMatch = recipe.matches(container, level);
 
-            // 2. 流体定義の有無
             boolean hasFluidReq = recipe.fluidInput != null;
 
-            // アイテムが合っている場合のみ詳細ログを出す
             if (itemMatch) {
-                System.out.println("[DEBUG] Checking Recipe: " + recipe.getId());
-                System.out.println("  - Item Match: TRUE");
-                System.out.println("  - Has Fluid Input: " + hasFluidReq);
-
                 if (hasFluidReq) {
                     boolean typeMatch = recipe.fluidInput.test(fluid);
                     boolean amountMatch = fluid.getAmount() >= recipe.fluidInput.getAmount();
-
-                    System.out.println("  - Fluid in Tank: " + fluid.getDisplayName().getString() + " (" + fluid.getAmount() + "mb)");
-                    System.out.println("  - Required Tag/Fluid: " + (typeMatch ? "MATCH" : "MISMATCH"));
-                    System.out.println("  - Required Amount: " + recipe.fluidInput.getAmount() + "mb -> " + (amountMatch ? "OK" : "NOT ENOUGH"));
-
                     if (typeMatch && amountMatch) {
                         lastRecipe = recipe;
                         return Optional.of(recipe);
                     }
-                } else {
-                    System.out.println("  - Skipped: This method searches for fluid recipes, but recipe has no fluid input.");
                 }
             }
         }

@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.builders.BottlingMachineReci
 import blusunrize.immersiveengineering.api.crafting.builders.ClocheRecipeBuilder;
 import blusunrize.immersiveengineering.api.crafting.builders.CrusherRecipeBuilder;
 import blusunrize.immersiveengineering.api.crafting.builders.SqueezerRecipeBuilder;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -12,11 +13,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
+import net.minecraftforge.fluids.FluidType;
 import net.satisfy.vinery.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
+import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.ICTags;
 import uk.akkiserver.immersivecooking.common.crafting.builders.FoodFermenterRecipeBuilder;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
@@ -25,6 +29,12 @@ import uk.akkiserver.immersivecooking.common.utils.compat.farmcharm.FarmCharmCro
 import uk.akkiserver.immersivecooking.common.utils.compat.vinery.VineryCrops;
 import uk.akkiserver.immersivecooking.common.utils.compat.vinery.VineryJuices;
 import uk.akkiserver.immersivecooking.common.utils.compat.vinery.VineryWines;
+import umpaz.brewinandchewin.common.crafting.KegFermentingRecipe;
+import umpaz.brewinandchewin.common.crafting.KegPouringRecipe;
+import umpaz.brewinandchewin.common.registry.BnCRecipeTypes;
+import umpaz.brewinandchewin.data.BnCRecipes;
+import umpaz.brewinandchewin.integration.jei.BnCJEIRecipeTypes;
+import umpaz.brewinandchewin.integration.jei.BnCJEIRecipes;
 import vectorwing.farmersdelight.common.registry.ModBlocks;
 
 import java.util.*;
@@ -115,21 +125,29 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
     }
 
     private void buildBottlingRecipes(Consumer<FinishedRecipe> writer) {
-        for (VineryJuices juice : VineryJuices.values()) {
-            BottlingMachineRecipeBuilder.builder(juice.getFluidEntry().getBucket())
-                    .addCondition(new ModLoadedCondition("vinery"))
-                    .addFluidTag(juice.getFluidTag(), 1000)
-                    .addInput(Items.BUCKET)
-                    .setEnergy(6400)
-                    .build(writer, vinery("bottling/" + juice.getName() + "_bucket"));
+        int quarter_bucket = FluidType.BUCKET_VOLUME / 4;
 
+        for (VineryJuices juice : VineryJuices.values()) {
             BottlingMachineRecipeBuilder.builder(juice.getItem())
                     .addCondition(new ModLoadedCondition("vinery"))
-                    .addFluidTag(juice.getFluidTag(), 250)
+                    .addFluidTag(juice.getFluidTag(), quarter_bucket)
                     .addInput(ObjectRegistry.WINE_BOTTLE.get())
                     .setEnergy(6400)
                     .build(writer, vinery("bottling/" + juice.getName()));
         }
+
+        BottlingMachineRecipeBuilder.builder(Items.HONEY_BOTTLE)
+                .addFluidTag(ICTags.Fluids.HONEY, quarter_bucket)
+                .addInput(Items.GLASS_BOTTLE)
+                .setEnergy(6400)
+                .build(writer, Resource.mod("bottling/honey_bottle"));
+
+        BottlingMachineRecipeBuilder.builder(new ItemStack(Items.HONEY_BLOCK, 4))
+                .addResult(IEItems.Molds.MOLD_PACKING_4)
+                .addInput(IEItems.Molds.MOLD_PACKING_4)
+                .addFluidTag(ICTags.Fluids.HONEY, FluidType.BUCKET_VOLUME * 4)
+                .setEnergy(6400)
+                .build(writer, Resource.mod("bottling/honey_block"));
     }
 
     private ResourceLocation fd(String id) {

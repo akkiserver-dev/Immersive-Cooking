@@ -55,6 +55,7 @@ public final class ICTags {
         public static final TagKey<Fluid> WHITE_TAIGA_GRAPE_JUICE = create(forge("white_taiga_grapejuice"));
         public static final TagKey<Fluid> WHITE_JUNGLE_GRAPE_JUICE = create(forge("white_jungle_grapejuice"));
         public static final TagKey<Fluid> WHITE_SAVANNA_GRAPE_JUICE = create(forge("white_savanna_grapejuice"));
+        public static final TagKey<Fluid> HONEY = create(forge("honey"));
 
         public static TagKey<Fluid> create(ResourceLocation name) {
             TagKey<Fluid> tag = FluidTags.create(name);

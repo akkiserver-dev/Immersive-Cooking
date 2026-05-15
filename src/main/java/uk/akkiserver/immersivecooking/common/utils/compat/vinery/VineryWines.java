@@ -8,6 +8,11 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
+import uk.akkiserver.immersivecooking.common.utils.StackUtils;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public enum VineryWines {
     APPLE_CIDER("apple_cider", VineryJuices.APPLE, "minecraft:sugar"),
@@ -34,8 +39,7 @@ public enum VineryWines {
     STAL_WINE("stal_wine", VineryJuices.RED_JUNGLE, "minecraft:cocoa_beans", "minecraft:sugar"),
     STRAD_WINE("strad_wine", VineryJuices.RED, "minecraft:cocoa_beans", "minecraft:sugar"),
     VILLAGERS_FRIGHT("villagers_fright", VineryJuices.WHITE_JUNGLE, "minecraft:arrow"),
-    BOTTLE_MOJANG_NOIR("bottle_mojang_noir", VineryJuices.RED, "minecraft:honey_bottle", "vinery:cherry",
-            "vinery:red_wine"),
+    BOTTLE_MOJANG_NOIR("bottle_mojang_noir", VineryJuices.RED, "minecraft:honey_bottle", "vinery:cherry", "vinery:red_wine"),
     BOLVAR_WINE("bolvar_wine", VineryJuices.RED_TAIGA, "minecraft:honey_bottle", "vinery:cherry");
 
     private final Lazy<ItemStack> wineItem;
@@ -46,28 +50,14 @@ public enum VineryWines {
 
     VineryWines(String winePath, VineryJuices juice, String... ingredients) {
         this.wineId = ResourceLocation.fromNamespaceAndPath("vinery", winePath);
-        this.wineItem = Lazy.of(() -> getItemStack(this.wineId));
+        this.wineItem = Lazy.of(() -> StackUtils.getSafeItemStack(this.wineId));
         this.wineJuiceIngredient = juice.getFluidEntry();
-        this.wineIngredient = Lazy.of(() -> {
-            NonNullList<ItemStack> list = NonNullList.create();
-            for (String ingredient : ingredients) {
-                String[] parts = ingredient.split(":", 2);
-                ResourceLocation loc;
-                if (parts.length > 1) {
-                    loc = ResourceLocation.fromNamespaceAndPath(parts[0], parts[1]);
-                } else {
-                    loc = ResourceLocation.fromNamespaceAndPath("minecraft", parts[0]);
-                }
-                list.add(getItemStack(loc));
-            }
-            return list;
-        });
+        this.wineIngredient = Lazy.of(() ->
+                Arrays.stream(ingredients)
+                        .map(ResourceLocation::tryParse)
+                        .map(StackUtils::getSafeItemStack)
+                        .collect(Collectors.toCollection(NonNullList::create)));
         this.juice = juice;
-    }
-
-    private static ItemStack getItemStack(ResourceLocation location) {
-        Item item = ForgeRegistries.ITEMS.getValue(location);
-        return new ItemStack(item != null ? item : Items.AIR);
     }
 
     public ResourceLocation getId() {

@@ -150,10 +150,13 @@ dependencies {
     // Farmersdelight
     implementation fg.deobf("curse.maven:farmers-delight-398521:7596353")
 
-    // let's do
+    // Let's Do
     implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:lets-do-vinery-704465:6854288")
     implementation fg.deobf("curse.maven:lets-do-farm-charm-1038103:7088013")
+
+    // Brewin' And Chewin'
+    implementation fg.deobf("curse.maven:brewin-and-chewin-637808:6237884")
 }
 
 
