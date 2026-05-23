@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/akkiserver-dev/Immersive-Cooking/refs/heads/master/src/main/resources/iclogo.png" width="40%" alt="LOGO">
+<img src="src/main/resources/iclogo.png" width="40%" alt="LOGO">
 
 # Immersive Cooking
 **An Immersive Engineering addon adds multiblock for Farmer's Delight/Let's Do Series Automation**
