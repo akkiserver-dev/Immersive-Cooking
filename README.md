@@ -7,8 +7,8 @@
 ### Multiblocks
 - Industrial Cookpot
   - Automates Farmer's Delight / Farm & Charms Cooking Pot
-- Grill Oven
-  - Multithreaded Smoker
+- Food Fermenter
+  - Automates Vinery
 
 ## Planned Features/To Do
 - [x] Industrial Food Fermenter (for Vinery, and some)
@@ -23,4 +23,4 @@
 - Feature Requests
   - Open an issue to discuss your ideas.
 - Pull Requests
-  - Not currently accepting
+  - We are currently not accepting pull requests other than translations.
