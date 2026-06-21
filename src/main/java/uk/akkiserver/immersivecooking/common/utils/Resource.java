@@ -5,6 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 
 public final class Resource {
+    public static ResourceLocation wrapFor(ResourceLocation loc) {
+        return ResourceLocation.fromNamespaceAndPath(ImmersiveCooking.MODID, "compat/" + loc.getNamespace() + "/" + loc.getPath());
+    }
+
     public static ResourceLocation mod(String id) {
         return ResourceLocation.fromNamespaceAndPath(ImmersiveCooking.MODID, id);
     }

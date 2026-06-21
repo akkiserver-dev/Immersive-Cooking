@@ -88,7 +88,7 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
                 ? facRecipe.getContainerItem()
                 : ItemStack.EMPTY;
 
-        ResourceLocation id = Resource.mod(facRecipe.getId().getPath());
+        ResourceLocation id = Resource.wrapFor(facRecipe.getId());
 
         return new CookpotRecipe(
                 id,

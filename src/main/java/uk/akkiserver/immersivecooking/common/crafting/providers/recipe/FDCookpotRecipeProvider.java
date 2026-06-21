@@ -87,7 +87,7 @@ public class FDCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
                 .map(IngredientWithSize::new)
                 .collect(Collectors.toCollection(NonNullList::create));
 
-        ResourceLocation id = Resource.mod(fdRecipe.getId().getPath());
+        ResourceLocation id = Resource.wrapFor(fdRecipe.getId());
 
         return new CookpotRecipe(
                 id,

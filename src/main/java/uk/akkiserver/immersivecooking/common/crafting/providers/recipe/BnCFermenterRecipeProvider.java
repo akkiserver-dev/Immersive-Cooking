@@ -127,7 +127,7 @@ public class BnCFermenterRecipeProvider implements IFluidContainingMultiblockRec
 
         ItemStack output = bncRecipe.getResultItem(level.registryAccess());
 
-        ResourceLocation id = Resource.mod(bncRecipe.getId().getPath());
+        ResourceLocation id = Resource.wrapFor(bncRecipe.getId());
 
         FluidTagInput fluidTagInput = null;
         FluidStack bncFluid = bncRecipe.getFluidIngredient();
