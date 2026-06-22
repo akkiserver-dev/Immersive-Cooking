@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 import uk.akkiserver.immersivecooking.common.ICRegisters;
+import uk.akkiserver.immersivecooking.common.compat.Compat;
 
 @Mod(ImmersiveCooking.MODID)
 public class ImmersiveCooking {
@@ -18,5 +19,6 @@ public class ImmersiveCooking {
         ICRecipes.init();
         ICRegisters.init(bus);
         ICContent.init();
+        Compat.init();
     }
 }

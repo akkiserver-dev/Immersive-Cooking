@@ -1,34 +1,131 @@
 package uk.akkiserver.immersivecooking.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
+import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
-import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;
 
-import java.util.List;
+import java.util.*;
 
 public class FoodProcessorRecipe extends MultiblockRecipe {
+    public static final Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> RECIPES = new HashMap<>();
+    public static final List<IRecipeConverter<?, FoodProcessorRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
+
     public NonNullList<IngredientWithSize> inputs; // 8 slots
     @Nullable
-    public final FluidTagInput fluidInput;
+    public final SizedFluidIngredient fluidInput;
     public final ItemStack result;
 
-    public FoodProcessorRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs,
-                               @Nullable FluidTagInput fluidInput,
+    public FoodProcessorRecipe(NonNullList<IngredientWithSize> inputs,
+                               @Nullable SizedFluidIngredient fluidInput,
                                ItemStack result, int time, int energy) {
-        super(Lazy.of(() -> result), ICRecipes.Types.FOOD_PROCESSOR, id);
+        super(
+                TagOutput.EMPTY,
+                ICRecipes.Types.FOOD_PROCESSOR,
+                time,
+                energy,
+                ICRecipes.NO_MULTIPLIER
+        );
         this.fluidInput = fluidInput;
         this.result = result;
         this.inputs = inputs;
+    }
 
-        ((IMultiblockRecipeAccessor) this).invokeSetTimeAndEnergy(time, energy);
+    public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> recipes) {
+        Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> newRecipes = new HashMap<>();
+
+        for (IRecipeConverter<?, FoodProcessorRecipe> converter : RECIPE_CONVERTERS) {
+            for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
+                tryConvert(converter, holder, recipeManager, provider, newRecipes);
+            }
+        }
+
+        RECIPES.clear();
+        RECIPES.putAll(newRecipes);
+    }
+
+    @Override
+    public boolean matches(RecipeInput inv, Level level) {
+        List<ItemStack> inventoryCopy = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty()) {
+                inventoryCopy.add(stack.copy());
+            }
+        }
+
+        for (IngredientWithSize required : this.inputs) {
+            int amountNeeded = required.getCount();
+
+            Iterator<ItemStack> it = inventoryCopy.iterator();
+            while (it.hasNext()) {
+                ItemStack stack = it.next();
+                if (required.test(stack)) {
+                    int taken = Math.min(amountNeeded, stack.getCount());
+                    amountNeeded -= taken;
+                    stack.shrink(taken);
+                    if (stack.isEmpty()) it.remove();
+                    if (amountNeeded <= 0) break;
+                }
+            }
+
+            if (amountNeeded > 0) return false;
+        }
+        return true;
+    }
+
+    public static Optional<RecipeHolder<FoodProcessorRecipe>> findRecipe(RecipeInput input, Level level) {
+        return RECIPES.values().stream()
+                .filter(h -> h.value().fluidInput == null)
+                .filter(h -> h.value().matches(input, level))
+                .findFirst();
+    }
+
+    public static Optional<RecipeHolder<FoodProcessorRecipe>> findRecipe(RecipeInput input, FluidStack fluid, Level level) {
+        return RECIPES.values().stream()
+                .filter(h -> h.value().fluidInput != null)
+                .filter(h -> h.value().matches(input, level))
+                .filter(h -> {
+                    SizedFluidIngredient fi = h.value().fluidInput;
+                    return fi.ingredient().test(fluid) && fluid.getAmount() >= fi.amount();
+                })
+                .findFirst();
+    }
+
+    public static Optional<RecipeHolder<FoodProcessorRecipe>> findRecipeByOutput(ItemStack output) {
+        return RECIPES.values().stream()
+                .filter(h -> ItemStack.isSameItem(h.value().result, output))
+                .findFirst();
+    }
+
+    private static <I extends Recipe<?>> void tryConvert(
+            IRecipeConverter<I, FoodProcessorRecipe> converter,
+            RecipeHolder<?> holder,
+            RecipeManager recipeManager,
+            HolderLookup.Provider provider,
+            Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> out
+    ) {
+        if (holder.value().getType() != converter.sourceType()) return;
+
+        @SuppressWarnings("unchecked")
+        RecipeHolder<I> cast = (RecipeHolder<I>) holder;
+
+        converter.convert(cast, recipeManager, provider)
+                .ifPresent(r -> out.put(r.id(), r));
     }
 
     @Override
@@ -47,8 +144,20 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
     }
 
     @Override
-    public List<FluidTagInput> getFluidInputs() {
+    public List<SizedFluidIngredient> getFluidInputs() {
         return fluidInput == null ? List.of() : List.of(fluidInput);
+    }
+
+    public NonNullList<IngredientWithSize> getInputs() {
+        return inputs;
+    }
+
+    public @Nullable SizedFluidIngredient getFluidInput() {
+        return fluidInput;
+    }
+
+    public ItemStack getResult() {
+        return result;
     }
 
     @Override

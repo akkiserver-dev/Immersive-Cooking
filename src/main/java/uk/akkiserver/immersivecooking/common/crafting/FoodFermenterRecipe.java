@@ -3,25 +3,27 @@ package uk.akkiserver.immersivecooking.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
+import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
-import uk.akkiserver.immersivecooking.mixin.IMultiblockRecipeAccessor;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class FoodFermenterRecipe extends MultiblockRecipe {
-    public static final CachedRecipeList<FoodFermenterRecipe> RECIPES = new CachedRecipeList<>(
-            ICRecipes.Types.FOOD_FERMENTER);
+    public static final Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> RECIPES = new HashMap<>();
+    public static final List<IRecipeConverter<?, FoodFermenterRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
 
     public NonNullList<IngredientWithSize> inputs; // 6 slots
     @Nullable
@@ -29,20 +31,85 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     public final ItemStack container;
     public final ItemStack result;
 
-    public FoodFermenterRecipe(ResourceLocation id, NonNullList<IngredientWithSize> inputs,
+    public FoodFermenterRecipe(NonNullList<IngredientWithSize> inputs,
                                @Nullable SizedFluidIngredient fluidInput,
                                ItemStack result, ItemStack container, int time, int energy) {
-        super(Lazy.of(() -> result), ICRecipes.Types.FOOD_FERMENTER, id);
+        super(
+                TagOutput.EMPTY,
+                ICRecipes.Types.FOOD_FERMENTER,
+                time,
+                energy,
+                ICRecipes.NO_MULTIPLIER
+        );
         this.fluidInput = fluidInput;
         this.container = container;
         this.result = result;
         this.inputs = inputs;
+    }
 
-        ((IMultiblockRecipeAccessor) this).invokeSetTimeAndEnergy(time, energy);
+    public static Optional<RecipeHolder<FoodFermenterRecipe>> findRecipe(RecipeInput input, Level level) {
+        return RECIPES.values().stream()
+                .filter(h -> h.value().fluidInput == null)
+                .filter(h -> h.value().matches(input, level))
+                .findFirst();
+    }
+
+    public static Optional<RecipeHolder<FoodFermenterRecipe>> findRecipe(RecipeInput input, FluidStack fluid, Level level) {
+        return RECIPES.values().stream()
+                .filter(h -> h.value().fluidInput != null)
+                .filter(h -> h.value().matches(input, level))
+                .filter(h -> {
+                    SizedFluidIngredient fi = h.value().fluidInput;
+                    return fi.ingredient().test(fluid) && fluid.getAmount() >= fi.amount();
+                })
+                .findFirst();
+    }
+
+    public static Optional<RecipeHolder<FoodFermenterRecipe>> findRecipeByOutput(ItemStack output) {
+        return RECIPES.values().stream()
+                .filter(h -> ItemStack.isSameItem(h.value().result, output))
+                .findFirst();
+    }
+
+    public static Optional<RecipeHolder<FoodFermenterRecipe>> findRecipeByContainer(ItemStack container, FluidStack fluid) {
+        return RECIPES.values().stream()
+                .filter(h -> ItemStack.isSameItem(h.value().container, container))
+                .filter(h -> h.value().fluidInput != null)
+                .filter(h -> h.value().fluidInput.ingredient().test(fluid))
+                .findFirst();
+    }
+
+    public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> recipes) {
+        Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> newRecipes = new HashMap<>();
+
+        for (IRecipeConverter<?, FoodFermenterRecipe> converter : RECIPE_CONVERTERS) {
+            for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
+                tryConvert(converter, holder, recipeManager, provider, newRecipes);
+            }
+        }
+
+        RECIPES.clear();
+        RECIPES.putAll(newRecipes);
+    }
+
+    private static <I extends Recipe<?>> void tryConvert(
+            IRecipeConverter<I, FoodFermenterRecipe> converter,
+            RecipeHolder<?> holder,
+            RecipeManager recipeManager,
+            HolderLookup.Provider provider,
+            Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> out
+    ) {
+        if (holder.value().getType() != converter.sourceType()) return;
+
+        @SuppressWarnings("unchecked")
+        RecipeHolder<I> cast = (RecipeHolder<I>) holder;
+
+        converter.convert(cast, recipeManager, provider)
+                .ifPresent(r -> out.put(r.id(), r));
     }
 
     @Override
-    public boolean matches(Container inv, Level level) {
+    public boolean matches(RecipeInput inv, Level level) {
         List<ItemStack> inventoryCopy = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             ItemStack stack = inv.getItem(i);
@@ -84,7 +151,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
 
     @Override
     protected IERecipeSerializer<?> getIESerializer() {
-        return ICRecipes.Serializers.FOOD_FERMENTER;
+        return ICRecipes.Serializers.FOOD_FERMENTER.get();
     }
 
     @Override
@@ -97,9 +164,25 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
         return inputs;
     }
 
+    public NonNullList<IngredientWithSize> getInputs() {
+        return inputs;
+    }
+
     @Override
     public List<SizedFluidIngredient> getFluidInputs() {
         return fluidInput == null ? List.of() : List.of(fluidInput);
+    }
+
+    public @Nullable SizedFluidIngredient getFluidInput() {
+        return fluidInput;
+    }
+
+    public ItemStack getResult() {
+        return result;
+    }
+
+    public ItemStack getContainer() {
+        return container;
     }
 
     @Override

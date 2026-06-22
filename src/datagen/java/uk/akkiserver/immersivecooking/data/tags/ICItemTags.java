@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
-import uk.akkiserver.immersivecooking.common.utils.compat.vinery.VineryJuices;
+import uk.akkiserver.immersivecooking.common.compat.vinery.VineryJuices;
 
 import java.util.concurrent.CompletableFuture;
 

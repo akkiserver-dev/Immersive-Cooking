@@ -1,91 +1,35 @@
 package uk.akkiserver.immersivecooking.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.utils.codec.IEDualCodecs;
+import malte0811.dualcodecs.DualCodecs;
+import malte0811.dualcodecs.DualCompositeMapCodecs;
+import malte0811.dualcodecs.DualMapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.common.crafting.conditions.ICondition.IContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import uk.akkiserver.immersivecooking.api.codec.ICDualCodecs;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 
 public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermenterRecipe> {
+    public static final DualMapCodec<RegistryFriendlyByteBuf, FoodFermenterRecipe> CODEC = DualCompositeMapCodecs.composite(
+            ICDualCodecs.NONNULL_INGREDIENTS_SIZED.fieldOf("inputs"), FoodFermenterRecipe::getInputs,
+            IEDualCodecs.SIZED_FLUID_INGREDIENT.fieldOf("fluid"), FoodFermenterRecipe::getFluidInput,
+            DualCodecs.ITEM_STACK.fieldOf("result"), FoodFermenterRecipe::getResult,
+            DualCodecs.ITEM_STACK.fieldOf("container"), FoodFermenterRecipe::getContainer,
+            DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,
+            DualCodecs.INT.fieldOf("time"), MultiblockRecipe::getBaseTime,
+            FoodFermenterRecipe::new
+    );
+
+    @Override
+    protected DualMapCodec<RegistryFriendlyByteBuf, FoodFermenterRecipe> codecs() {
+        return CODEC;
+    }
+
     @Override
     public ItemStack getIcon() {
         return ICContent.Multiblock.FOOD_FERMENTER.iconStack();
-    }
-
-    @Override
-    public FoodFermenterRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context) {
-        JsonArray ingredientArray = GsonHelper.getAsJsonArray(json, "inputs");
-        NonNullList<IngredientWithSize> inputs = NonNullList.create();
-        for (JsonElement e : ingredientArray) {
-            inputs.add(IngredientWithSize.deserialize(e));
-        }
-
-        FluidTagInput fluidInput = null;
-        if (json.has("fluid")) {
-            fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
-        }
-
-        ItemStack output = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
-        ItemStack container = json.has("container") ?
-                CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "container"), true) :
-                ItemStack.EMPTY;
-
-        int time = GsonHelper.getAsInt(json, "time", 200);
-        int energy = GsonHelper.getAsInt(json, "energy", 2000);
-
-        return new FoodFermenterRecipe(recipeId, inputs, fluidInput, output, container, time, energy);
-    }
-
-    @Override
-    public @Nullable FoodFermenterRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        int size = buffer.readVarInt();
-        NonNullList<IngredientWithSize> inputs = NonNullList.withSize(size, IngredientWithSize.of(ItemStack.EMPTY));
-        for (int i = 0; i < size; i++) {
-            inputs.set(i, IngredientWithSize.read(buffer));
-        }
-
-        FluidTagInput fluidInput = null;
-        if (buffer.readBoolean()) {
-            fluidInput = FluidTagInput.read(buffer);
-        }
-
-        ItemStack output = buffer.readItem();
-        ItemStack container = buffer.readItem();
-
-        int time = buffer.readVarInt();
-        int energy = buffer.readVarInt();
-
-        return new FoodFermenterRecipe(recipeId, inputs, fluidInput, output, container, time, energy);
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buffer, FoodFermenterRecipe recipe) {
-        buffer.writeVarInt(recipe.inputs.size());
-        for (IngredientWithSize i : recipe.inputs) {
-            i.write(buffer);
-        }
-
-        buffer.writeBoolean(recipe.fluidInput != null);
-        if (recipe.fluidInput != null) {
-            recipe.fluidInput.write(buffer);
-        }
-
-        buffer.writeItem(recipe.result);
-        buffer.writeItem(recipe.container);
-
-        buffer.writeVarInt(recipe.getTotalProcessTime());
-        buffer.writeVarInt(recipe.getTotalProcessEnergy());
     }
 }

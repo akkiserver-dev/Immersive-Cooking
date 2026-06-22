@@ -2,7 +2,7 @@ package uk.akkiserver.immersivecooking.common.gui;
 
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 
 public class ICFluidSlot extends IESlot.NewFluidContainer {

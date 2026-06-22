@@ -8,11 +8,11 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -24,7 +24,7 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLog
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodProcessorLogic;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
-import uk.akkiserver.immersivecooking.common.crafting.providers.fluid.BnCFluidRelationProvider;
+import uk.akkiserver.immersivecooking.common.compat.bnc.BnCFluidRelationProvider;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluid;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
@@ -35,7 +35,6 @@ import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import java.util.Collection;
-import java.util.List;
 
 import static uk.akkiserver.immersivecooking.ImmersiveCooking.MODID;
 

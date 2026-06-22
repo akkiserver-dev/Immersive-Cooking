@@ -1,12 +1,21 @@
 package uk.akkiserver.immersivecooking.common.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 
 public final class Resource {
     public static ResourceLocation wrapFor(ResourceLocation loc) {
         return ResourceLocation.fromNamespaceAndPath(ImmersiveCooking.MODID, "compat/" + loc.getNamespace() + "/" + loc.getPath());
+    }
+
+    public static ModelResourceLocation model(ResourceLocation loc) {
+        return ModelResourceLocation.standalone(loc);
+    }
+
+    public static ModelResourceLocation model(String id) {
+        return ModelResourceLocation.standalone(mod(id));
     }
 
     public static ResourceLocation mod(String id) {

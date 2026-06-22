@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerT
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -36,15 +38,13 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.*;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
-        implements IServerTickableComponent<State>, IClientTickableComponent<State> {
+public class CookpotLogic implements IServerTickableComponent<State>, IClientTickableComponent<State>, IMultiblockLogic<State> {
     public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
     public static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
     public static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
@@ -57,17 +57,6 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
     public static final int OUTPUT_SLOT = 8;
     public static final int NUM_SLOTS = 9;
     public static final int ENERGY_CAPACITY = 16000;
-
-    public CookpotLogic() {
-        /* Default Registry */
-        this.recipeProviders.add(new DefaultCookpotRecipeProvider());
-        /* Farmer's Delight */
-        this.recipeProviders.add(new FDCookpotRecipeProvider());
-        /* Farm & Charm */
-        this.recipeProviders.add(new FCCookpotRecipeProvider());
-        this.recipeProviders.add(new FCCookpotRoasterRecipeProvider());
-        this.recipeProviders.add(new FCCookpotStoveRecipeProvider());
-    }
 
     @Override
     public State createInitialState(IInitialMultiblockContext<State> ctx) {
@@ -106,13 +95,13 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
         RangedWrapper inputOnly = new RangedWrapper(state.inventory, inputStart, NUM_INPUT_SLOTS);
         RecipeWrapper wrapper = new RecipeWrapper(inputOnly);
 
-        Optional<CookpotRecipe> recipeOpt = this.findRecipe(wrapper, level);
+        Optional<RecipeHolder<CookpotRecipe>> recipeOpt = CookpotRecipe.findRecipe(wrapper, level);
 
         if (recipeOpt.isPresent()) {
-            CookpotRecipe recipe = recipeOpt.get();
+            CookpotRecipe recipe = recipeOpt.get().value();
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(new RecipeHolder<>(), slotData[0]);
+                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipeOpt.get(), slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
                 if (state.processor.addProcessToQueue(process, level, false)) {
                     for (int i = 0; i < slotData[0].length; i++) {
@@ -213,7 +202,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
 
         ItemStack stackToPush = state.inventory.getStackInSlot(OUTPUT_SLOT);
         if (!stackToPush.isEmpty()) {
-            ItemStack stack = ItemHandlerHelper.copyStackWithSize(stackToPush, 1);
+            ItemStack stack = stackToPush.copyWithCount(1);
             ItemStack remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
             if (remaining.isEmpty()) {
                 stackToPush.shrink(1);
@@ -237,7 +226,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
                 state.inventory.setStackInSlot(OUTPUT_SLOT, rawCopy);
                 state.inventory.setStackInSlot(OUTPUT_RAW_SLOT, ItemStack.EMPTY);
                 ctx.markMasterDirty();
-            } else if (ItemStack.isSameItemSameTags(currentOutput, rawCopy)
+            } else if (ItemStack.isSameItemSameComponents(currentOutput, rawCopy)
                     && currentOutput.getCount() + rawCopy.getCount() <= currentOutput.getMaxStackSize()) {
                 currentOutput.grow(rawCopy.getCount());
                 state.inventory.setStackInSlot(OUTPUT_RAW_SLOT, ItemStack.EMPTY);
@@ -263,7 +252,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
         int bowlCount = currentBowl.getCount();
         int outputSpace = currentOutput.isEmpty()
                 ? rawOutput.getMaxStackSize()
-                : (ItemStack.isSameItemSameTags(currentOutput, singleMealResult)
+                : (ItemStack.isSameItemSameComponents(currentOutput, singleMealResult)
                         ? currentOutput.getMaxStackSize() - currentOutput.getCount()
                         : 0);
 
@@ -291,9 +280,9 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
     }
 
     private ItemStack getContainerForMeal(Level level, ItemStack meal) {
-        Optional<CookpotRecipe> recipe = findRecipe(meal, level);
+        Optional<RecipeHolder<CookpotRecipe>> recipe = CookpotRecipe.findRecipeByOutput(meal);
         if (recipe.isPresent()) {
-            return recipe.get().container;
+            return recipe.get().value().container;
         } else {
             return ItemStack.EMPTY;
         }
@@ -316,10 +305,7 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
 
         private final MultiblockProcessor.InMachineProcessor<CookpotRecipe> processor;
 
-        private final CapabilityReference<IItemHandler> itemOutput;
-        private final LazyOptional<IEnergyStorage> energyCap;
-        private final LazyOptional<IItemHandler> itemInputCap;
-        private final LazyOptional<IItemHandler> itemOutputCap;
+        private final Supplier<IItemHandler> itemOutput;
 
         public boolean active;
         private final Supplier<Level> levelSupplier;
@@ -329,31 +315,28 @@ public class CookpotLogic extends ICMultiblockLogic<State, CookpotRecipe>
             final CookpotLogic logic = (CookpotLogic) ICContent.Multiblock.COOKPOT.logic();
             this.levelSupplier = ctx.levelSupplier();
             this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT,
-                            NUM_INPUT_SLOTS),
+                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.BLOCKED, 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)),
                     markDirty);
 
-            this.processor = new MultiblockProcessor.InMachineProcessor<>(NUM_INPUT_SLOTS, 1.0F, 1, markDirty,
-                    (level, id) -> logic.byKey(id, level));
+            this.processor = new MultiblockProcessor.InMachineProcessor<>(
+                    NUM_INPUT_SLOTS,
+                    1.0F,
+                    1,
+                    markDirty,
+                    (ignored, id) -> CookpotRecipe.RECIPES.get(id).value());
 
-            this.itemOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
-
-            this.energyCap = LazyOptional.of(() -> energy);
-            this.itemInputCap = LazyOptional.of(() -> new WrappingItemHandler(inventory, true, false,
-                    new WrappingItemHandler.IntRange(0, NUM_INPUT_SLOTS)));
-            this.itemOutputCap = LazyOptional.of(() -> new WrappingItemHandler(inventory, false, true,
-                    new WrappingItemHandler.IntRange(OUTPUT_SLOT, OUTPUT_SLOT + 1)));
+            this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT);
         }
 
         @Override
         public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             nbt.putBoolean("active", active);
-            nbt.put("energy", energy.serializeNBT());
-            nbt.put("inventory", inventory.serializeNBT());
-            nbt.put("processor", processor.toNBT());
+            nbt.put("energy", energy.serializeNBT(provider));
+            nbt.put("inventory", inventory.serializeNBT(provider));
+            nbt.put("processor", processor.toNBT(provider));
         }
 
         @Override

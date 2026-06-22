@@ -102,6 +102,9 @@ dependencies {
     // for multiblock definition check
     runtimeOnly("curse.maven:just-enough-immersive-multiblocks-634571:7131221")
 
+    // DualCodecs
+    implementation("malte0811:DualCodecs:${dualcodecs_version}")
+
     // jade
     implementation("curse.maven:jade-324717:6855440")
 
@@ -111,15 +114,19 @@ dependencies {
     implementation("curse.maven:immersive-petroleum-268250:7512547")
 
     // Farmersdelight
-    implementation("curse.maven:farmers-delight-398521:7596353")
+    implementation("curse.maven:farmers-delight-398521:8083481")
+
+    // Butchery
+    implementation("curse.maven:butchery-973620:8156003")
 
     // Let's Do
-    implementation("curse.maven:architectury-api-419699:5137938")
-    implementation("curse.maven:lets-do-vinery-704465:6854288")
-    implementation("curse.maven:lets-do-farm-charm-1038103:7088013")
+    compileOnly("curse.maven:architectury-api-419699:5786327")
+    implementation("curse.maven:lets-do-vinery-704465:7539914")
+    implementation("curse.maven:lets-do-farm-charm-1038103:7959521")
+    implementation("curse.maven:lets-do-brewery-farm-charm-compat-1038106:7830639")
 
     // Brewin' And Chewin'
-    implementation("curse.maven:brewin-and-chewin-637808:6237884")
+    implementation("curse.maven:brewin-and-chewin-637808:7523542")
 }
 
 

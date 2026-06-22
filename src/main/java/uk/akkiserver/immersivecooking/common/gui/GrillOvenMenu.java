@@ -6,11 +6,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmokingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ForgeHooks;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -21,7 +18,7 @@ import javax.annotation.Nonnull;
 
 public class GrillOvenMenu extends ICContainerMenu {
     public final ContainerData data;
-    private final RecipeManager.CachedCheck<Container, SmokingRecipe> smokingChecker = RecipeManager.createCheck(RecipeType.SMOKING);
+    private final RecipeManager.CachedCheck<SingleRecipeInput, SmokingRecipe> smokingChecker = RecipeManager.createCheck(RecipeType.SMOKING);
 
     public static GrillOvenMenu makeServer(MenuType<?> type, int id, Inventory playerInventory, MultiblockMenuContext<GrillOvenLogic.State> ctx) {
         final GrillOvenLogic.State state = ctx.mbContext().getState();
@@ -48,28 +45,28 @@ public class GrillOvenMenu extends ICContainerMenu {
         this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_0, 62, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return logic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(new SingleRecipeInput(itemStack), level).isPresent();
             }
         });
 
         this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_1, 80, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return logic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(new SingleRecipeInput(itemStack), level).isPresent();
             }
         });
 
         this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.IO_SLOT_2, 98, 17) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return logic.findRecipe(itemStack, level).isPresent();
+                return logic.findRecipe(new SingleRecipeInput(itemStack), level).isPresent();
             }
         });
 
         this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.FUEL_SLOT, 80, 53) {
             @Override
             public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return ForgeHooks.getBurnTime(itemStack, RecipeType.SMOKING) > 0;
+                return itemStack.getBurnTime(RecipeType.SMOKING) > 0;
             }
         });
         ownSlotCount = GrillOvenLogic.NUM_SLOTS;

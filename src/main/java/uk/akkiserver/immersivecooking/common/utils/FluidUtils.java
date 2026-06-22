@@ -1,11 +1,12 @@
 package uk.akkiserver.immersivecooking.common.utils;
 
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.minecraft.world.item.ItemStack;
-import uk.akkiserver.immersivecooking.common.crafting.providers.fluid.IItemFluidRelationProvider;
+import uk.akkiserver.immersivecooking.api.fluids.IItemFluidRelationProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +14,15 @@ import java.util.List;
 public final class FluidUtils {
     private static final List<IItemFluidRelationProvider> FLUID_RELATION_PROVIDERS = new ArrayList<>();
 
+    /**
+     * Returns whether the given item stack is related to a fluid.
+     *
+     * @param stack the item stack to check
+     * @return {@code true} if the stack is a fluid container or is associated with a fluid
+     */
     public static boolean isFluidRelatedItemStack(ItemStack stack) {
         if (stack.isEmpty()) return false;
-        return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent()
+        return stack.getCapability(Capabilities.FluidHandler.ITEM) != null
                 || FLUID_RELATION_PROVIDERS.stream().anyMatch(p -> p.canProvide() && p.isFluidContainer(stack));
     }
 
@@ -23,6 +30,15 @@ public final class FluidUtils {
         FLUID_RELATION_PROVIDERS.add(provider);
     }
 
+    /**
+     * Attempts to drain a fluid container from the input slot into the specified tank.
+     *
+     * @param tank the target fluid tank
+     * @param slotIn the input slot containing the fluid container
+     * @param slotOut the output slot for the emptied container
+     * @param inv the item inventory
+     * @return {@code true} if fluid was transferred, otherwise {@code false}
+     */
     public static boolean drainFluidContainer(IFluidHandler tank, int slotIn, int slotOut, IItemHandlerModifiable inv) {
         ItemStack inputStack = inv.getStackInSlot(slotIn);
         if (inputStack.isEmpty()) return false;
@@ -33,9 +49,9 @@ public final class FluidUtils {
         var result = FluidUtil.tryEmptyContainer(containerCopy, tank, Integer.MAX_VALUE, null, false);
         if (result.isSuccess()) {
             ItemStack emptyContainer = result.getResult();
-            if (canOutput(inv, slotOut, emptyContainer)) {
+            if (InventoryUtils.canOutput(inv, slotOut, emptyContainer)) {
                 FluidUtil.tryEmptyContainer(containerCopy, tank, Integer.MAX_VALUE, null, true);
-                insertOutput(inv, slotOut, emptyContainer);
+                InventoryUtils.insertOutput(inv, slotOut, emptyContainer);
                 inv.getStackInSlot(slotIn).shrink(1);
                 if (inv.getStackInSlot(slotIn).isEmpty())
                     inv.setStackInSlot(slotIn, ItemStack.EMPTY);
@@ -53,10 +69,10 @@ public final class FluidUtils {
             if (filled < contained.getAmount()) continue;
 
             ItemStack emptyContainer = provider.getEmptyContainer(containerCopy);
-            if (!canOutput(inv, slotOut, emptyContainer)) continue;
+            if (!InventoryUtils.canOutput(inv, slotOut, emptyContainer)) continue;
 
             tank.fill(contained, IFluidHandler.FluidAction.EXECUTE);
-            insertOutput(inv, slotOut, emptyContainer);
+            InventoryUtils.insertOutput(inv, slotOut, emptyContainer);
             inv.getStackInSlot(slotIn).shrink(1);
             if (inv.getStackInSlot(slotIn).isEmpty())
                 inv.setStackInSlot(slotIn, ItemStack.EMPTY);
@@ -64,23 +80,5 @@ public final class FluidUtils {
         }
 
         return false;
-    }
-
-    private static boolean canOutput(IItemHandlerModifiable inv, int slotOut, ItemStack stack) {
-        if (stack.isEmpty()) return true;
-        ItemStack outputStack = inv.getStackInSlot(slotOut);
-        return outputStack.isEmpty() ||
-                (ItemHandlerHelper.canItemStacksStack(outputStack, stack) &&
-                        outputStack.getCount() + stack.getCount() <= outputStack.getMaxStackSize());
-    }
-
-    private static void insertOutput(IItemHandlerModifiable inv, int slotOut, ItemStack stack) {
-        if (stack.isEmpty()) return;
-        ItemStack outputStack = inv.getStackInSlot(slotOut);
-        if (outputStack.isEmpty()) {
-            inv.setStackInSlot(slotOut, stack);
-        } else {
-            outputStack.grow(stack.getCount());
-        }
     }
 }
