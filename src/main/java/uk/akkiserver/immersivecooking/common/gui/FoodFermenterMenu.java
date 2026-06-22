@@ -33,7 +33,7 @@ public class FoodFermenterMenu extends ICContainerMenu {
         }
 
         this.addSlot(new IESlot.NewOutput(inventory, FoodFermenterLogic.EMPTY_FLUID_SLOT, 38, 54));
-        this.addSlot(new IESlot.NewFluidContainer(inventory, FoodFermenterLogic.FILLED_FLUID_SLOT, 38, 15, Filter.ANY) {
+        this.addSlot(new ICFluidSlot(inventory, FoodFermenterLogic.FILLED_FLUID_SLOT, 38, 15, Filter.ANY) {
             @Override
             public boolean mayPickup(Player playerIn) {
                 return true;

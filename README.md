@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/akkiserver-dev/Immersive-Cooking/refs/heads/master/src/main/resources/iclogo.png" width="40%" alt="LOGO">
+<img src="src/main/resources/iclogo.png" width="40%" alt="LOGO">
 
 # Immersive Cooking
 **An Immersive Engineering addon adds multiblock for Farmer's Delight/Let's Do Series Automation**
@@ -7,14 +7,15 @@
 ### Multiblocks
 - Industrial Cookpot
   - Automates Farmer's Delight / Farm & Charms Cooking Pot
-- Grill Oven
-  - Multithreaded Smoker
+- Food Fermenter
+  - Automates Vinery
 
 ## Planned Features/To Do
 - [x] Industrial Food Fermenter (for Vinery, and some)
 - [ ] Advanced Wine Cellar
 - [ ] Industrial Deep Fryer
 - [ ] Food Processor
+- [ ] [1.21.1 Port](https://github.com/akkiserver-dev/Immersive-Cooking/issues/1)
 
 ## Contribution
 - Bug Reports
@@ -22,4 +23,4 @@
 - Feature Requests
   - Open an issue to discuss your ideas.
 - Pull Requests
-  - Not currently accepting
+  - We are currently not accepting pull requests other than translations.

@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "energy": 6400,
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:honey"
+  },
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
+  "results": [
+    {
+      "item": "minecraft:honey_bottle"
+    }
+  ]
+}

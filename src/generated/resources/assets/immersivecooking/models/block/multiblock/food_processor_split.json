@@ -8,7 +8,7 @@
     "loader": "forge:obj",
     "model": "immersivecooking:models/block/multiblock/food_processor.obj",
     "textures": {
-      "particle": "immersivecooking:block/multiblock/multiblock_base"
+      "particle": "immersiveengineering:block/multiblocks/mixer"
     }
   },
   "loader": "immersiveengineering:basic_split",
@@ -105,6 +105,6 @@
     ]
   ],
   "textures": {
-    "particle": "immersivecooking:block/multiblock/multiblock_base"
+    "particle": "immersiveengineering:block/multiblocks/mixer"
   }
 }

@@ -56,7 +56,11 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
             inputs.set(i, IngredientWithSize.read(buffer));
         }
 
-        FluidTagInput fluidInput = FluidTagInput.read(buffer);
+        FluidTagInput fluidInput = null;
+        if (buffer.readBoolean()) {
+            fluidInput = FluidTagInput.read(buffer);
+        }
+
         ItemStack output = buffer.readItem();
         ItemStack container = buffer.readItem();
 
@@ -73,9 +77,11 @@ public class FoodFermenterRecipeSerializer extends IERecipeSerializer<FoodFermen
             i.write(buffer);
         }
 
+        buffer.writeBoolean(recipe.fluidInput != null);
         if (recipe.fluidInput != null) {
             recipe.fluidInput.write(buffer);
         }
+
         buffer.writeItem(recipe.result);
         buffer.writeItem(recipe.container);
 

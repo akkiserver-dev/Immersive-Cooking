@@ -21,6 +21,7 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultibloc
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodFermenterMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.GrillOvenMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.ICTemplateMultiblock;
+import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 @OnlyIn(Dist.CLIENT)
@@ -40,6 +41,11 @@ public class ClientSetup {
         event.register(ICContent.MenuTypes.COOKPOT.getType(), CookpotScreen::new);
         event.register(ICContent.MenuTypes.FOOD_FERMENTER.getType(), FoodFermenterScreen::new);
         event.register(ICContent.MenuTypes.FOOD_PROCESSOR.getType(), FoodProcessorScreen::new);
+
+        ICFluids.ALL_ENTRIES.forEach(entry -> {
+            ItemBlockRenderTypes.setRenderLayer(entry.getStill(), RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(entry.getFlowing(), RenderType.translucent());
+        });
 
         setupManual();
     }

@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.common.crafting.providers;
+package uk.akkiserver.immersivecooking.common.crafting.providers.recipe;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.core.NonNullList;
@@ -7,7 +7,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.satisfy.farm_and_charm.core.recipe.CookingPotRecipe;
 import net.satisfy.farm_and_charm.core.recipe.RoasterRecipe;
 import net.satisfy.farm_and_charm.core.registry.RecipeTypeRegistry;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
@@ -86,7 +85,7 @@ public class FCCookpotRoasterRecipeProvider implements IMultiblockRecipeProvider
 
         ItemStack output = facRecipe.getResultItem(level.registryAccess());
 
-        ResourceLocation id = Resource.mod(facRecipe.getId().getPath());
+        ResourceLocation id = Resource.wrapFor(facRecipe.getId());
 
         return new CookpotRecipe(
                 id,

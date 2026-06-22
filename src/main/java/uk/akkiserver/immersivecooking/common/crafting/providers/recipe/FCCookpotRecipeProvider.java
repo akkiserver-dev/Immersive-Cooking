@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.common.crafting.providers;
+package uk.akkiserver.immersivecooking.common.crafting.providers.recipe;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import net.minecraft.core.NonNullList;
@@ -88,7 +88,7 @@ public class FCCookpotRecipeProvider implements IMultiblockRecipeProvider<Cookpo
                 ? facRecipe.getContainerItem()
                 : ItemStack.EMPTY;
 
-        ResourceLocation id = Resource.mod(facRecipe.getId().getPath());
+        ResourceLocation id = Resource.wrapFor(facRecipe.getId());
 
         return new CookpotRecipe(
                 id,

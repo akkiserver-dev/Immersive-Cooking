@@ -154,7 +154,7 @@ public final class ICRegisters {
         return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
-    protected static class MultiblockBuilder<S extends IMultiblockState>
+    static class MultiblockBuilder<S extends IMultiblockState>
             extends MultiblockRegistrationBuilder<S, MultiblockBuilder<S>> {
         public MultiblockBuilder(IMultiblockLogic<S> logic, String name) {
             super(logic, Resource.mod(name));

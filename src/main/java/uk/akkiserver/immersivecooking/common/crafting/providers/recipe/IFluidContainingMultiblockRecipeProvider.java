@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.common.crafting.providers;
+package uk.akkiserver.immersivecooking.common.crafting.providers.recipe;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;

@@ -36,7 +36,7 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.*;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.*;
 
 import java.util.*;
 import java.util.function.Consumer;

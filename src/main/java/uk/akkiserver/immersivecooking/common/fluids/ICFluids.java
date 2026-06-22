@@ -1,6 +1,12 @@
 package uk.akkiserver.immersivecooking.common.fluids;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -22,6 +28,7 @@ import net.neoforged.neoforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 import uk.akkiserver.immersivecooking.common.ICRegisters;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
@@ -49,29 +56,29 @@ public final class ICFluids {
         private static final ResourceLocation WATER_FLOW = Resource.mc("block/water_flow");
 
         public static FluidEntry make(String name) {
-            return make(name, 0, WATER_STILL, WATER_FLOW, null, ImmutableList.of(), 0xFFFFFFFF);
+            return make(name, 0, WATER_STILL, WATER_FLOW, null, ImmutableList.of(), 0xFFFFFFFF, null, null, -1, -1);
         }
 
         public static FluidEntry make(String name, int tintColor) {
-            return make(name, 0, WATER_STILL, WATER_FLOW, null, ImmutableList.of(), tintColor);
+            return make(name, 0, WATER_STILL, WATER_FLOW, null, ImmutableList.of(), tintColor, null, null, -1, -1);
         }
 
         public static FluidEntry make(String name, ResourceLocation stillTex, ResourceLocation flowingTex) {
-            return make(name, 0, stillTex, flowingTex, null, ImmutableList.of(), 0xFFFFFFFF);
+            return make(name, 0, stillTex, flowingTex, null, ImmutableList.of(), 0xFFFFFFFF, null, null, -1, -1);
         }
 
         public static FluidEntry make(
                 String name, ResourceLocation stillTex, ResourceLocation flowingTex,
                 Consumer<FluidType.Properties> buildAttributes
         ) {
-            return make(name, 0, stillTex, flowingTex, buildAttributes, ImmutableList.of(), 0xFFFFFFFF);
+            return make(name, 0, stillTex, flowingTex, buildAttributes, ImmutableList.of(), 0xFFFFFFFF, null, null, -1, -1);
         }
 
         public static FluidEntry make(
                 String name, int burnTime,
                 ResourceLocation stillTex, ResourceLocation flowingTex
         ) {
-            return make(name, burnTime, stillTex, flowingTex, null, ImmutableList.of(), 0xFFFFFFFF);
+            return make(name, burnTime, stillTex, flowingTex, null, ImmutableList.of(), 0xFFFFFFFF, null, null, -1, -1);
         }
 
         public static FluidEntry make(
@@ -79,13 +86,17 @@ public final class ICFluids {
                 ResourceLocation stillTex, ResourceLocation flowingTex,
                 @Nullable Consumer<FluidType.Properties> buildAttributes,
                 List<Property<?>> properties,
-                int tintColor
+                int tintColor,
+                @Nullable ResourceLocation renderOverlay,
+                @Nullable Vector3f fogColor,
+                float fogStart,
+                float fogEnd
         ) {
             return make(
                     name, burnTime, stillTex, flowingTex,
                     ICFluid::new, ICFluid.Flowing::new,
                     buildAttributes, properties,
-                    tintColor
+                    tintColor, renderOverlay, fogColor, fogStart, fogEnd
             );
         }
 
@@ -96,16 +107,21 @@ public final class ICFluids {
                 Function<FluidEntry, ? extends ICFluid> makeFlowing,
                 @Nullable Consumer<FluidType.Properties> buildAttributes,
                 List<Property<?>> properties,
-                int tintColor
+                int tintColor,
+                @Nullable ResourceLocation renderOverlay,
+                @Nullable Vector3f fogColor,
+                float fogStart,
+                float fogEnd
         ) {
             FluidType.Properties builder = FluidType.Properties.create()
+                    .descriptionId("fluid.immersivecooking." + name)
                     .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                     .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY);
             if (buildAttributes != null)
                 buildAttributes.accept(builder);
 
             RegistryObject<FluidType> type = ICRegisters.FLUID_TYPE_REGISTER.register(
-                    name, () -> makeTypeWithTextures(builder, stillTex, flowingTex, tintColor)
+                    name, () -> makeTypeWithTextures(builder, stillTex, flowingTex, tintColor, renderOverlay, fogColor, fogStart, fogEnd)
             );
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
@@ -136,7 +152,11 @@ public final class ICFluids {
                 FluidType.Properties builder,
                 ResourceLocation stillTex,
                 ResourceLocation flowingTex,
-                int tintColor
+                int tintColor,
+                @Nullable ResourceLocation renderOverlay,
+                @Nullable Vector3f fogColor,
+                float fogStart,
+                float fogEnd
         ) {
             return new FluidType(builder) {
                 @Override
@@ -155,6 +175,24 @@ public final class ICFluids {
                         @Override
                         public int getTintColor() {
                             return tintColor;
+                        }
+
+                        @Override
+                        public @Nullable ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                            return renderOverlay;
+                        }
+
+                        @Override
+                        public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
+                            return fogColor != null ? fogColor : fluidFogColor;
+                        }
+
+                        @Override
+                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
+                            if (fogStart >= 0 && fogEnd >= 0) {
+                                RenderSystem.setShaderFogStart(fogStart);
+                                RenderSystem.setShaderFogEnd(fogEnd);
+                            }
                         }
                     });
                 }

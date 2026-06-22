@@ -14,4 +14,8 @@ public final class Compat {
     public static boolean isVineryInstalled() {
         return ModList.get().isLoaded("vinery");
     }
+
+    public static boolean isBnCInstalled() {
+        return ModList.get().isLoaded("brewinandchewin");
+    }
 }

@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.ContainerData;
@@ -42,7 +43,8 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.FoodFermenterShape;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.DefaultFoodFermenterRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.BnCFermenterRecipeProvider;
+import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.DefaultFoodFermenterRecipeProvider;
 import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 
 import java.util.*;
@@ -72,6 +74,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
 
     public FoodFermenterLogic() {
         this.recipeProviders.add(new DefaultFoodFermenterRecipeProvider());
+        this.recipeProviders.add(new BnCFermenterRecipeProvider());
     }
 
     @Override
@@ -315,7 +318,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
                             NUM_INPUT_SLOTS),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1),
                     new SlotwiseItemHandler.IOConstraintGroup(
-                            new SlotwiseItemHandler.IOConstraint(true, Utils::isFluidRelatedItemStack), 1),
+                            new SlotwiseItemHandler.IOConstraint(true, FluidUtils::isFluidRelatedItemStack), 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)), markDirty);
 
