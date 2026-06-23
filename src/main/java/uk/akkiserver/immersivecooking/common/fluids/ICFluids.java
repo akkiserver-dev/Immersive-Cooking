@@ -7,7 +7,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -15,16 +14,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
@@ -33,23 +32,21 @@ import uk.akkiserver.immersivecooking.common.ICRegisters;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class ICFluids {
     public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
-    public static final Set<RegistryObject<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
+    public static final Set<DeferredHolder<Block, ? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
+    public static final Map<IClientFluidTypeExtensions, FluidType> FLUID_TYPE_EXTENSIONS = new HashMap<>();
 
     public record FluidEntry(
-            RegistryObject<ICFluid> flowing,
-            RegistryObject<ICFluid> still,
-            RegistryObject<ICFluidBlock> block,
-            RegistryObject<BucketItem> bucket,
-            RegistryObject<FluidType> type,
+            DeferredHolder<Fluid, ICFluid> flowing,
+            DeferredHolder<Fluid, ICFluid> still,
+            DeferredHolder<Block, ICFluidBlock> block,
+            DeferredHolder<Item, BucketItem> bucket,
+            DeferredHolder<FluidType, FluidType> type,
             List<Property<?>> properties
     ) {
         private static final ResourceLocation WATER_STILL = Resource.mc("block/water_still");
@@ -120,25 +117,26 @@ public final class ICFluids {
             if (buildAttributes != null)
                 buildAttributes.accept(builder);
 
-            RegistryObject<FluidType> type = ICRegisters.FLUID_TYPE_REGISTER.register(
+            DeferredHolder<FluidType, FluidType> type = ICRegisters.FLUID_TYPE_REGISTER.register(
                     name, () -> makeTypeWithTextures(builder, stillTex, flowingTex, tintColor, renderOverlay, fogColor, fogStart, fogEnd)
             );
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
-            RegistryObject<ICFluid> still = ICRegisters.FLUID_REGISTER.register(
-                    name, () -> ICFluid.makeFluid(makeStill, thisMutable.getValue())
+            ICFluid stillRaw = ICFluid.makeFluid(makeStill, thisMutable.getValue());
+            DeferredHolder<Fluid, ICFluid> still = ICRegisters.FLUID_REGISTER.register(
+                    name, () -> stillRaw
             );
-            RegistryObject<ICFluid> flowing = ICRegisters.FLUID_REGISTER.register(
+            DeferredHolder<Fluid, ICFluid> flowing = ICRegisters.FLUID_REGISTER.register(
                     name + "_flowing", () -> ICFluid.makeFluid(makeFlowing, thisMutable.getValue())
             );
 
-            RegistryObject<ICFluidBlock> block = ICRegisters.BLOCK_REGISTER.register(
+            DeferredHolder<Block, ICFluidBlock> block = ICRegisters.BLOCK_REGISTER.register(
                     name + "_fluid_block",
-                    () -> new ICFluidBlock(thisMutable.getValue(), Properties.copy(Blocks.WATER))
+                    () -> new ICFluidBlock(thisMutable.getValue(), Properties.ofFullCopy(Blocks.WATER))
             );
 
-            RegistryObject<BucketItem> bucket = ICRegisters.registerItem(
-                    name + "_bucket", () -> makeBucket(still, burnTime)
+            DeferredHolder<Item, BucketItem> bucket = ICRegisters.registerItem(
+                    name + "_bucket", () -> makeBucket(stillRaw, burnTime)
             );
 
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties);
@@ -158,60 +156,52 @@ public final class ICFluids {
                 float fogStart,
                 float fogEnd
         ) {
-            return new FluidType(builder) {
+            final FluidType fluidType = new FluidType(builder);
+            FLUID_TYPE_EXTENSIONS.put(new IClientFluidTypeExtensions() {
                 @Override
-                public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-                    consumer.accept(new IClientFluidTypeExtensions() {
-                        @Override
-                        public ResourceLocation getStillTexture() {
-                            return stillTex;
-                        }
-
-                        @Override
-                        public ResourceLocation getFlowingTexture() {
-                            return flowingTex;
-                        }
-
-                        @Override
-                        public int getTintColor() {
-                            return tintColor;
-                        }
-
-                        @Override
-                        public @Nullable ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-                            return renderOverlay;
-                        }
-
-                        @Override
-                        public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                            return fogColor != null ? fogColor : fluidFogColor;
-                        }
-
-                        @Override
-                        public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, FogShape shape) {
-                            if (fogStart >= 0 && fogEnd >= 0) {
-                                RenderSystem.setShaderFogStart(fogStart);
-                                RenderSystem.setShaderFogEnd(fogEnd);
-                            }
-                        }
-                    });
+                public @NotNull ResourceLocation getStillTexture() {
+                    return stillTex;
                 }
-            };
+
+                @Override
+                public @NotNull ResourceLocation getFlowingTexture() {
+                    return flowingTex;
+                }
+
+                @Override
+                public int getTintColor() {
+                    return tintColor;
+                }
+
+                @Override
+                public @Nullable ResourceLocation getRenderOverlayTexture(@NotNull Minecraft mc) {
+                    return renderOverlay;
+                }
+
+                @Override
+                public @NotNull Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount, @NotNull Vector3f fluidFogColor) {
+                    return fogColor != null ? fogColor : fluidFogColor;
+                }
+
+                @Override
+                public void modifyFogRender(@NotNull Camera camera, FogRenderer.@NotNull FogMode mode, float renderDistance, float partialTick, float nearDistance, float farDistance, @NotNull FogShape shape) {
+                    if (fogStart >= 0 && fogEnd >= 0) {
+                        RenderSystem.setShaderFogStart(fogStart);
+                        RenderSystem.setShaderFogEnd(fogEnd);
+                    }
+                }
+            }, fluidType);
+            return fluidType;
         }
 
-        private static BucketItem makeBucket(RegistryObject<ICFluid> still, int burnTime) {
+        private static BucketItem makeBucket(Fluid still, int burnTime) {
             return new BucketItem(
                     still, new Item.Properties()
                     .stacksTo(1)
                     .craftRemainder(Items.BUCKET)
             ) {
                 @Override
-                public @NotNull ICapabilityProvider initCapabilities(@NotNull ItemStack stack, @Nullable CompoundTag nbt) {
-                    return new FluidBucketWrapper(stack);
-                }
-
-                @Override
-                public int getBurnTime(ItemStack itemStack, RecipeType<?> type) {
+                public int getBurnTime(@NotNull ItemStack itemStack, RecipeType<?> type) {
                     return burnTime;
                 }
             };
@@ -233,7 +223,7 @@ public final class ICFluids {
             return bucket.get();
         }
 
-        public RegistryObject<ICFluid> getStillGetter() {
+        public DeferredHolder<Fluid, ICFluid> getStillGetter() {
             return still;
         }
     }

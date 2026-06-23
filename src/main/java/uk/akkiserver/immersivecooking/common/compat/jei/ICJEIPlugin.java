@@ -9,6 +9,7 @@ import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
@@ -18,6 +19,7 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLog
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
+import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
 import java.util.List;
@@ -47,22 +49,15 @@ public class ICJEIPlugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ImmersiveCooking.LOGGER.info("Registering recipes to JEI...");
-        List<CookpotRecipe> cookpotRecipes = ((CookpotLogic) ICContent.Multiblock.COOKPOT.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
+        List<CookpotRecipe> cookpotRecipes = CookpotRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
         ImmersiveCooking.LOGGER.info("Found {} Cookpot recipes.", cookpotRecipes.size());
         registration.addRecipes(ICJEIRecipeTypes.COOKPOT, cookpotRecipes);
-        List<FoodFermenterRecipe> foodFermenterRecipes = ((FoodFermenterLogic) ICContent.Multiblock.FOOD_FERMENTER.logic()).getAllProvidedRecipes(Minecraft.getInstance().level);
+        List<FoodFermenterRecipe> foodFermenterRecipes = FoodFermenterRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
         ImmersiveCooking.LOGGER.info("Found {} Food Fermenter recipes.", foodFermenterRecipes.size());
         registration.addRecipes(ICJEIRecipeTypes.FOOD_FERMENTER, foodFermenterRecipes);
-    }
-
-    private <T extends Recipe<?>> List<T> getRecipes(CachedRecipeList<T> cachedList) {
-        return getFiltered(cachedList, $ -> true);
-    }
-
-    private <T extends Recipe<?>> List<T> getFiltered(CachedRecipeList<T> cachedList, Predicate<T> include) {
-        return cachedList.getRecipes(Minecraft.getInstance().level).stream()
-                .filter(include)
-                .toList();
+        List<FoodProcessorRecipe> foodProcessorRecipes = FoodProcessorRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
+        ImmersiveCooking.LOGGER.info("Found {} Food Processor recipes.", foodProcessorRecipes.size());
+        //registration.addRecipes(ICJEIRecipeTypes.FOOD_PROCESSOR, FoodProcessorRecipe);
     }
 
     @Override

@@ -68,6 +68,13 @@ neoForge {
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.datagen
+        }
+    }
 }
 
 repositories {
@@ -95,23 +102,23 @@ repositories {
 
 dependencies {
     // JEI/EMI
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-    compileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     //runtimeOnly("dev.emi:emi-forge:${emi_version}")
     // for multiblock definition check
-    runtimeOnly("curse.maven:just-enough-immersive-multiblocks-634571:7131221")
+    runtimeOnly("curse.maven:just-enough-immersive-multiblocks-634571:7131196")
 
     // DualCodecs
     implementation("malte0811:DualCodecs:${dualcodecs_version}")
 
     // jade
-    implementation("curse.maven:jade-324717:6855440")
+    implementation("curse.maven:jade-324717:7545219")
 
     // IE (IP compat for planned)
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
-    implementation("curse.maven:immersive-petroleum-268250:7512547")
+    implementation("curse.maven:immersive-petroleum-268250:7512548")
 
     // Farmersdelight
     implementation("curse.maven:farmers-delight-398521:8083481")
@@ -120,7 +127,7 @@ dependencies {
     implementation("curse.maven:butchery-973620:8156003")
 
     // Let's Do
-    compileOnly("curse.maven:architectury-api-419699:5786327")
+    implementation("curse.maven:architectury-api-419699:5786327")
     implementation("curse.maven:lets-do-vinery-704465:7539914")
     implementation("curse.maven:lets-do-farm-charm-1038103:7959521")
     implementation("curse.maven:lets-do-brewery-farm-charm-compat-1038106:7830639")
@@ -183,8 +190,8 @@ gradle.taskGraph.whenReady { taskGraph ->
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [minecraft_version      : minecraft_version,
                              minecraft_version_range: minecraft_version_range,
-                             neo_version            : neo_version,
-                             neo_version_range      : neo_version_range,
+                             neoforge_version       : neoforge_version,
+                             neoforge_version_range : neoforge_version_range,
                              loader_version_range   : loader_version_range,
                              mod_id                 : mod_id,
                              mod_name               : mod_name,
@@ -197,6 +204,9 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     from "src/main/templates"
     into "build/generated/sources/modMetadata"
 }
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'

@@ -1,11 +1,13 @@
 package uk.akkiserver.immersivecooking.common.fluids;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -48,13 +50,14 @@ public class ICFluid extends FlowingFluid {
 
         public @NotNull ItemStack execute(BlockSource source, ItemStack stack) {
             BucketItem bucketitem = (BucketItem) stack.getItem();
-            BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-            Level world = source.getLevel();
+            BlockPos blockpos = source.blockEntity().getBlockPos().relative(source.state().getValue(DispenserBlock.FACING));
+            Level world = source.level().getLevel();
             if (bucketitem.emptyContents(null, world, blockpos, null)) {
                 bucketitem.checkExtraContent(null, world, stack, blockpos);
                 return new ItemStack(Items.BUCKET);
-            } else
+            } else {
                 return this.defaultBehavior.dispense(source, stack);
+            }
         }
     };
     private static FluidEntry entryStatic;
@@ -179,25 +182,6 @@ public class ICFluid extends FlowingFluid {
         protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder) {
             super.createFluidStateDefinition(builder);
             builder.add(LEVEL);
-        }
-    }
-
-    public static class EntityFluidSerializer implements EntityDataSerializer<FluidStack> {
-        @Override
-        public void write(FriendlyByteBuf buf, FluidStack value) {
-            buf.writeFluidStack(value);
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack read(FriendlyByteBuf buf) {
-            return buf.readFluidStack();
-        }
-
-        @Nonnull
-        @Override
-        public FluidStack copy(FluidStack value) {
-            return value.copy();
         }
     }
 }

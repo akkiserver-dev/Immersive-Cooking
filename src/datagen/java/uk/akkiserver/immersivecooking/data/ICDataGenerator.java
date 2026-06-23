@@ -3,10 +3,10 @@ package uk.akkiserver.immersivecooking.data;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -17,7 +17,7 @@ import uk.akkiserver.immersivecooking.data.tags.ICItemTags;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = ImmersiveCooking.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ImmersiveCooking.MODID)
 public class ICDataGenerator {
     public static final Logger LOGGER = LogManager.getLogger(ImmersiveCooking.MODID + "/DataGenerator");
 
@@ -29,11 +29,11 @@ public class ICDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         if (event.includeServer()) {
-            generator.addProvider(true, new ICMBTextureSourceApplier(generator.getPackOutput(), existing));
+            generator.addProvider(true, new ICMBTextureSourceApplier(generator.getPackOutput(), lookupProvider, existing));
             ICBlockStates blockStates = new ICBlockStates(output, existing);
             generator.addProvider(true, blockStates);
             generator.addProvider(true, new ICItemModels(output, existing, blockStates));
-            generator.addProvider(true, new ICRecipeProvider(output));
+            generator.addProvider(true, new ICRecipeProvider(output, lookupProvider));
             generator.addProvider(event.includeServer(), new ICFluidTags(output, lookupProvider, existing));
             var blockTags = new ICBlockTags(output, lookupProvider, existing);
             generator.addProvider(event.includeServer(), blockTags);

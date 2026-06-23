@@ -7,9 +7,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerT
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
@@ -19,17 +19,17 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -43,8 +43,6 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.FoodFermenterShape;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.BnCFermenterRecipeProvider;
-import uk.akkiserver.immersivecooking.common.crafting.providers.recipe.DefaultFoodFermenterRecipeProvider;
 import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 
 import java.util.*;
@@ -53,8 +51,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRecipe>
-        implements IServerTickableComponent<State>, IClientTickableComponent<State> {
+public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State> {
     public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
     public static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
     public static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
@@ -72,11 +69,6 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
     public static final int OUTPUT_SLOT = 9;
     public static final int NUM_SLOTS = 10;
 
-    public FoodFermenterLogic() {
-        this.recipeProviders.add(new DefaultFoodFermenterRecipeProvider());
-        this.recipeProviders.add(new BnCFermenterRecipeProvider());
-    }
-
     @Override
     public State createInitialState(IInitialMultiblockContext<State> ctx) {
         return new State(ctx);
@@ -88,21 +80,16 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position,
-            Capability<T> cap) {
-        final State state = ctx.getState();
-        if (cap == ForgeCapabilities.ENERGY && ENERGY_POS.equalsOrNullFace(position)) {
-            return state.energyCap.cast(ctx);
-        } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (ITEM_INPUT.equals(position.posInMultiblock())) {
-                return state.itemInputCap.cast(ctx);
-            } else if (ITEM_OUTPUT_CAP.equals(position)) {
-                return state.itemOutputCap.cast(ctx);
-            }
-        } else if (cap == ForgeCapabilities.FLUID_HANDLER && FLUID_INPUT.equalsOrNullFace(position)) {
-            return state.fluidInput.cast(ctx);
-        }
-        return LazyOptional.empty();
+    public void registerCapabilities(CapabilityRegistrar<State> register) {
+        register.registerAtOrNull(Capabilities.EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+        register.register(Capabilities.ItemHandler.BLOCK, (state, pos) -> {
+            if (ITEM_INPUT.equals(pos.posInMultiblock()))
+                return state.itemInputCap;
+            if (ITEM_OUTPUT_CAP.equals(pos))
+                return state.itemOutputCap;
+            return null;
+        });
+        register.registerAtOrNull(Capabilities.FluidHandler.BLOCK, FLUID_INPUT, state -> state.fluidInput);
     }
 
     @Override
@@ -138,17 +125,18 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
         RangedWrapper inputOnly = new RangedWrapper(state.inventory, inputStart, NUM_INPUT_SLOTS);
         RecipeWrapper wrapper = new RecipeWrapper(inputOnly);
 
-        Optional<FoodFermenterRecipe> recipeOpt = findRecipe(wrapper, state.tank.getFluid(), level);
+        Optional<RecipeHolder<FoodFermenterRecipe>> recipeOpt = FoodFermenterRecipe.findRecipe(wrapper, state.tank.getFluid(), level);
 
         if (recipeOpt.isPresent()) {
-            FoodFermenterRecipe recipe = recipeOpt.get();
+            RecipeHolder<FoodFermenterRecipe> holder = recipeOpt.get();
+            FoodFermenterRecipe recipe = holder.value();
 
             if (!ItemStack.isSameItem(containerStack, recipe.container))
                 return;
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(recipe,
+                MultiblockProcessInMachine<FoodFermenterRecipe> process = new FoodFermenterProcess(holder,
                         slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
 
@@ -163,7 +151,7 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
                     }
 
                     if (recipe.fluidInput != null) {
-                        FluidStack toDrain = new FluidStack(state.tank.getFluid(), recipe.fluidInput.getAmount());
+                        FluidStack toDrain = state.tank.getFluid().copyWithAmount(recipe.fluidInput.amount());
                         state.tank.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
                     }
                     containerStack.shrink(1);
@@ -263,8 +251,8 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
 
         ItemStack stackToPush = state.inventory.getStackInSlot(OUTPUT_SLOT);
         if (!stackToPush.isEmpty()) {
-            ItemStack stack = ItemHandlerHelper.copyStackWithSize(stackToPush, 1);
-            ItemStack remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
+            ItemStack stack = stackToPush.copyWithCount(1);
+            ItemStack remaining = Utils.insertStackIntoInventory((Supplier<IItemHandler>) () -> state.itemOutput, stack, false);
             if (remaining.isEmpty()) {
                 stackToPush.shrink(1);
                 ctx.markMasterDirty();
@@ -300,17 +288,15 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
         private final SlotwiseItemHandler inventory;
         private final MultiblockProcessor.InMachineProcessor<FoodFermenterRecipe> processor;
         private final Supplier<Level> levelSupplier;
-        private final CapabilityReference<IItemHandler> itemOutput;
-        private final StoredCapability<IFluidHandler> fluidInput;
-        private final StoredCapability<IEnergyStorage> energyCap;
-        private final StoredCapability<IItemHandler> itemInputCap;
-        private final StoredCapability<IItemHandler> itemOutputCap;
+        private final IItemHandler itemOutput;
+        private final IFluidHandler fluidInput;
+        private final IItemHandler itemInputCap;
+        private final IItemHandler itemOutputCap;
         private BooleanSupplier isPlayingSound = () -> false;
         public boolean active;
 
         public State(IInitialMultiblockContext<State> ctx) {
             final Runnable markDirty = ctx.getMarkDirtyRunnable();
-            final FoodFermenterLogic logic = (FoodFermenterLogic) ICContent.Multiblock.FOOD_FERMENTER.logic();
             this.levelSupplier = ctx.levelSupplier();
 
             this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
@@ -323,59 +309,49 @@ public class FoodFermenterLogic extends ICMultiblockLogic<State, FoodFermenterRe
                     new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)), markDirty);
 
             this.processor = new MultiblockProcessor.InMachineProcessor<>(NUM_INPUT_SLOTS, 1.0F, 1, markDirty,
-                    (level, id) -> logic.byKey(id, level));
+                    (level, id) -> FoodFermenterRecipe.RECIPES.get(id).value());
 
-            this.itemOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
-            this.fluidInput = new StoredCapability<>(new ArrayFluidHandler(
-                    false, true, markDirty, tank));
-            this.energyCap = new StoredCapability<>(energy);
+            this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT).get();
+            this.fluidInput = ArrayFluidHandler.fillOnly(tank, markDirty);
 
-            this.itemInputCap = new StoredCapability<>(new WrappingItemHandler(inventory, true, false,
+            this.itemInputCap = new WrappingItemHandler(inventory, true, false,
                     List.of(
                             new WrappingItemHandler.IntRange(0, NUM_INPUT_SLOTS),
                             new WrappingItemHandler.IntRange(EMPTY_FLUID_SLOT, EMPTY_FLUID_SLOT + 1),
-                            new WrappingItemHandler.IntRange(INPUT_CONTAINER_SLOT, INPUT_CONTAINER_SLOT + 1))));
+                            new WrappingItemHandler.IntRange(INPUT_CONTAINER_SLOT, INPUT_CONTAINER_SLOT + 1)));
 
-            this.itemOutputCap = new StoredCapability<>(new WrappingItemHandler(inventory, false, true,
+            this.itemOutputCap = new WrappingItemHandler(inventory, false, true,
                     List.of(
                             new WrappingItemHandler.IntRange(OUTPUT_SLOT, OUTPUT_SLOT + 1),
-                            new WrappingItemHandler.IntRange(FILLED_FLUID_SLOT, FILLED_FLUID_SLOT + 1))));
+                            new WrappingItemHandler.IntRange(FILLED_FLUID_SLOT, FILLED_FLUID_SLOT + 1)));
         }
 
         @Override
-        public void writeSaveNBT(CompoundTag nbt) {
+        public void writeSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             nbt.putBoolean("active", active);
-            nbt.put("energy", energy.serializeNBT());
-            nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-            nbt.put("inventory", inventory.serializeNBT());
-            nbt.put("processor", processor.toNBT());
+            nbt.put("energy", energy.serializeNBT(provider));
+            nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
+            nbt.put("inventory", inventory.serializeNBT(provider));
+            nbt.put("processor", processor.toNBT(provider));
         }
 
         @Override
-        public void readSaveNBT(CompoundTag nbt) {
+        public void readSaveNBT(CompoundTag nbt, HolderLookup.Provider provider) {
             active = nbt.getBoolean("active");
-            energy.deserializeNBT(nbt.get("energy"));
-            tank.readFromNBT(nbt.getCompound("tank"));
-            inventory.deserializeNBT(nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+            energy.deserializeNBT(provider, nbt.get("energy"));
+            tank.readFromNBT(provider, nbt.getCompound("tank"));
+            inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+            processor.fromNBT(nbt.get("processor"), FoodFermenterProcess::new, provider);
         }
 
         @Override
-        public void writeSyncNBT(CompoundTag nbt) {
-            nbt.putBoolean("active", active);
-            nbt.put("energy", energy.serializeNBT());
-            nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-            nbt.put("inventory", inventory.serializeNBT());
-            nbt.put("processor", processor.toNBT());
+        public void writeSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+            writeSaveNBT(nbt, provider);
         }
 
         @Override
-        public void readSyncNBT(CompoundTag nbt) {
-            active = nbt.getBoolean("active");
-            energy.deserializeNBT(nbt.get("energy"));
-            tank.readFromNBT(nbt.getCompound("tank"));
-            inventory.deserializeNBT(nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+        public void readSyncNBT(CompoundTag nbt, HolderLookup.Provider provider) {
+            readSaveNBT(nbt, provider);
         }
 
         @Override

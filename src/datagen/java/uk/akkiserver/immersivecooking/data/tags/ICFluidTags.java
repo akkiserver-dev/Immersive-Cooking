@@ -26,11 +26,11 @@ public class ICFluidTags extends FluidTagsProvider {
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         for (ICFluids.FluidEntry entry : ICFluids.ALL_ENTRIES) {
             tag(TagKey.create(Registries.FLUID, entry.type().getId())).add(entry.getStill(), entry.getFlowing());
-            tag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("forge", entry.type().getId().getPath()))).add(entry.getStill(), entry.getFlowing());
+            tag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", entry.type().getId().getPath()))).add(entry.getStill(), entry.getFlowing());
         }
 
         for (VineryJuices juice : VineryJuices.values()) {
-            TagKey<Fluid> forgeTag = ICTags.Fluids.create(ResourceLocation.fromNamespaceAndPath("forge", juice.getName()));
+            TagKey<Fluid> forgeTag = ICTags.Fluids.create(ResourceLocation.fromNamespaceAndPath("c", juice.getName()));
 
             tag(forgeTag).add(
                     juice.getFluidEntry().getStill(),

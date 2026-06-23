@@ -10,14 +10,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
-import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +26,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -101,7 +97,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             CookpotRecipe recipe = recipeOpt.get().value();
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipeOpt.get(), slotData[0]);
+                MultiblockProcessInMachine<CookpotRecipe> process = new CookpotProcess(recipeOpt.get(), slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
                 if (state.processor.addProcessToQueue(process, level, false)) {
                     for (int i = 0; i < slotData[0].length; i++) {
@@ -203,7 +199,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         ItemStack stackToPush = state.inventory.getStackInSlot(OUTPUT_SLOT);
         if (!stackToPush.isEmpty()) {
             ItemStack stack = stackToPush.copyWithCount(1);
-            ItemStack remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
+            ItemStack remaining = Utils.insertStackIntoInventory((Supplier<IItemHandler>) () -> state.itemOutput, stack, false);
             if (remaining.isEmpty()) {
                 stackToPush.shrink(1);
                 ctx.markMasterDirty();
@@ -253,8 +249,8 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         int outputSpace = currentOutput.isEmpty()
                 ? rawOutput.getMaxStackSize()
                 : (ItemStack.isSameItemSameComponents(currentOutput, singleMealResult)
-                        ? currentOutput.getMaxStackSize() - currentOutput.getCount()
-                        : 0);
+                ? currentOutput.getMaxStackSize() - currentOutput.getCount()
+                : 0);
 
         int moveCount = Math.min(Math.min(rawCount, bowlCount), outputSpace);
         if (moveCount <= 0)
@@ -305,20 +301,19 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
 
         private final MultiblockProcessor.InMachineProcessor<CookpotRecipe> processor;
 
-        private final Supplier<IItemHandler> itemOutput;
+        private final IItemHandler itemOutput;
 
         public boolean active;
         private final Supplier<Level> levelSupplier;
 
         public State(IInitialMultiblockContext<State> ctx) {
             final Runnable markDirty = ctx.getMarkDirtyRunnable();
-            final CookpotLogic logic = (CookpotLogic) ICContent.Multiblock.COOKPOT.logic();
             this.levelSupplier = ctx.levelSupplier();
             this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.BLOCKED, 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.BLOCKED, 1),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)),
                     markDirty);
 
             this.processor = new MultiblockProcessor.InMachineProcessor<>(
@@ -328,7 +323,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
                     markDirty,
                     (ignored, id) -> CookpotRecipe.RECIPES.get(id).value());
 
-            this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT);
+            this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT).get();
         }
 
         @Override
@@ -344,7 +339,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             active = nbt.getBoolean("active");
             energy.deserializeNBT(provider, nbt.get("energy"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new, provider);
+            processor.fromNBT(nbt.get("processor"), CookpotProcess::new, provider);
         }
 
         @Override
@@ -360,7 +355,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             active = nbt.getBoolean("active");
             energy.deserializeNBT(provider, nbt.get("energy"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new, provider);
+            processor.fromNBT(nbt.get("processor"), CookpotProcess::new, provider);
         }
 
         @Override

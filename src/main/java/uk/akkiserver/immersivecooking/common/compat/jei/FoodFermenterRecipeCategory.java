@@ -2,10 +2,10 @@ package uk.akkiserver.immersivecooking.common.compat.jei;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +33,7 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
         if (recipe.fluidInput != null) {
             builder.addSlot(RecipeIngredientRole.INPUT, 8, 14)
                     .setFluidRenderer(12000, false, 16, 47)
-                    .addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks());
+                    .addIngredients(NeoForgeTypes.FLUID_STACK, Arrays.asList(recipe.fluidInput.getFluids()));
         }
 
         for (int i = 0; i < recipe.inputs.size(); i++) {

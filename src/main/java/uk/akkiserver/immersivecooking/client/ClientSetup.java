@@ -7,12 +7,18 @@ import blusunrize.lib.manual.ManualInstance;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
@@ -29,6 +35,11 @@ import uk.akkiserver.immersivecooking.common.utils.Resource;
 @OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = ImmersiveCooking.MODID, value = Dist.CLIENT)
 public class ClientSetup {
+    @SubscribeEvent
+    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        ICFluids.FLUID_TYPE_EXTENSIONS.forEach(event::registerFluidType);
+    }
+
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
         event.register(ModelResourceLocation.standalone(Resource.mod("block/multiblock/cookpot.obj")));

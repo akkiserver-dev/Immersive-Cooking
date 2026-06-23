@@ -2,6 +2,7 @@ package uk.akkiserver.immersivecooking.common.fluids;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +28,7 @@ public class ICFluidBlock extends LiquidBlock {
     private int level;
 
     public ICFluidBlock(ICFluids.FluidEntry entry, Properties props) {
-        super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry));
+        super(entry.getStillGetter().get(), Util.make(props, $ -> entryStatic = entry));
         this.entry = entry;
         entryStatic = null;
     }
@@ -64,6 +65,6 @@ public class ICFluidBlock extends LiquidBlock {
     public void entityInside(@Nonnull BlockState state, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn) {
         super.entityInside(state, worldIn, pos, entityIn);
         if (effect != null && entityIn instanceof LivingEntity)
-            ((LivingEntity) entityIn).addEffect(new MobEffectInstance(effect, duration, level));
+            ((LivingEntity) entityIn).addEffect(new MobEffectInstance(Holder.direct(effect), duration, level));
     }
 }
