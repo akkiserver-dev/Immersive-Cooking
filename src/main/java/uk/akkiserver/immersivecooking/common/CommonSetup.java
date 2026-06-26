@@ -8,7 +8,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.crafting.RecipeReloadListener;
-import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
+import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
 
 @EventBusSubscriber(modid = ImmersiveCooking.MODID)
 public final class CommonSetup {

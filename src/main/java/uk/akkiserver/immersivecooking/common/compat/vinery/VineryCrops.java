@@ -7,9 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.util.Lazy;
 
-import uk.akkiserver.immersivecooking.common.compat.ICropCompatibilityProvider;
+import uk.akkiserver.immersivecooking.common.compat.CropCompatibility;
 
-public enum VineryCrops implements ICropCompatibilityProvider {
+public enum VineryCrops implements CropCompatibility {
     RED_GRAPE("red_grape_seeds", "red_grape", "red_grape_bush", 2),
     WHITE_GRAPE("white_grape_seeds", "white_grape", "white_grape_bush", 2),
     SAVANNA_RED_GRAPE("savanna_grape_seeds_red", "savanna_grapes_red", "savanna_grape_bush_red", 2),

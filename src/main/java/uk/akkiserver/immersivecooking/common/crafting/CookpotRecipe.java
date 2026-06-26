@@ -7,14 +7,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import java.util.*;
 
 public class CookpotRecipe extends MultiblockRecipe {
     public static final Map<ResourceLocation, RecipeHolder<CookpotRecipe>> RECIPES = new HashMap<>();
-    public static final List<IRecipeConverter<?, CookpotRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
+    public static final List<RecipeConverter<?, CookpotRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
 
     public final NonNullList<IngredientWithSize> inputs;
     public final ItemStack result;
@@ -51,7 +51,7 @@ public class CookpotRecipe extends MultiblockRecipe {
     public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<CookpotRecipe>> recipes) {
         Map<ResourceLocation, RecipeHolder<CookpotRecipe>> newRecipes = new HashMap<>(recipes);
 
-        for (IRecipeConverter<?, CookpotRecipe> converter : RECIPE_CONVERTERS) {
+        for (RecipeConverter<?, CookpotRecipe> converter : RECIPE_CONVERTERS) {
             for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
                 tryConvert(converter, holder, recipeManager, provider, newRecipes);
             }
@@ -63,7 +63,7 @@ public class CookpotRecipe extends MultiblockRecipe {
 
     @SuppressWarnings("unchecked")
     private static <I extends Recipe<?>> void tryConvert(
-            IRecipeConverter<I, CookpotRecipe> converter,
+            RecipeConverter<I, CookpotRecipe> converter,
             RecipeHolder<?> holder,
             RecipeManager recipeManager,
             HolderLookup.Provider provider,

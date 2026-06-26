@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.Arrays;
 

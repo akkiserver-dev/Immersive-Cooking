@@ -6,7 +6,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.ArrayList;
 import java.util.List;

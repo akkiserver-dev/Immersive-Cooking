@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodProcessorLogic.State;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.FoodProcessorLogic.State;
 
 public class FoodProcessorRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>> {
     public static DynamicModel MIXER;

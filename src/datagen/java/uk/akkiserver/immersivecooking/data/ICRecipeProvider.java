@@ -22,13 +22,13 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.satisfy.vinery.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.common.ICTags;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
-import uk.akkiserver.immersivecooking.common.compat.ICropCompatibilityProvider;
+import uk.akkiserver.immersivecooking.common.util.Resource;
+import uk.akkiserver.immersivecooking.common.compat.CropCompatibility;
 import uk.akkiserver.immersivecooking.common.compat.farmcharm.FarmCharmCrops;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryCrops;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryJuices;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryWines;
-import uk.akkiserver.immersivecooking.data.recipes.*;
+import uk.akkiserver.immersivecooking.data.crafting.*;
 import vectorwing.farmersdelight.common.registry.ModBlocks;
 
 import java.util.*;
@@ -72,11 +72,11 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
     }
 
     private void buildClocheRecipes(RecipeOutput recipeOutput) {
-        List<ICropCompatibilityProvider> allCrops = new ArrayList<>();
-        allCrops.addAll(List.of(VineryCrops.values()));
-        allCrops.addAll(List.of(FarmCharmCrops.values()));
+        List<CropCompatibility> allCropCompatibilities = new ArrayList<>();
+        allCropCompatibilities.addAll(List.of(VineryCrops.values()));
+        allCropCompatibilities.addAll(List.of(FarmCharmCrops.values()));
 
-        for (var crop : allCrops) {
+        for (var crop : allCropCompatibilities) {
             ClocheRecipeBuilder builder = ClocheRecipeBuilder.builder()
                     .output(crop.getCrop().copyWithCount(crop.getMaxDrop()))
                     .addCondition(new ModLoadedCondition(crop.getModId()))

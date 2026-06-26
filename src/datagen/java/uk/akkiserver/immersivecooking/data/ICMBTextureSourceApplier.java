@@ -6,7 +6,7 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SpriteSourceProvider;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;

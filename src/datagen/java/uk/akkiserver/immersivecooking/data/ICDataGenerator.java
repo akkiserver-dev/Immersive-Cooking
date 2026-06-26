@@ -10,7 +10,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.data.blockstates.ICBlockStates;
+import uk.akkiserver.immersivecooking.data.block.state.ICBlockStates;
 import uk.akkiserver.immersivecooking.data.tags.ICBlockTags;
 import uk.akkiserver.immersivecooking.data.tags.ICFluidTags;
 import uk.akkiserver.immersivecooking.data.tags.ICItemTags;

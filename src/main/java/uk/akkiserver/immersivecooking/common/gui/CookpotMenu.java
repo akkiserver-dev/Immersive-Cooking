@@ -4,19 +4,14 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
-
-import javax.annotation.Nonnull;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.CookpotLogic;
 
 public class CookpotMenu extends ICContainerMenu {
     public final EnergyStorage energyStorage;

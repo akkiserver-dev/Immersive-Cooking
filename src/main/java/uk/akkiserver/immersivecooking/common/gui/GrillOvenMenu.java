@@ -12,7 +12,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import uk.akkiserver.immersivecooking.common.ICContent;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.GrillOvenLogic;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.GrillOvenLogic;
 
 import javax.annotation.Nonnull;
 

@@ -5,8 +5,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
-import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
-import uk.akkiserver.immersivecooking.common.utils.InventoryUtils;
+import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
+import uk.akkiserver.immersivecooking.common.util.InventoryUtils;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

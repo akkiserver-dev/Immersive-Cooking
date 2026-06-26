@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICTags;
-import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
+import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryJuices;
 
 import java.util.concurrent.CompletableFuture;

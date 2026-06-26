@@ -8,16 +8,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FarmersDelightCookpotRecipeConverter implements IRecipeConverter<CookingPotRecipe, CookpotRecipe> {
+public class FarmersDelightCookpotRecipeConverter implements RecipeConverter<CookingPotRecipe, CookpotRecipe> {
     @Override
     public RecipeType<CookingPotRecipe> sourceType() {
         return ModRecipeTypes.COOKING.get();

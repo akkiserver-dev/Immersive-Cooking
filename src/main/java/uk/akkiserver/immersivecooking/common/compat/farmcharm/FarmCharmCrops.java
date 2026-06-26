@@ -6,9 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.util.Lazy;
-import uk.akkiserver.immersivecooking.common.compat.ICropCompatibilityProvider;
+import uk.akkiserver.immersivecooking.common.compat.CropCompatibility;
 
-public enum FarmCharmCrops implements ICropCompatibilityProvider {
+public enum FarmCharmCrops implements CropCompatibility {
     TOMATO("tomato_seeds", "tomato", "tomato_crop", 2),
     LETTUCE("lettuce_seeds", "lettuce", "lettuce_crop", 2),
     STRAWBERRY("strawberry_seeds", "strawberry", "strawberry_crop", 2),

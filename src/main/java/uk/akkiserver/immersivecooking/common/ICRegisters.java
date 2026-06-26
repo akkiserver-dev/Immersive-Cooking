@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultibl
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.types.Type;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,9 +43,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-import uk.akkiserver.immersivecooking.common.blocks.ICFurnaceLikeMultiblock;
-import uk.akkiserver.immersivecooking.common.blocks.ICMultiblockBase;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.block.ICFurnaceLikeMultiblock;
+import uk.akkiserver.immersivecooking.common.block.ICMultiblockBase;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

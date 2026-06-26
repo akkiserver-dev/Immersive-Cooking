@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import uk.akkiserver.immersivecooking.common.gui.GrillOvenMenu;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 public class GrillOvenScreen extends ICContainerScreen<GrillOvenMenu> {
     private static final ResourceLocation TEXTURE = Resource.texture("gui/grill_oven.png");

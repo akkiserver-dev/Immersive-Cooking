@@ -1,14 +1,11 @@
 package uk.akkiserver.immersivecooking.common.compat.jei;
 
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
@@ -16,15 +13,12 @@ import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodProcessorScreen;
 import uk.akkiserver.immersivecooking.common.ICContent;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 @JeiPlugin
 public class ICJEIPlugin implements IModPlugin {

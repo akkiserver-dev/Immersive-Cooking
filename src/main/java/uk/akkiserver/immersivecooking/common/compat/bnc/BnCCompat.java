@@ -4,15 +4,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.common.compat.IModCompatibilityProvider;
+import uk.akkiserver.immersivecooking.common.compat.ModCompatibility;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
-import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
+import uk.akkiserver.immersivecooking.common.util.FluidUtils;
 import umpaz.brewinandchewin.common.crafting.FluidIngredientWithAmount;
 import umpaz.brewinandchewin.common.utility.AbstractedFluidIngredient;
 import umpaz.brewinandchewin.common.utility.AbstractedFluidStack;
 import umpaz.brewinandchewin.neoforge.utility.KegCompatibleFluidIngredients;
 
-public final class BnCCompat implements IModCompatibilityProvider {
+public final class BnCCompat implements ModCompatibility {
     static SizedFluidIngredient toSizedFluidIngredient(FluidIngredientWithAmount fluidWithAmount) {
         FluidIngredient fluidIngredient = toFluidIngredient(fluidWithAmount.ingredient());
         int amount = (int) fluidWithAmount.loaderAmount(); // mB

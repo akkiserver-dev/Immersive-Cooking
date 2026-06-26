@@ -2,10 +2,10 @@ package uk.akkiserver.immersivecooking.common.compat.bnc;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import uk.akkiserver.immersivecooking.common.fluids.IItemFluidRelationProvider;
+import uk.akkiserver.immersivecooking.common.fluid.ItemFluidRelationProvider;
 import umpaz.brewinandchewin.common.registry.BnCItems;
 
-public class BnCFluidRelationProvider implements IItemFluidRelationProvider {
+public class BnCFluidRelationProvider implements ItemFluidRelationProvider {
     @Override
     public boolean isFluidContainer(ItemStack stack) {
         return BnCDrinks.fromItem(stack.getItem()).isPresent();

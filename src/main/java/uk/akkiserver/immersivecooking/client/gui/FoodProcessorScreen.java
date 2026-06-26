@@ -9,9 +9,8 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import uk.akkiserver.immersivecooking.common.gui.FoodFermenterMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodProcessorMenu;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import javax.annotation.Nonnull;
 import java.util.List;

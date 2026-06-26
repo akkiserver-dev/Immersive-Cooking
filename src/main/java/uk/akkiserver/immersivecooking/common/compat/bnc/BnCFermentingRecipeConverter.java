@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import umpaz.brewinandchewin.common.crafting.KegFermentingRecipe;
 import umpaz.brewinandchewin.common.crafting.KegPouringRecipe;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFermentingRecipe, FoodFermenterRecipe> {
+public class BnCFermentingRecipeConverter implements RecipeConverter<KegFermentingRecipe, FoodFermenterRecipe> {
     private static final int DEFAULT_COOK_TIME = 200;
     private static final int DEFAULT_ENERGY = 800;
 

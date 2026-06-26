@@ -10,11 +10,11 @@ import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.common.ICContent;
-import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
-import uk.akkiserver.immersivecooking.data.blockstates.ICBlockStates;
-import uk.akkiserver.immersivecooking.data.models.TRSRItemModelProvider;
-import uk.akkiserver.immersivecooking.data.models.TRSRModelBuilder;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
+import uk.akkiserver.immersivecooking.data.block.state.ICBlockStates;
+import uk.akkiserver.immersivecooking.data.model.TRSRItemModelProvider;
+import uk.akkiserver.immersivecooking.data.model.TRSRModelBuilder;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 public class ICItemModels extends TRSRItemModelProvider {
     private final ICBlockStates blockStates;

@@ -13,14 +13,14 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
-import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import java.util.*;
 
 public class FoodProcessorRecipe extends MultiblockRecipe {
     public static final Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> RECIPES = new HashMap<>();
-    public static final List<IRecipeConverter<?, FoodProcessorRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
+    public static final List<RecipeConverter<?, FoodProcessorRecipe>> RECIPE_CONVERTERS = new ArrayList<>();
 
     public NonNullList<IngredientWithSize> inputs; // 8 slots
     @Nullable
@@ -48,7 +48,7 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
     public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> recipes) {
         Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> newRecipes = new HashMap<>(recipes);
 
-        for (IRecipeConverter<?, FoodProcessorRecipe> converter : RECIPE_CONVERTERS) {
+        for (RecipeConverter<?, FoodProcessorRecipe> converter : RECIPE_CONVERTERS) {
             for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
                 tryConvert(converter, holder, recipeManager, provider, newRecipes);
             }
@@ -114,7 +114,7 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
 
     @SuppressWarnings("unchecked")
     private static <I extends Recipe<?>> void tryConvert(
-            IRecipeConverter<I, FoodProcessorRecipe> converter,
+            RecipeConverter<I, FoodProcessorRecipe> converter,
             RecipeHolder<?> holder,
             RecipeManager recipeManager,
             HolderLookup.Provider provider,

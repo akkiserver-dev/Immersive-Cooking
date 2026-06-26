@@ -10,8 +10,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.ICTags;
-import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 

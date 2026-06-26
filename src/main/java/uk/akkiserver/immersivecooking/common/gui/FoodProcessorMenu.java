@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
@@ -14,7 +13,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodProcessorLogic;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.FoodProcessorLogic;
 
 public class FoodProcessorMenu extends ICContainerMenu {
     public final EnergyStorage energyStorage;

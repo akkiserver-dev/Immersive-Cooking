@@ -12,9 +12,9 @@ import net.satisfy.farm_and_charm.core.recipe.CookingPotRecipe;
 import net.satisfy.farm_and_charm.core.recipe.RoasterRecipe;
 import net.satisfy.farm_and_charm.core.recipe.StoveRecipe;
 import net.satisfy.farm_and_charm.core.registry.RecipeTypeRegistry;
-import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
-import uk.akkiserver.immersivecooking.common.utils.Resource;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +24,13 @@ public final class FarmCharmCookpotRecipeConverter {
     private static final int DEFAULT_COOK_TIME = 200;
     private static final int DEFAULT_ENERGY = 800;
 
-    public static void addAll(List<IRecipeConverter<?, CookpotRecipe>> converters) {
+    public static void addAll(List<RecipeConverter<?, CookpotRecipe>> converters) {
         converters.add(new Cookpot());
         converters.add(new Roaster());
         converters.add(new Stove());
     }
 
-    public static final class Cookpot implements IRecipeConverter<CookingPotRecipe, CookpotRecipe> {
+    public static final class Cookpot implements RecipeConverter<CookingPotRecipe, CookpotRecipe> {
         @Override
         public RecipeType<CookingPotRecipe> sourceType() {
             return RecipeTypeRegistry.COOKING_POT_RECIPE_TYPE.get();
@@ -60,7 +60,7 @@ public final class FarmCharmCookpotRecipeConverter {
         }
     }
 
-    public static final class Roaster implements IRecipeConverter<RoasterRecipe, CookpotRecipe> {
+    public static final class Roaster implements RecipeConverter<RoasterRecipe, CookpotRecipe> {
         @Override
         public RecipeType<RoasterRecipe> sourceType() {
             return RecipeTypeRegistry.ROASTER_RECIPE_TYPE.get();
@@ -86,7 +86,7 @@ public final class FarmCharmCookpotRecipeConverter {
         }
     }
 
-    public static final class Stove implements IRecipeConverter<StoveRecipe, CookpotRecipe> {
+    public static final class Stove implements RecipeConverter<StoveRecipe, CookpotRecipe> {
         @Override
         public RecipeType<StoveRecipe> sourceType() {
             return RecipeTypeRegistry.STOVE_RECIPE_TYPE.get();

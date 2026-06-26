@@ -13,7 +13,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.FoodFermenterLogic;
 
 public class FoodFermenterMenu extends ICContainerMenu {
     public final EnergyStorage energyStorage;

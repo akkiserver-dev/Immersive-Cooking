@@ -1,9 +1,9 @@
 package uk.akkiserver.immersivecooking.common.compat.farmersdelight;
 
-import uk.akkiserver.immersivecooking.common.compat.IModCompatibilityProvider;
+import uk.akkiserver.immersivecooking.common.compat.ModCompatibility;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 
-public final class FarmersDelightCompat implements IModCompatibilityProvider {
+public final class FarmersDelightCompat implements ModCompatibility {
     @Override
     public String modId() {
         return "farmersdelight";
