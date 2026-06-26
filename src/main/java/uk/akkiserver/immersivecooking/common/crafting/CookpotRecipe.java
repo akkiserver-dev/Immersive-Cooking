@@ -34,6 +34,7 @@ public class CookpotRecipe extends MultiblockRecipe {
         this.container = container;
 
         this.setInputListWithSizes(new ArrayList<>(this.inputs));
+        this.outputList = new TagOutputList(new TagOutput(result));
     }
 
     public static Optional<RecipeHolder<CookpotRecipe>> findRecipe(RecipeInput input, Level level) {
@@ -49,7 +50,7 @@ public class CookpotRecipe extends MultiblockRecipe {
     }
 
     public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<CookpotRecipe>> recipes) {
-        Map<ResourceLocation, RecipeHolder<CookpotRecipe>> newRecipes = new HashMap<>();
+        Map<ResourceLocation, RecipeHolder<CookpotRecipe>> newRecipes = new HashMap<>(recipes);
 
         for (IRecipeConverter<?, CookpotRecipe> converter : RECIPE_CONVERTERS) {
             for (RecipeHolder<?> holder : recipeManager.getRecipes()) {

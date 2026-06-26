@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "${loader_version_range}"
 license = "${mod_license}"
-logoFile= "../../main/resources/iclogo.png"
+issueTrackerURL ="https://github.com/akkiserver-dev/Immersive-Cooking/issues"
 
 [[mods]]
 modId = "${mod_id}"
@@ -9,6 +9,8 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
+logoFile= "../../main/resources/iclogo.png"
+updateJSONURL="https://raw.githubusercontent.com/akkiserver-dev/Immersive-Cooking/changelogs/1.21.1/change.json"
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 mandatory = true

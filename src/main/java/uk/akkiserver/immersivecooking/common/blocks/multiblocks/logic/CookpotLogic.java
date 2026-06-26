@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
+import flaxbeard.immersivepetroleum.common.blocks.multiblocks.logic.hydro_treater.HydroTreaterLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
+import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.CookpotShape;
@@ -65,6 +67,11 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
     }
 
     @Override
+    public void registerCapabilities(CapabilityRegistrar<CookpotLogic.State> register){
+        register.registerAtOrNull(Capabilities.EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+    }
+
+    @Override
     public void tickServer(IMultiblockContext<State> context) {
         final State state = context.getState();
         final Level level = context.getLevel().getRawLevel();
@@ -80,11 +87,9 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
     }
 
     private void enqueueProcesses(State state, Level level) {
-        if (state.energy.getEnergyStored() <= 0 || state.processor.getQueueSize() >= state.processor.getMaxQueueSize())
-            return;
+        if (state.energy.getEnergyStored() <= 0 || state.processor.getQueueSize() >= state.processor.getMaxQueueSize()) return;
 
-        if (state.processor.getQueueSize() > 0)
-            return;
+        if (state.processor.getQueueSize() > 0) return;
 
         int inputStart = 0;
 
@@ -95,9 +100,10 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
 
         if (recipeOpt.isPresent()) {
             CookpotRecipe recipe = recipeOpt.get().value();
+            ImmersiveCooking.LOGGER.debug("enqueuing process for recipe {} (outputting {})", recipe, recipe.getResult());
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<CookpotRecipe> process = new CookpotProcess(recipeOpt.get(), slotData[0]);
+                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipeOpt.get(), slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
                 if (state.processor.addProcessToQueue(process, level, false)) {
                     for (int i = 0; i < slotData[0].length; i++) {
@@ -207,8 +213,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         }
 
         ItemStack rawOutput = state.inventory.getStackInSlot(OUTPUT_RAW_SLOT);
-        if (rawOutput.isEmpty())
-            return;
+        if (rawOutput.isEmpty()) return;
 
         Level level = ctx.getLevel().getRawLevel();
 
@@ -293,8 +298,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         MBInventoryUtils.dropItems(state.inventory, drop);
     }
 
-    public static class State
-            implements IMultiblockState, ProcessContext.ProcessContextInMachine<CookpotRecipe>, ContainerData {
+    public static class State implements IMultiblockState, ProcessContext.ProcessContextInMachine<CookpotRecipe>, ContainerData {
         private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
         private final SlotwiseItemHandler inventory;
         public final RedstoneControl.RSState rsState = RedstoneControl.RSState.enabledByDefault();
@@ -339,7 +343,11 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             active = nbt.getBoolean("active");
             energy.deserializeNBT(provider, nbt.get("energy"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), CookpotProcess::new, provider);
+            processor.fromNBT(
+                    nbt.get("processor"),
+                    (getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+                    provider
+            );
         }
 
         @Override
@@ -355,7 +363,11 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             active = nbt.getBoolean("active");
             energy.deserializeNBT(provider, nbt.get("energy"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), CookpotProcess::new, provider);
+            processor.fromNBT(
+                    nbt.get("processor"),
+                    (getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+                    provider
+            );
         }
 
         @Override

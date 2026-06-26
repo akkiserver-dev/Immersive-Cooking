@@ -12,12 +12,14 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
@@ -29,6 +31,7 @@ import uk.akkiserver.immersivecooking.common.blocks.multiblocks.CookpotMultibloc
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.FoodFermenterMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.GrillOvenMultiblock;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.ICTemplateMultiblock;
+import uk.akkiserver.immersivecooking.common.crafting.RecipeReloadListener;
 import uk.akkiserver.immersivecooking.common.fluids.ICFluids;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
@@ -36,16 +39,21 @@ import uk.akkiserver.immersivecooking.common.utils.Resource;
 @EventBusSubscriber(modid = ImmersiveCooking.MODID, value = Dist.CLIENT)
 public class ClientSetup {
     @SubscribeEvent
-    static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+    public static void onCommonSetup(FMLCommonSetupEvent event) {
+        NeoForge.EVENT_BUS.register(new RecipeReloadListener(null));
+    }
+
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         ICFluids.FLUID_TYPE_EXTENSIONS.forEach(event::registerFluidType);
     }
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(ModelResourceLocation.standalone(Resource.mod("block/multiblock/cookpot.obj")));
-        event.register(ModelResourceLocation.standalone(Resource.mod("block/multiblock/grill_oven.obj")));
-        event.register(ModelResourceLocation.standalone(Resource.mod("block/multiblock/food_fermenter.obj")));
-        event.register(ModelResourceLocation.standalone(Resource.mod("block/multiblock/food_processor.obj")));
+        event.register(Resource.model("block/multiblock/cookpot"));
+        event.register(Resource.model("block/multiblock/grill_oven"));
+        event.register(Resource.model("block/multiblock/food_fermenter"));
+        event.register(Resource.model("block/multiblock/food_processor"));
     }
 
     @SubscribeEvent
@@ -60,14 +68,12 @@ public class ClientSetup {
             ItemBlockRenderTypes.setRenderLayer(entry.getFlowing(), RenderType.translucent());
         });
 
-        setupManual();
+        //setupManual();
     }
 
     public static void setupManual() {
         ManualInstance manual = ManualHelper.getManual();
         ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(manual);
-
-
 
         registerMultiblockManualPage(manual, builder, "cookpot", CookpotMultiblock.INSTANCE);
         registerMultiblockManualPage(manual, builder, "food_fermenter", FoodFermenterMultiblock.INSTANCE);
@@ -80,6 +86,5 @@ public class ClientSetup {
                 () -> new ManualElementMultiblock(manual, multiblock)));
         ManualEntry entry = builder.create();
         manual.addEntry(manual.getRoot().getOrCreateSubnode(Resource.mod("main")).getOrCreateSubnode(Resource.mod("multiblocks")), entry);
-
     }
 }

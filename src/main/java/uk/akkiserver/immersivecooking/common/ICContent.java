@@ -54,7 +54,7 @@ public final class ICContent {
                         "cookpot",
                         new CookpotLogic(),
                         () -> CookpotMultiblock.INSTANCE,
-                        builder -> builder.gui(MenuTypes.COOKPOT).redstone(s -> s.rsState));
+                        builder -> builder.gui(MenuTypes.COOKPOT).redstone(s -> s.rsState, CookpotLogic.REDSTONE_POS));
 
         public static final MultiblockRegistration<FoodFermenterLogic.State> FOOD_FERMENTER = ICRegisters
                 .registerMetalMultiblock(

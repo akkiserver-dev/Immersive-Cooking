@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "type": "immersivecooking:food_fermenter",
+  "container": {
+    "count": 1,
+    "id": "vinery:wine_bottle"
+  },
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "tag": "neoforge:white_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "vinery:apple_wine"
+    },
+    {
+      "item": "vinery:chenet_wine"
+    },
+    {
+      "item": "vinery:bolvar_wine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "vinery:jellie_wine"
+  },
+  "time": 4800
+}

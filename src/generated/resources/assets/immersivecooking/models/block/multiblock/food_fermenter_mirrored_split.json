@@ -6,7 +6,7 @@
       "parent": "minecraft:block/block",
       "automatic_culling": false,
       "flip_v": true,
-      "loader": "forge:obj",
+      "loader": "neoforge:obj",
       "model": "immersivecooking:models/block/multiblock/food_fermenter.obj",
       "textures": {
         "particle": "immersivecooking:block/multiblock/multiblock_base"

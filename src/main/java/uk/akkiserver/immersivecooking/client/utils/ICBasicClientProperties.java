@@ -1,13 +1,13 @@
 package uk.akkiserver.immersivecooking.client.utils;
 
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -15,8 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.ICTemplateMultiblock;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ICBasicClientProperties implements ClientMultiblocks.MultiblockManualData {
     private final ICTemplateMultiblock multiblock;
@@ -54,23 +53,18 @@ public class ICBasicClientProperties implements ClientMultiblocks.MultiblockManu
     }
 
     @Override
-    public NonNullList<ItemStack> getTotalMaterials() {
-        if (this.materials == null) {
-            List<StructureTemplate.StructureBlockInfo> structure = this.multiblock.getStructure(Minecraft.getInstance().level);
-            this.materials = NonNullList.create();
-            for (StructureTemplate.StructureBlockInfo info : structure){
-                ItemStack picked = Utils.getPickBlock(info.state());
-                boolean added = false;
-                for (ItemStack existing : this.materials)
-                    if (ItemStack.isSameItem(existing, picked)){
-                        existing.grow(1);
-                        added = true;
-                        break;
-                    }
-                if (!added)
-                    this.materials.add(picked.copy());
-            }
-        }
+    public NonNullList<ItemStack> getTotalMaterials(){
+        if(this.materials != null)
+            return this.materials;
+
+        final List<StructureTemplate.StructureBlockInfo> structure = this.multiblock.getStructure(Minecraft.getInstance().level);
+        this.materials = structure.stream()
+                .map(info -> new ItemStack(info.state().getBlock().asItem(), 1))
+                .collect(HashMap<Item, Integer>::new, (map, stack) -> map.compute(stack.getItem(), (item, count) -> count == null ? 1 : count + 1), HashMap::putAll)
+                .entrySet().stream()
+                .map(e -> new ItemStack(e.getKey(), e.getValue()))
+                .collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
+
         return this.materials;
     }
 

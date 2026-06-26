@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager resourceManager){
         if (serverResources != null) {
+            System.out.println();
             loadRecipes(serverResources);
         }
     }
@@ -61,6 +63,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
 
     @SuppressWarnings("unchecked")
     private static <R extends Recipe<?>, H extends RecipeHolder<R>> Map<ResourceLocation, H> indexRecipes(Collection<RecipeHolder<?>> recipes, RecipeType<R> recipeType) {
+        ImmersiveCooking.LOGGER.debug("Indexing {} recipes... (found {} raw recipes)", recipeType.toString(), recipes.size());
         return (Map<ResourceLocation, H>) recipes.stream()
                 .filter(holder -> holder.value().getType() == recipeType)
                 .collect(Collectors.toMap(RecipeHolder::id, holder -> (RecipeHolder<R>) holder));

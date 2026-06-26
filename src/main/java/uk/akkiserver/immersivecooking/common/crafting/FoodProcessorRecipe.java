@@ -1,9 +1,6 @@
 package uk.akkiserver.immersivecooking.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.crafting.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -43,10 +40,13 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
         this.fluidInput = fluidInput;
         this.result = result;
         this.inputs = inputs;
+
+        this.setInputListWithSizes(new ArrayList<>(this.inputs));
+        this.outputList = new TagOutputList(new TagOutput(result));
     }
 
     public static void updateRecipes(RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> recipes) {
-        Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> newRecipes = new HashMap<>();
+        Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> newRecipes = new HashMap<>(recipes);
 
         for (IRecipeConverter<?, FoodProcessorRecipe> converter : RECIPE_CONVERTERS) {
             for (RecipeHolder<?> holder : recipeManager.getRecipes()) {

@@ -45,12 +45,10 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
         }
 
         if (!recipe.container.isEmpty()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 127, 9)
-                    .addItemStack(recipe.container);
+            builder.addSlot(RecipeIngredientRole.INPUT, 127, 9).addItemStack(recipe.container);
         }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 127, 48)
-                .addItemStack(recipe.result);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 127, 48).addItemStack(recipe.result);
     }
 
     @Override
@@ -62,6 +60,7 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
                 1,
                 1,
                 0xFFFFFF,
-                false);
+                false
+        );
     }
 }

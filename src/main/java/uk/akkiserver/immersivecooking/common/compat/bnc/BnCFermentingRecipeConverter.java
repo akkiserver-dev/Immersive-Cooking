@@ -14,16 +14,26 @@ import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import umpaz.brewinandchewin.common.crafting.KegFermentingRecipe;
 import umpaz.brewinandchewin.common.crafting.KegPouringRecipe;
-import umpaz.brewinandchewin.common.registry.BnCItems;
 import umpaz.brewinandchewin.common.registry.BnCRecipeTypes;
 import umpaz.brewinandchewin.common.utility.AbstractedFluidStack;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFermentingRecipe, FoodFermenterRecipe> {
     private static final int DEFAULT_COOK_TIME = 200;
     private static final int DEFAULT_ENERGY = 800;
+
+    /**
+     * Cache of KEG_POURING recipes for the current RecipeManager instance, sorted with non-strict
+     * recipes first (matching BnCClientRecipeUtils' ordering). Invalidated whenever the RecipeManager
+     * instance changes (i.e. on every recipe reload), since RecipeManager is rebuilt wholesale on reload.
+     */
+    @Nullable
+    private RecipeManager cachedManager;
+    private List<KegPouringRecipe> cachedPouringRecipes = List.of();
 
     @Override
     public RecipeType<KegFermentingRecipe> sourceType() {
@@ -44,6 +54,18 @@ public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFerment
         }
     }
 
+    private List<KegPouringRecipe> getPouringRecipes(RecipeManager recipeManager) {
+        if (cachedManager != recipeManager) {
+            cachedPouringRecipes = recipeManager.getAllRecipesFor(BnCRecipeTypes.KEG_POURING)
+                    .stream()
+                    .map(RecipeHolder::value)
+                    .sorted(Comparator.comparing(KegPouringRecipe::isStrict))
+                    .collect(Collectors.toList());
+            cachedManager = recipeManager;
+        }
+        return cachedPouringRecipes;
+    }
+
     private FoodFermenterRecipe toFoodFermenterRecipe(
             RecipeHolder<KegFermentingRecipe> holder,
             RecipeManager recipeManager,
@@ -58,23 +80,34 @@ public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFerment
                 .map(BnCCompat::toSizedFluidIngredient)
                 .orElse(null);
 
-        ItemStack output = bncRecipe.getResultItem(provider);
-
-        ItemStack finalOutput = output;
-        ItemStack container = recipeManager.getAllRecipesFor(BnCRecipeTypes.KEG_POURING)
-                .stream()
-                .filter(r -> ItemStack.isSameItem(r.value().getResultItem(provider), finalOutput))
-                .findFirst()
-                .map(r -> r.value().getContainer())
-                .orElse(ItemStack.EMPTY);
+        ItemStack output;
+        ItemStack container;
 
         Optional<AbstractedFluidStack> fluidResult = bncRecipe.getResult().left();
-        if (fluidResult.isPresent() && container.is(BnCItems.TANKARD)) {
-            AbstractedFluidStack fs = fluidResult.get();
-            long fluidAmountMb = fs.unit().convertToLoader(fs.amount());
-            int count = (int) Math.max(1, fluidAmountMb / 250);
+        if (fluidResult.isPresent()) {
+            AbstractedFluidStack resultFluid = fluidResult.get();
+
+            Optional<KegPouringRecipe> pouringRecipe = getPouringRecipes(recipeManager)
+                    .stream()
+                    .filter(r -> r.getRawFluid().matches(resultFluid))
+                    .findFirst();
+
+            if (pouringRecipe.isEmpty()) {
+                throw new IllegalStateException("No matching KEG_POURING recipe found for fluid result " + resultFluid.fluid());
+            }
+
+            KegPouringRecipe pouring = pouringRecipe.get();
+            output = pouring.getOutput().copy();
+            container = pouring.getContainer().copy();
+
+            long fluidAmountMb = resultFluid.unit().convertToLoader(resultFluid.amount());
+            long pourAmountMb = pouring.getUnit().convertToLoader(pouring.getRawFluid().amount());
+            int count = (int) Math.max(1, fluidAmountMb / pourAmountMb);
             output = output.copyWithCount(count);
             container = container.copyWithCount(count);
+        } else {
+            output = bncRecipe.getResultItem(provider);
+            container = ItemStack.EMPTY;
         }
 
         int fermentTime = bncRecipe.getFermentTime();

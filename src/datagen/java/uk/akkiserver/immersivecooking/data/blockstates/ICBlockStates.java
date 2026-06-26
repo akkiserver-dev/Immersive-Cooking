@@ -48,6 +48,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+
 public class ICBlockStates extends BlockStateProvider {
     private static final List<Vec3i> CUBE_THREE = BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
             .map(BlockPos::immutable)
@@ -167,25 +169,17 @@ public class ICBlockStates extends BlockStateProvider {
         return ResourceLocation.fromNamespaceAndPath(in.getNamespace(), "models/" + in.getPath());
     }
 
-    private ModelFile cubeThree(String name, ResourceLocation sideTexture, ResourceLocation frontTexture) {
-        ResourceLocation objLoc = ResourceLocation.fromNamespaceAndPath("immersiveengineering", "block/stone_multiblocks/cube_three.obj");
-
-        NongeneratedModel baseModel = obj(
-                name,
-                objLoc,
-                ImmutableMap.of("side", sideTexture, "front", frontTexture),
-                innerModels
-        );
+    private ModelFile cubeThree(String name, ResourceLocation def, ResourceLocation front) {
+        NongeneratedModel baseModel = obj(name, rl("block/stone_multiblocks/cube_three.obj"),
+                ImmutableMap.of("side", def, "front", front), innerModels);
         return splitModel(name + "_split", baseModel, CUBE_THREE, false);
     }
 
-    private void createMultiblock(NongeneratedModel unsplitModel, ICTemplateMultiblock multiblock)
-    {
+    private void createMultiblock(NongeneratedModel unsplitModel, ICTemplateMultiblock multiblock) {
         createMultiblock(unsplitModel, multiblock, false);
     }
 
-    private void createDynamicMultiblock(NongeneratedModel unsplitModel, ICTemplateMultiblock multiblock)
-    {
+    private void createDynamicMultiblock(NongeneratedModel unsplitModel, ICTemplateMultiblock multiblock) {
         createMultiblock(unsplitModel, multiblock, true);
     }
 
@@ -320,7 +314,7 @@ public class ICBlockStates extends BlockStateProvider {
         final ResourceLocation name = mb.getUniqueName();
         if (TemplateMultiblock.SYNCED_CLIENT_TEMPLATES.containsKey(name)) return;
 
-        final String filePath = "structures/" + name.getPath() + ".nbt";
+        final String filePath = "structure/" + name.getPath() + ".nbt";
         int slash = filePath.indexOf('/');
         String prefix = filePath.substring(0, slash);
         ResourceLocation shortLoc = ResourceLocation.fromNamespaceAndPath(

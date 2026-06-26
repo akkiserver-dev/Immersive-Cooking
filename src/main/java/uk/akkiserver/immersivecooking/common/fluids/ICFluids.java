@@ -122,9 +122,11 @@ public final class ICFluids {
             );
 
             Mutable<FluidEntry> thisMutable = new MutableObject<>();
-            ICFluid stillRaw = ICFluid.makeFluid(makeStill, thisMutable.getValue());
+
+            // Construct lazily inside the supplier; the registry must build these during its own
+            // RegisterEvent, not eagerly here, or intrusive-holder creation can hit a frozen registry.
             DeferredHolder<Fluid, ICFluid> still = ICRegisters.FLUID_REGISTER.register(
-                    name, () -> stillRaw
+                    name, () -> ICFluid.makeFluid(makeStill, thisMutable.getValue())
             );
             DeferredHolder<Fluid, ICFluid> flowing = ICRegisters.FLUID_REGISTER.register(
                     name + "_flowing", () -> ICFluid.makeFluid(makeFlowing, thisMutable.getValue())
@@ -135,8 +137,9 @@ public final class ICFluids {
                     () -> new ICFluidBlock(thisMutable.getValue(), Properties.ofFullCopy(Blocks.WATER))
             );
 
+            // still.get() resolves once Fluid's RegisterEvent has already run, by the time Item's RegisterEvent fires
             DeferredHolder<Item, BucketItem> bucket = ICRegisters.registerItem(
-                    name + "_bucket", () -> makeBucket(stillRaw, burnTime)
+                    name + "_bucket", () -> makeBucket(still.get(), burnTime)
             );
 
             FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties);

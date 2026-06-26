@@ -19,6 +19,7 @@ public class ImmersiveCooking {
         ICRecipes.init();
         ICRegisters.init(bus);
         ICContent.init();
+        ICRegisters.runCallbacks(bus);
         Compat.init();
     }
 }

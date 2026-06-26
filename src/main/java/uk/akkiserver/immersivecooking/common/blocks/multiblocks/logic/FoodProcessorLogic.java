@@ -124,7 +124,7 @@ public class FoodProcessorLogic implements IMultiblockLogic<FoodProcessorLogic.S
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<FoodProcessorRecipe> process = new FoodProcessorProcess(holder,
+                MultiblockProcessInMachine<FoodProcessorRecipe> process = new MultiblockProcessInMachine<>(holder,
                         slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
 
@@ -326,7 +326,11 @@ public class FoodProcessorLogic implements IMultiblockLogic<FoodProcessorLogic.S
             energy.deserializeNBT(provider, nbt.get("energy"));
             tank.readFromNBT(provider, nbt.getCompound("tank"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), FoodProcessorProcess::new, provider);
+            processor.fromNBT(
+                    nbt.get("processor"),
+                    (getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+                    provider
+            );
         }
 
         @Override
@@ -365,7 +369,7 @@ public class FoodProcessorLogic implements IMultiblockLogic<FoodProcessorLogic.S
             if (levelSupplier.get() != null) {
                 List<MultiblockProcess<FoodProcessorRecipe, ProcessContextInMachine<FoodProcessorRecipe>>> queue = processor.getQueue();
                 if (!queue.isEmpty()) {
-                    return queue.get(0);
+                    return queue.getFirst();
                 }
             }
             return null;

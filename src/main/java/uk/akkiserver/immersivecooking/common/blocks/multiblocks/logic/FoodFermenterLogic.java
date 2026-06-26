@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -30,13 +29,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -136,7 +133,7 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<FoodFermenterRecipe> process = new FoodFermenterProcess(holder,
+                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(holder,
                         slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
 
@@ -341,7 +338,11 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
             energy.deserializeNBT(provider, nbt.get("energy"));
             tank.readFromNBT(provider, nbt.getCompound("tank"));
             inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-            processor.fromNBT(nbt.get("processor"), FoodFermenterProcess::new, provider);
+            processor.fromNBT(
+                    nbt.get("processor"),
+                    (getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+                    provider
+            );
         }
 
         @Override
@@ -379,7 +380,7 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
                 List<MultiblockProcess<FoodFermenterRecipe, ProcessContextInMachine<FoodFermenterRecipe>>> queue = processor
                         .getQueue();
                 if (!queue.isEmpty()) {
-                    return queue.get(0);
+                    return queue.getFirst();
                 }
             }
             return null;

@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "type": "immersivecooking:food_fermenter",
+  "container": {
+    "count": 1,
+    "id": "vinery:wine_bottle"
+  },
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "tag": "neoforge:red_savanna_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "vinery:jo_special_mixture"
+  },
+  "time": 4800
+}

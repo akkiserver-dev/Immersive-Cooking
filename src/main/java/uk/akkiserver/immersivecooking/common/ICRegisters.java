@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.IEMultibl
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.types.Type;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -80,7 +81,7 @@ public final class ICRegisters {
     public static final DeferredRegister<FluidType> FLUID_TYPE_REGISTER = createRegister(NeoForgeRegistries.Keys.FLUID_TYPES);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = createRegister(BuiltInRegistries.RECIPE_TYPE);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = createRegister(BuiltInRegistries.RECIPE_SERIALIZER);
-    private static final DeferredRegister<SoundEvent> SOUND_EVENT = createRegister(BuiltInRegistries.SOUND_EVENT);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENT = createRegister(BuiltInRegistries.SOUND_EVENT);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = createRegister(Registries.CREATIVE_MODE_TAB);
     public static final DeferredRegister<MenuType<?>> MENU_REGISTER = createRegister(BuiltInRegistries.MENU);
 
@@ -89,7 +90,6 @@ public final class ICRegisters {
             reg.register(eventBus);
             LOGGER.info("Registered {}", reg.getRegistryName());
         }
-        LAZY_MOD_BUS_REGISTRATION.forEach((registration) -> registration.accept(eventBus));
     }
 
     //
@@ -114,7 +114,8 @@ public final class ICRegisters {
             extras.accept(builder);
         }
 
-        return builder.build();
+        LOGGER.info("[DEBUG] registerStoneMultiblock({}) queueing callback, list size before add = {}", name, LAZY_MOD_BUS_REGISTRATION.size());
+        return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
     public static <S extends IMultiblockState> MultiblockRegistration<S> registerStoneMultiblock(String name,
@@ -154,8 +155,7 @@ public final class ICRegisters {
         return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
-    static class MultiblockBuilder<S extends IMultiblockState>
-            extends MultiblockRegistrationBuilder<S, MultiblockBuilder<S>> {
+    public static class MultiblockBuilder<S extends IMultiblockState> extends MultiblockRegistrationBuilder<S, MultiblockBuilder<S>> {
         public MultiblockBuilder(IMultiblockLogic<S> logic, String name) {
             super(logic, Resource.mod(name));
         }
@@ -207,10 +207,8 @@ public final class ICRegisters {
         return FLUID_REGISTER.register(name, fluidConstructor);
     }
 
-    public static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> registerBlockEntity(String name,
-            BlockEntityType.BlockEntitySupplier<T> factory, Supplier<? extends Block> valid) {
-        return BLOCK_ENTITY_TYPE_REGISTER.register(name,
-                () -> new BlockEntityType<>(factory, ImmutableSet.of(valid.get()), null));
+    public static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> registerBlockEntity(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<? extends Block> valid) {
+        return BLOCK_ENTITY_TYPE_REGISTER.register(name, () -> new BlockEntityType<>(factory, ImmutableSet.of(valid.get()), null));
     }
 
     public static <T extends BlockEntity & IEBlockInterfaces.IGeneralMultiblock> MultiblockBEType<T> registerMultiblockBlockEntity(
@@ -237,4 +235,19 @@ public final class ICRegisters {
     public static DeferredHolder<CreativeModeTab, CreativeModeTab> registerCreativeTab(String name, Supplier<CreativeModeTab> tab) {
         return CREATIVE_TABS.register(name, tab);
     }
+
+    /**
+      * Runs deferred mod-bus registrations (e.g. stone multiblock structure registration)
+      * queued via {@link #LAZY_MOD_BUS_REGISTRATION}.
+      * <p>
+      * Must be called AFTER any code that triggers static initialization of classes
+      * which call {@code registerStoneMultiblock} (e.g. {@code ICContent.Multiblock}),
+      * otherwise those registrations never run and the resulting multiblock's
+      * structure template will fail to load (see grill_oven crash).
+      */
+   public static void runCallbacks(IEventBus eventBus) {
+       LOGGER.info("[DEBUG] runCallbacks() called, queued callbacks = {}", LAZY_MOD_BUS_REGISTRATION.size());
+       LAZY_MOD_BUS_REGISTRATION.forEach((registration) -> registration.accept(eventBus));
+       LAZY_MOD_BUS_REGISTRATION.clear();
+   }
 }

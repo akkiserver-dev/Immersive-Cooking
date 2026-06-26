@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 250,
+    "tag": "neoforge:red_taiga_grapejuice"
+  },
+  "input": {
+    "item": "vinery:wine_bottle"
+  },
+  "results": [
+    {
+      "id": "vinery:red_taiga_grapejuice"
+    }
+  ]
+}

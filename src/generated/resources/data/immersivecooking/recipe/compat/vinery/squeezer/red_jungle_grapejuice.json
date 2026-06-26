@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "type": "immersiveengineering:squeezer",
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "id": "immersivecooking:red_jungle_grapejuice"
+  },
+  "input": {
+    "tag": "immersivecooking:juice_ingredients/red_jungle_grapejuice"
+  }
+}

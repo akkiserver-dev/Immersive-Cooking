@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "vinery"
+    }
+  ],
+  "type": "immersivecooking:food_fermenter",
+  "container": {
+    "count": 1,
+    "id": "vinery:wine_bottle"
+  },
+  "energy": 9600,
+  "fluid": {
+    "amount": 250,
+    "tag": "neoforge:red_grapejuice"
+  },
+  "inputs": [
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "vinery:cristel_wine"
+  },
+  "time": 4800
+}
