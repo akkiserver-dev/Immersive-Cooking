@@ -18,6 +18,7 @@ import java.util.List;
 
 public class FoodFermenterScreen extends ICContainerScreen<FoodFermenterMenu> {
     private static final ResourceLocation TEXTURE = Resource.texture("gui/food_fermenter.png");
+    private static final ResourceLocation TANK = Resource.mod("tank_overlay");
 
     public FoodFermenterScreen(FoodFermenterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, TEXTURE);
@@ -27,7 +28,7 @@ public class FoodFermenterScreen extends ICContainerScreen<FoodFermenterMenu> {
     @Override
     protected List<InfoArea> makeInfoAreas() {
         return ImmutableList.of(
-                new FluidInfoArea(menu.tank, new Rect2i(leftPos + 14, topPos + 20, 16, 47), 177, 31, /*20, 51,*/ TEXTURE),
+                new FluidInfoArea(menu.tank, new Rect2i(leftPos + 14, topPos + 20, 16, 47), 20, 51, TANK),
                 new EnergyInfoArea(leftPos + 157, topPos + 21, menu.energyStorage)
         );
     }

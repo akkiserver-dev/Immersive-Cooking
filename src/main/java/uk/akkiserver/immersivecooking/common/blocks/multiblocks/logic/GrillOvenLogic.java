@@ -161,8 +161,7 @@ public class GrillOvenLogic implements IMultiblockLogic<State>, IServerTickableC
                     List.of(
                             // Oven can input any item, but if the item does not match any smoking recipe, no process starts
                             new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.input($ -> true), 3),
-                            new SlotwiseItemHandler.IOConstraintGroup(
-                                    SlotwiseItemHandler.IOConstraint.input(stack -> stack.getBurnTime(RecipeType.SMOKING) > 0), 1)
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.input(stack -> stack.getBurnTime(RecipeType.SMOKING) > 0), 1)
                     ),
                     ctx.getMarkDirtyRunnable()
             );

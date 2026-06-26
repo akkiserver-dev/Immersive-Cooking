@@ -69,6 +69,11 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
     @Override
     public void registerCapabilities(CapabilityRegistrar<CookpotLogic.State> register){
         register.registerAtOrNull(Capabilities.EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+        register.register(Capabilities.ItemHandler.BLOCK, (state, pos) -> {
+            if (ITEM_OUTPUT_CAP.equals(pos))
+                return state.itemOutput;
+            return null;
+        });
     }
 
     @Override
@@ -313,19 +318,23 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         public State(IInitialMultiblockContext<State> ctx) {
             final Runnable markDirty = ctx.getMarkDirtyRunnable();
             this.levelSupplier = ctx.levelSupplier();
-            this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
+            this.inventory = SlotwiseItemHandler.makeWithGroups(
+                    List.of(
                             new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
                             new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
                             new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.BLOCKED, 1),
-                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)),
-                    markDirty);
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)
+                    ),
+                    markDirty
+            );
 
             this.processor = new MultiblockProcessor.InMachineProcessor<>(
                     NUM_INPUT_SLOTS,
                     1.0F,
                     1,
                     markDirty,
-                    (ignored, id) -> CookpotRecipe.RECIPES.get(id).value());
+                    (ignored, id) -> CookpotRecipe.RECIPES.get(id).value()
+            );
 
             this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT).get();
         }
@@ -392,8 +401,7 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
 
         public MultiblockProcess<CookpotRecipe, ProcessContextInMachine<CookpotRecipe>> getProcess() {
             if (levelSupplier.get() != null) {
-                List<MultiblockProcess<CookpotRecipe, ProcessContextInMachine<CookpotRecipe>>> queue = processor
-                        .getQueue();
+                List<MultiblockProcess<CookpotRecipe, ProcessContextInMachine<CookpotRecipe>>> queue = processor.getQueue();
 
                 if (!queue.isEmpty()) {
                     return queue.getFirst();
@@ -441,9 +449,16 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
             double y = pos.getY() + 0.5D;
             double z = pos.getZ() + 0.5D;
 
-            context.getLevel().getRawLevel().playLocalSound(x, y, z, ICContent.Sounds.COOKPOT_ACTIVE.get(),
-                    SoundSource.BLOCKS, 0.5F,
-                    context.getLevel().getRawLevel().random.nextFloat() * 0.2F + 0.9F, false);
+            context.getLevel().getRawLevel().playLocalSound(
+                    x,
+                    y,
+                    z,
+                    ICContent.Sounds.COOKPOT_ACTIVE.get(),
+                    SoundSource.BLOCKS,
+                    0.5F,
+                    context.getLevel().getRawLevel().random.nextFloat() * 0.2F + 0.9F,
+                    false
+            );
         }
     }
 }

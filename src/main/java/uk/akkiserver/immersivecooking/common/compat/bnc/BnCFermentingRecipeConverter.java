@@ -74,6 +74,7 @@ public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFerment
 
         NonNullList<IngredientWithSize> inputs = bncRecipe.getIngredients().stream()
                 .map(IngredientWithSize::new)
+                .filter(ingredient -> !ingredient.hasNoMatchingItems())
                 .collect(Collectors.toCollection(NonNullList::create));
 
         SizedFluidIngredient sizedFluidIngredient = bncRecipe.getFluidIngredient()

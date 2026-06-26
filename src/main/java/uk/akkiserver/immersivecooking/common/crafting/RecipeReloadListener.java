@@ -56,6 +56,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
 
         if (recipes.isEmpty()) return;
 
+        ImmersiveCooking.LOGGER.debug("Indexing and updating recipes of all machines... (found {} raw recipes)", recipes.size());
         CookpotRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.COOKPOT.get()));
         FoodProcessorRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.FOOD_PROCESSOR.get()));
         FoodFermenterRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.FOOD_FERMENTER.get()));
@@ -63,7 +64,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
 
     @SuppressWarnings("unchecked")
     private static <R extends Recipe<?>, H extends RecipeHolder<R>> Map<ResourceLocation, H> indexRecipes(Collection<RecipeHolder<?>> recipes, RecipeType<R> recipeType) {
-        ImmersiveCooking.LOGGER.debug("Indexing {} recipes... (found {} raw recipes)", recipeType.toString(), recipes.size());
+        ImmersiveCooking.LOGGER.debug("Updating: {}", recipeType.getClass().getSimpleName());
         return (Map<ResourceLocation, H>) recipes.stream()
                 .filter(holder -> holder.value().getType() == recipeType)
                 .collect(Collectors.toMap(RecipeHolder::id, holder -> (RecipeHolder<R>) holder));

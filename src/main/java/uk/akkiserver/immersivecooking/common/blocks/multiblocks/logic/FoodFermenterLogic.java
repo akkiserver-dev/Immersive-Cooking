@@ -36,6 +36,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.RangedWrapper;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
+import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.FoodFermenterLogic.State;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.shapes.FoodFermenterShape;
@@ -100,23 +101,19 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
             ctx.requestMasterBESync();
         }
 
-        if (FluidUtils.drainFluidContainer(state.tank, FILLED_FLUID_SLOT, EMPTY_FLUID_SLOT, state.inventory))
-            ctx.markMasterDirty();
+        if (FluidUtils.drainFluidContainer(state.tank, FILLED_FLUID_SLOT, EMPTY_FLUID_SLOT, state.inventory)) ctx.markMasterDirty();
 
         enqueueProcesses(state, level);
         handleItemOutput(ctx);
     }
 
     private void enqueueProcesses(State state, Level level) {
-        if (state.energy.getEnergyStored() <= 0 || state.processor.getQueueSize() >= state.processor.getMaxQueueSize())
-            return;
+        if (state.energy.getEnergyStored() <= 0 || state.processor.getQueueSize() >= state.processor.getMaxQueueSize()) return;
 
-        if (state.processor.getQueueSize() > 0)
-            return;
+        if (state.processor.getQueueSize() > 0) return;
 
         ItemStack containerStack = state.inventory.getStackInSlot(INPUT_CONTAINER_SLOT);
-        if (containerStack.isEmpty())
-            return;
+        if (containerStack.isEmpty()) return;
 
         int inputStart = 0;
         RangedWrapper inputOnly = new RangedWrapper(state.inventory, inputStart, NUM_INPUT_SLOTS);
@@ -128,14 +125,13 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
             RecipeHolder<FoodFermenterRecipe> holder = recipeOpt.get();
             FoodFermenterRecipe recipe = holder.value();
 
-            if (!ItemStack.isSameItem(containerStack, recipe.container))
-                return;
+            if (!ItemStack.isSameItem(containerStack, recipe.container)) return;
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
-                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(holder,
-                        slotData[0]);
+                MultiblockProcessInMachine<FoodFermenterRecipe> process = new MultiblockProcessInMachine<>(holder, slotData[0]);
                 process.setInputAmounts(new int[slotData[1].length]);
+                ImmersiveCooking.LOGGER.debug("enqueuing process for recipe {} (outputting {})", recipe, recipe.getResult());
 
                 if (state.processor.addProcessToQueue(process, level, false)) {
                     // Consume items immediately at start
@@ -175,12 +171,10 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
         boolean[] merged = new boolean[recipe.inputs.size()];
 
         for (int i = 0; i < recipe.inputs.size(); i++) {
-            if (merged[i])
-                continue;
+            if (merged[i]) continue;
             int total = recipe.inputs.get(i).getCount();
             for (int j = i + 1; j < recipe.inputs.size(); j++) {
-                if (merged[j])
-                    continue;
+                if (merged[j]) continue;
                 if (ingredientsMatch(recipe.inputs.get(i), recipe.inputs.get(j), simulatedInv)) {
                     total += recipe.inputs.get(j).getCount();
                     merged[j] = true;
@@ -203,8 +197,7 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
                 }
             }
 
-            if (matchingSlots.isEmpty() || matchingSlots.stream().mapToInt(s -> s[1]).sum() < remaining)
-                return null;
+            if (matchingSlots.isEmpty() || matchingSlots.stream().mapToInt(s -> s[1]).sum() < remaining) return null;
 
             while (remaining > 0 && !matchingSlots.isEmpty()) {
                 int perSlot = Math.max(1, remaining / matchingSlots.size());
@@ -225,8 +218,7 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
                 }
             }
 
-            if (remaining > 0)
-                return null;
+            if (remaining > 0) return null;
         }
 
         int[] slots = slotAmounts.keySet().stream().mapToInt(Integer::intValue).toArray();
@@ -268,7 +260,8 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
                     context.isValid(),
                     soundPos,
                     ICContent.Sounds.FOOD_FERMENTER_ACTIVE,
-                    0.5f);
+                    0.1f
+            );
         }
     }
 
@@ -277,8 +270,7 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
         MBInventoryUtils.dropItems(state.inventory, drop);
     }
 
-    public static class State
-            implements ContainerData, IMultiblockState, ProcessContext.ProcessContextInMachine<FoodFermenterRecipe> {
+    public static class State implements ContainerData, IMultiblockState, ProcessContext.ProcessContextInMachine<FoodFermenterRecipe> {
         public final RedstoneControl.RSState rsState = RedstoneControl.RSState.enabledByDefault();
         private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
         private final FluidTank tank = new FluidTank(TANK_CAPACITY);
@@ -296,31 +288,48 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
             final Runnable markDirty = ctx.getMarkDirtyRunnable();
             this.levelSupplier = ctx.levelSupplier();
 
-            this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT,
-                            NUM_INPUT_SLOTS),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(
-                            new SlotwiseItemHandler.IOConstraint(true, FluidUtils::isFluidRelatedItemStack), 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
-                    new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)), markDirty);
+            this.inventory = SlotwiseItemHandler.makeWithGroups(
+                    List.of(
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, NUM_INPUT_SLOTS),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1),
+                            new SlotwiseItemHandler.IOConstraintGroup(new SlotwiseItemHandler.IOConstraint(true, FluidUtils::isFluidRelatedItemStack), 1),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.NO_CONSTRAINT, 1),
+                            new SlotwiseItemHandler.IOConstraintGroup(SlotwiseItemHandler.IOConstraint.OUTPUT, 1)
+                    ),
+                    markDirty
+            );
 
-            this.processor = new MultiblockProcessor.InMachineProcessor<>(NUM_INPUT_SLOTS, 1.0F, 1, markDirty,
-                    (level, id) -> FoodFermenterRecipe.RECIPES.get(id).value());
+            this.processor = new MultiblockProcessor.InMachineProcessor<>(
+                    NUM_INPUT_SLOTS,
+                    1.0F,
+                    1,
+                    markDirty,
+                    (level, id) -> FoodFermenterRecipe.RECIPES.get(id).value()
+            );
 
             this.itemOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, ITEM_OUTPUT).get();
             this.fluidInput = ArrayFluidHandler.fillOnly(tank, markDirty);
 
-            this.itemInputCap = new WrappingItemHandler(inventory, true, false,
+            this.itemInputCap = new WrappingItemHandler(
+                    inventory,
+                    true,
+                    false,
                     List.of(
                             new WrappingItemHandler.IntRange(0, NUM_INPUT_SLOTS),
                             new WrappingItemHandler.IntRange(EMPTY_FLUID_SLOT, EMPTY_FLUID_SLOT + 1),
-                            new WrappingItemHandler.IntRange(INPUT_CONTAINER_SLOT, INPUT_CONTAINER_SLOT + 1)));
+                            new WrappingItemHandler.IntRange(INPUT_CONTAINER_SLOT, INPUT_CONTAINER_SLOT + 1)
+                    )
+            );
 
-            this.itemOutputCap = new WrappingItemHandler(inventory, false, true,
+            this.itemOutputCap = new WrappingItemHandler(
+                    inventory,
+                    false,
+                    true,
                     List.of(
                             new WrappingItemHandler.IntRange(OUTPUT_SLOT, OUTPUT_SLOT + 1),
-                            new WrappingItemHandler.IntRange(FILLED_FLUID_SLOT, FILLED_FLUID_SLOT + 1)));
+                            new WrappingItemHandler.IntRange(FILLED_FLUID_SLOT, FILLED_FLUID_SLOT + 1)
+                    )
+            );
         }
 
         @Override

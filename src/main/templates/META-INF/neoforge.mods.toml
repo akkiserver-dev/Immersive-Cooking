@@ -9,8 +9,8 @@ version = "${mod_version}"
 displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
-logoFile= "../../main/resources/iclogo.png"
-updateJSONURL="https://raw.githubusercontent.com/akkiserver-dev/Immersive-Cooking/changelogs/1.21.1/change.json"
+logoFile= "iclogo.png"
+updateJSONURL="https://raw.githubusercontent.com/akkiserver-dev/Immersive-Cooking/changelog/1.21.1/changelog.json"
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 mandatory = true
