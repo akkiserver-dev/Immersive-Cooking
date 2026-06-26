@@ -1,0 +1,10 @@
+{
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/immersive-cookfarm",
+  "promos":{
+    "1.21.1-latest": "0.2.0-1",
+    "1.21.1-recommended": "0.2.0-1"
+  },
+  "1.21.1":{
+    "0.2.0-1": "1.21.1 ported version; add compatibility with bakery and brewery"
+  }
+}

@@ -1,3 +1,0 @@
-Grill Oven
-Multithreaded Cooking
-<&grill_oven0>
