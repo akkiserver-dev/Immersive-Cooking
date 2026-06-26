@@ -111,7 +111,7 @@ public class BnCFermentingRecipeConverter implements IRecipeConverter<KegFerment
             container = ItemStack.EMPTY;
         }
 
-        int fermentTime = bncRecipe.getFermentTime();
+        int fermentTime = (int) (bncRecipe.getFermentTime() * 0.75);
         if (fermentTime <= 0) {
             fermentTime = DEFAULT_COOK_TIME;
             ImmersiveCooking.LOGGER.warn("[BnC Compat] Recipe {} has zero ferment time, using default", holder.id());
