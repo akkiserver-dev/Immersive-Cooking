@@ -8,7 +8,7 @@ import malte0811.dualcodecs.DualCompositeMapCodecs;
 import malte0811.dualcodecs.DualMapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import uk.akkiserver.immersivecooking.api.codec.ICDualCodecs;
+import uk.akkiserver.immersivecooking.common.codec.ICDualCodecs;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
 

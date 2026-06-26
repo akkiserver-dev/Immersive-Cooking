@@ -4,12 +4,10 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodFermenterMenu;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 
@@ -33,8 +31,4 @@ public class FoodFermenterScreen extends ICContainerScreen<FoodFermenterMenu> {
         );
     }
 
-    @Override
-    protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my) {
-
-    }
 }

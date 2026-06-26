@@ -12,7 +12,7 @@ import net.satisfy.farm_and_charm.core.recipe.CookingPotRecipe;
 import net.satisfy.farm_and_charm.core.recipe.RoasterRecipe;
 import net.satisfy.farm_and_charm.core.recipe.StoveRecipe;
 import net.satisfy.farm_and_charm.core.registry.RecipeTypeRegistry;
-import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 

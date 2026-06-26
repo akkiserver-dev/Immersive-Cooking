@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
 import umpaz.brewinandchewin.common.crafting.KegFermentingRecipe;
 import umpaz.brewinandchewin.common.crafting.KegPouringRecipe;

@@ -23,7 +23,7 @@ import net.satisfy.vinery.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.common.ICTags;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
-import uk.akkiserver.immersivecooking.api.compat.ICropCompatProvider;
+import uk.akkiserver.immersivecooking.common.compat.ICropCompatibilityProvider;
 import uk.akkiserver.immersivecooking.common.compat.farmcharm.FarmCharmCrops;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryCrops;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryJuices;
@@ -33,7 +33,6 @@ import vectorwing.farmersdelight.common.registry.ModBlocks;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class ICRecipeProvider extends RecipeProvider implements IConditionBuilder {
     public ICRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> holderLookupProvider) {
@@ -73,7 +72,7 @@ public class ICRecipeProvider extends RecipeProvider implements IConditionBuilde
     }
 
     private void buildClocheRecipes(RecipeOutput recipeOutput) {
-        List<ICropCompatProvider> allCrops = new ArrayList<>();
+        List<ICropCompatibilityProvider> allCrops = new ArrayList<>();
         allCrops.addAll(List.of(VineryCrops.values()));
         allCrops.addAll(List.of(FarmCharmCrops.values()));
 

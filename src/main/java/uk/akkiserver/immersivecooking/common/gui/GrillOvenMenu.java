@@ -1,6 +1,6 @@
 package uk.akkiserver.immersivecooking.common.gui;
 
-import net.minecraft.world.Container;
+import blusunrize.immersiveengineering.common.gui.IESlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 
 public class GrillOvenMenu extends ICContainerMenu {
     public final ContainerData data;
-    private final RecipeManager.CachedCheck<SingleRecipeInput, SmokingRecipe> smokingChecker = RecipeManager.createCheck(RecipeType.SMOKING);
 
     public static GrillOvenMenu makeServer(MenuType<?> type, int id, Inventory playerInventory, MultiblockMenuContext<GrillOvenLogic.State> ctx) {
         final GrillOvenLogic.State state = ctx.mbContext().getState();
@@ -63,12 +62,7 @@ public class GrillOvenMenu extends ICContainerMenu {
             }
         });
 
-        this.addSlot(new SlotItemHandler(inventory, GrillOvenLogic.FUEL_SLOT, 80, 53) {
-            @Override
-            public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return itemStack.getBurnTime(RecipeType.SMOKING) > 0;
-            }
-        });
+        this.addSlot(new IESlot.IEFurnaceSFuelSlot(inventory, GrillOvenLogic.FUEL_SLOT, 80, 53));
         ownSlotCount = GrillOvenLogic.NUM_SLOTS;
 
         addInventorySlots(inventoryPlayer);

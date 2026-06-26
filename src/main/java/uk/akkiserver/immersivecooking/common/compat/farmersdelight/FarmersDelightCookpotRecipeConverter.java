@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.utils.Resource;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;

@@ -31,15 +31,10 @@ public class FoodProcessorMenu extends ICContainerMenu {
             this.addSlot(new SlotItemHandler(inventory, i, 62 + (i % 3) * 18, 26 + (i / 3) * 18));
         }
 
-        this.addSlot(new IESlot.NewOutput(inventory, FoodProcessorLogic.EMPTY_FLUID_SLOT, 38, 54));
-        this.addSlot(new IESlot.NewFluidContainer(inventory, FoodProcessorLogic.FILLED_FLUID_SLOT, 38, 15, IESlot.NewFluidContainer.Filter.ANY) {
-            @Override
-            public boolean mayPickup(Player playerIn) {
-                return true;
-            }
-        });
+        this.addSlot(new SlotItemHandlerOutput(inventory, FoodProcessorLogic.EMPTY_FLUID_SLOT, 38, 54));
+        this.addSlot(new IESlot.NewFluidContainer(inventory, FoodProcessorLogic.FILLED_FLUID_SLOT, 38, 15, IESlot.NewFluidContainer.Filter.ANY));
 
-        this.addSlot(new IESlot.NewOutput(inventory, FoodProcessorLogic.OUTPUT_SLOT, 133, 54));
+        this.addSlot(new SlotItemHandlerOutput(inventory, FoodProcessorLogic.OUTPUT_SLOT, 133, 54));
 
         this.ownSlotCount = FoodProcessorLogic.NUM_SLOTS;
 

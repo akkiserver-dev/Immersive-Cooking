@@ -6,7 +6,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraft.world.item.ItemStack;
-import uk.akkiserver.immersivecooking.api.fluids.IItemFluidRelationProvider;
+import uk.akkiserver.immersivecooking.common.fluids.IItemFluidRelationProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public final class FluidUtils {
     public static boolean isFluidRelatedItemStack(ItemStack stack) {
         if (stack.isEmpty()) return false;
         return stack.getCapability(Capabilities.FluidHandler.ITEM) != null
-                || FLUID_RELATION_PROVIDERS.stream().anyMatch(p -> p.canProvide() && p.isFluidContainer(stack));
+                || FLUID_RELATION_PROVIDERS.stream().anyMatch(p -> p.isFluidContainer(stack));
     }
 
     public static void registerFluidRelationProvider(IItemFluidRelationProvider provider) {
@@ -60,7 +60,7 @@ public final class FluidUtils {
         }
 
         for (IItemFluidRelationProvider provider : FLUID_RELATION_PROVIDERS) {
-            if (!provider.canProvide() || !provider.isFluidContainer(containerCopy)) continue;
+            if (!provider.isFluidContainer(containerCopy)) continue;
 
             FluidStack contained = provider.getContainedFluid(containerCopy);
             if (contained.isEmpty()) continue;

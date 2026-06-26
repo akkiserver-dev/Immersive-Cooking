@@ -61,14 +61,14 @@ public final class ICContent {
                         "food_fermenter",
                         new FoodFermenterLogic(),
                         () -> FoodFermenterMultiblock.INSTANCE,
-                        builder -> builder.gui(MenuTypes.FOOD_FERMENTER));
+                        builder -> builder.gui(MenuTypes.FOOD_FERMENTER).redstone(s -> s.rsState, FoodFermenterLogic.REDSTONE_POS));
 
         public static final MultiblockRegistration<FoodProcessorLogic.State> FOOD_PROCESSOR = ICRegisters
                 .registerMetalMultiblock(
                         "food_processor",
                         new FoodProcessorLogic(),
                         () -> FoodProcessorMultiblock.INSTANCE,
-                        builder -> builder.gui(MenuTypes.FOOD_PROCESSOR));
+                        builder -> builder.gui(MenuTypes.FOOD_PROCESSOR).redstone(s -> s.rsState, FoodProcessorLogic.REDSTONE_POS));
 
         public static void forceClassLoad() {
         }
@@ -176,7 +176,5 @@ public final class ICContent {
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
-        /* FluidRelationProvider */
-        FluidUtils.registerFluidRelationProvider(new BnCFluidRelationProvider());
     }
 }

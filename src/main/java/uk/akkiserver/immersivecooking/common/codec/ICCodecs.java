@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.api.codec;
+package uk.akkiserver.immersivecooking.common.codec;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.mojang.serialization.Codec;

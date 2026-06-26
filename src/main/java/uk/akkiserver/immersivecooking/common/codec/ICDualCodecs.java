@@ -1,4 +1,4 @@
-package uk.akkiserver.immersivecooking.api.codec;
+package uk.akkiserver.immersivecooking.common.codec;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import malte0811.dualcodecs.DualCodec;

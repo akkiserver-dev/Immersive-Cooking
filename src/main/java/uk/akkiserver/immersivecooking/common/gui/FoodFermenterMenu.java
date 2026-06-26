@@ -2,11 +2,9 @@ package uk.akkiserver.immersivecooking.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.SimpleContainerData;
@@ -32,16 +30,11 @@ public class FoodFermenterMenu extends ICContainerMenu {
             this.addSlot(new SlotItemHandler(inventory, i, 62 + (i % 3) * 18, 26 + (i / 3) * 18));
         }
 
-        this.addSlot(new IESlot.NewOutput(inventory, FoodFermenterLogic.EMPTY_FLUID_SLOT, 38, 54));
-        this.addSlot(new ICFluidSlot(inventory, FoodFermenterLogic.FILLED_FLUID_SLOT, 38, 15, Filter.ANY) {
-            @Override
-            public boolean mayPickup(Player playerIn) {
-                return true;
-            }
-        });
+        this.addSlot(new SlotItemHandlerOutput(inventory, FoodFermenterLogic.EMPTY_FLUID_SLOT, 38, 54));
+        this.addSlot(new ICFluidSlot(inventory, FoodFermenterLogic.FILLED_FLUID_SLOT, 38, 15, Filter.ANY));
 
         this.addSlot(new SlotItemHandler(inventory, FoodFermenterLogic.INPUT_CONTAINER_SLOT, 133, 15));
-        this.addSlot(new IESlot.NewOutput(inventory, FoodFermenterLogic.OUTPUT_SLOT, 133, 54));
+        this.addSlot(new SlotItemHandlerOutput(inventory, FoodFermenterLogic.OUTPUT_SLOT, 133, 54));
 
         this.ownSlotCount = FoodFermenterLogic.NUM_SLOTS;
 

@@ -1,14 +1,13 @@
 package uk.akkiserver.immersivecooking.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import java.util.*;
@@ -62,6 +61,7 @@ public class CookpotRecipe extends MultiblockRecipe {
         RECIPES.putAll(newRecipes);
     }
 
+    @SuppressWarnings("unchecked")
     private static <I extends Recipe<?>> void tryConvert(
             IRecipeConverter<I, CookpotRecipe> converter,
             RecipeHolder<?> holder,
@@ -71,11 +71,7 @@ public class CookpotRecipe extends MultiblockRecipe {
     ) {
         if (holder.value().getType() != converter.sourceType()) return;
 
-        @SuppressWarnings("unchecked")
-        RecipeHolder<I> cast = (RecipeHolder<I>) holder;
-
-        converter.convert(cast, recipeManager, provider)
-                .ifPresent(r -> out.put(r.id(), r));
+        converter.convert((RecipeHolder<I>) holder, recipeManager, provider).ifPresent(r -> out.put(r.id(), r));
     }
 
     public NonNullList<IngredientWithSize> getInputs() {

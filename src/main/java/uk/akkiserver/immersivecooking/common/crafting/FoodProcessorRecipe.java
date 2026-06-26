@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
-import uk.akkiserver.immersivecooking.api.crafting.IRecipeConverter;
+import uk.akkiserver.immersivecooking.common.compat.IRecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
 import java.util.*;
@@ -112,6 +112,7 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
                 .findFirst();
     }
 
+    @SuppressWarnings("unchecked")
     private static <I extends Recipe<?>> void tryConvert(
             IRecipeConverter<I, FoodProcessorRecipe> converter,
             RecipeHolder<?> holder,
@@ -121,11 +122,7 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
     ) {
         if (holder.value().getType() != converter.sourceType()) return;
 
-        @SuppressWarnings("unchecked")
-        RecipeHolder<I> cast = (RecipeHolder<I>) holder;
-
-        converter.convert(cast, recipeManager, provider)
-                .ifPresent(r -> out.put(r.id(), r));
+        converter.convert((RecipeHolder<I>) holder, recipeManager, provider).ifPresent(r -> out.put(r.id(), r));
     }
 
     @Override

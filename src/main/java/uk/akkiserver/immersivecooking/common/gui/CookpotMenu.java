@@ -13,6 +13,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.common.blocks.multiblocks.logic.CookpotLogic;
 
 import javax.annotation.Nonnull;
@@ -41,8 +42,7 @@ public class CookpotMenu extends ICContainerMenu {
                 new SimpleContainerData(2));
     }
 
-    private CookpotMenu(MenuContext ctx, Inventory playerInventory, IItemHandler inventory,
-            MutableEnergyStorage energyStorage, ContainerData data) {
+    private CookpotMenu(MenuContext ctx, Inventory playerInventory, IItemHandler inventory, MutableEnergyStorage energyStorage, ContainerData data) {
         super(ctx);
         this.energyStorage = energyStorage;
         this.data = data;
@@ -53,24 +53,9 @@ public class CookpotMenu extends ICContainerMenu {
 
         this.addSlot(new SlotItemHandler(inventory, CookpotLogic.BOWL_SLOT, 91, 53));
 
-        this.addSlot(new SlotItemHandler(inventory, CookpotLogic.OUTPUT_SLOT, 113, 53) {
-            @Override
-            public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return false;
-            }
-        });
+        this.addSlot(new SlotItemHandlerOutput(inventory, CookpotLogic.OUTPUT_SLOT, 113, 53));
 
-        this.addSlot(new SlotItemHandler(inventory, CookpotLogic.OUTPUT_RAW_SLOT, 113, 17) {
-            @Override
-            public boolean mayPlace(@Nonnull ItemStack itemStack) {
-                return false;
-            }
-
-            @Override
-            public boolean mayPickup(Player playerIn) {
-                return false;
-            }
-        });
+        this.addSlot(new SlotItemHandlerDisplay(inventory, CookpotLogic.OUTPUT_RAW_SLOT, 113, 17));
 
         ownSlotCount = CookpotLogic.NUM_SLOTS;
 

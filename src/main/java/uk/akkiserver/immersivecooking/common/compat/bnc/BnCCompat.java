@@ -1,18 +1,18 @@
 package uk.akkiserver.immersivecooking.common.compat.bnc;
 
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.api.compat.IModCompatibility;
+import uk.akkiserver.immersivecooking.common.compat.IModCompatibilityProvider;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
+import uk.akkiserver.immersivecooking.common.utils.FluidUtils;
 import umpaz.brewinandchewin.common.crafting.FluidIngredientWithAmount;
 import umpaz.brewinandchewin.common.utility.AbstractedFluidIngredient;
 import umpaz.brewinandchewin.common.utility.AbstractedFluidStack;
 import umpaz.brewinandchewin.neoforge.utility.KegCompatibleFluidIngredients;
 
-public final class BnCCompat implements IModCompatibility {
+public final class BnCCompat implements IModCompatibilityProvider {
     static SizedFluidIngredient toSizedFluidIngredient(FluidIngredientWithAmount fluidWithAmount) {
         FluidIngredient fluidIngredient = toFluidIngredient(fluidWithAmount.ingredient());
         int amount = (int) fluidWithAmount.loaderAmount(); // mB
@@ -52,12 +52,8 @@ public final class BnCCompat implements IModCompatibility {
     }
 
     @Override
-    public boolean checkAvail() {
-        return ModList.get().isLoaded(modId());
-    }
-
-    @Override
     public void init() {
         FoodFermenterRecipe.RECIPE_CONVERTERS.add(new BnCFermentingRecipeConverter());
+        FluidUtils.registerFluidRelationProvider(new BnCFluidRelationProvider());
     }
 }
