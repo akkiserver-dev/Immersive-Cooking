@@ -3,6 +3,7 @@ package uk.akkiserver.immersivecooking.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import org.jetbrains.annotations.Nullable;
+import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
@@ -83,6 +85,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
         Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> newRecipes = new HashMap<>(recipes);
 
         for (RecipeConverter<?, FoodFermenterRecipe> converter : RECIPE_CONVERTERS) {
+            ImmersiveCooking.LOGGER.info("[FoodFermenterRecipe] Converting recipes from {}...", BuiltInRegistries.RECIPE_TYPE.getKey(converter.sourceType()));
             for (RecipeHolder<?> holder : recipeManager.getRecipes()) {
                 tryConvert(converter, holder, recipeManager, provider, newRecipes);
             }
