@@ -173,6 +173,6 @@ public final class ICContent {
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
-        MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
+        //MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
     }
 }
