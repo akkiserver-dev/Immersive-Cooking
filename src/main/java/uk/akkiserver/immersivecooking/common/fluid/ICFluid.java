@@ -1,5 +1,13 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
 package uk.akkiserver.immersivecooking.common.fluid;
 
+import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
@@ -33,7 +41,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * This class from original IE {@link ICFluid}. thanks to BluSunrize.
+ * This class from original IE {@link IEFluid}. thanks to BluSunrize.
  *
  * @author BluSunrize - 22.02.2017
  * @author akki697222 - 12.02.2026
@@ -106,7 +114,7 @@ public class ICFluid extends FlowingFluid {
     @Override
     protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder) {
         super.createFluidStateDefinition(builder);
-        for (Property<?> p : (entry == null ? entryStatic : entry).properties())
+        for (Property<?> p : entry.properties())
             builder.add(p);
     }
 

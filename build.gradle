@@ -8,8 +8,8 @@ plugins {
 group = mod_group_id
 def buildFile = file('build.txt')
 def buildNum = buildFile.exists() ? buildFile.text.trim().toInteger() : 0
-mod_version = "${minecraft_version}-${mod_version}-${buildNum}"
-version = mod_version
+mod_version = "${mod_version}-${buildNum}"
+version = "${minecraft_version}-${mod_version}"
 
 base {
     archivesName = mod_id
