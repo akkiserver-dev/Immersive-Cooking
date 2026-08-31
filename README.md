@@ -22,6 +22,7 @@
 - [ ] Advanced Wine Cellar
 - [ ] Industrial Deep Fryer
 - [ ] Food Processor
+- [ ] Hearth and Harvest integration
 
 ---
 
