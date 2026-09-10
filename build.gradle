@@ -139,6 +139,9 @@ dependencies {
 
     // Brewin' And Chewin'
     implementation("curse.maven:brewin-and-chewin-637808:7523542")
+
+    // Hearth and Harvest
+    implementation("curse.maven:hearth-and-harvest-1212197:8837088")
 }
 
 
