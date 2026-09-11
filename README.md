@@ -13,16 +13,7 @@
 - Industrial Cookpot
   - Automates Farmer's Delight / Farm & Charms Cooking Pot
 - Food Fermenter
-  - Automates Vinery
-
----
-
-## Planned Features/To Do
-- [x] Industrial Food Fermenter (for Vinery, and some)
-- [ ] Advanced Wine Cellar
-- [ ] Industrial Deep Fryer
-- [ ] Food Processor
-- [ ] Hearth and Harvest integration
+  - Automates Fermenting / Brewing recipes
 
 ---
 
