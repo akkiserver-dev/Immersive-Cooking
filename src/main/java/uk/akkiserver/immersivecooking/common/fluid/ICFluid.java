@@ -63,6 +63,7 @@ public class ICFluid extends FlowingFluid {
             }
         }
     };
+
     private static FluidEntry entryStatic;
     protected final FluidEntry entry;
 
@@ -114,7 +115,9 @@ public class ICFluid extends FlowingFluid {
     @Override
     protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder) {
         super.createFluidStateDefinition(builder);
-        for (Property<?> p : entry.properties())
+        // for avoid NPE in super class (entry is not initialized in super constructor)
+        FluidEntry e = this.entry != null ? this.entry : entryStatic;
+        for (Property<?> p : e.properties())
             builder.add(p);
     }
 

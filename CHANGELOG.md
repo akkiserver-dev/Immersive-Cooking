@@ -1,7 +1,8 @@
 # Changelog
-## [Unreleased] - 2026-07-09
+## [Unreleased] - 2026-??-??
 ### Changed
 - Project license changed from the MIT License to the Mozilla Public License 2.0 (MPL 2.0).
+- Fix: [Issue #7](https://github.com/akkiserver-dev/Immersive-Cooking/issues/7)
 ## [NEOFORGE 1.21.1] 0.2.0-beta - 2026/07/01
 Ported to NeoForge 1.21.1!
 
