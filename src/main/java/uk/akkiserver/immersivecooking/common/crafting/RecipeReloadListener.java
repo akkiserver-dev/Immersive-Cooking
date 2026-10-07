@@ -36,7 +36,6 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(@Nonnull ResourceManager resourceManager){
         if (serverResources != null) {
-            System.out.println();
             loadRecipes(serverResources);
         }
     }

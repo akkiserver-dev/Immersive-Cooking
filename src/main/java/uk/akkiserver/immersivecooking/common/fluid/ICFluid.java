@@ -136,10 +136,11 @@ public class ICFluid extends FlowingFluid {
 
     @Override
     public int getAmount(FluidState state) {
-        if (isSource(state))
+        if (isSource(state)) {
             return 8;
-        else
+        } else {
             return state.getValue(LEVEL);
+        }
     }
 
     @Override

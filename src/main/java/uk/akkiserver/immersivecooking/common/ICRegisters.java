@@ -96,14 +96,11 @@ public final class ICRegisters {
     // TwistedGate and maintainers...
     //
 
-    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMetalMultiblock(String name,
-            IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure) {
+    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMetalMultiblock(String name, IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure) {
         return registerMetalMultiblock(name, logic, structure, null);
     }
 
-    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMetalMultiblock(String name,
-            IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure,
-            @Nullable Consumer<IEMultiblockBuilder<S>> extras) {
+    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMetalMultiblock(String name, IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure, @Nullable Consumer<IEMultiblockBuilder<S>> extras) {
         IEMultiblockBuilder<S> builder = new IEMultiblockBuilder<>(logic, name)
                 .defaultBEs(BLOCK_ENTITY_TYPE_REGISTER)
                 .defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
@@ -117,9 +114,7 @@ public final class ICRegisters {
         return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
-    public static <S extends IMultiblockState> MultiblockRegistration<S> registerStoneMultiblock(String name,
-            IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure,
-            @Nullable Consumer<MultiblockBuilder<S>> extras) {
+    public static <S extends IMultiblockState> MultiblockRegistration<S> registerStoneMultiblock(String name, IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure, @Nullable Consumer<MultiblockBuilder<S>> extras) {
         BlockBehaviour.Properties prop = BlockBehaviour.Properties.of()
                 .mapColor(MapColor.STONE)
                 .instrument(NoteBlockInstrument.BASEDRUM)
@@ -138,9 +133,7 @@ public final class ICRegisters {
         return builder.build(LAZY_MOD_BUS_REGISTRATION::add);
     }
 
-    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMultiblock(String name,
-            IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure,
-            @Nullable Consumer<MultiblockBuilder<S>> extras, BlockBehaviour.Properties prop) {
+    public static <S extends IMultiblockState> MultiblockRegistration<S> registerMultiblock(String name, IMultiblockLogic<S> logic, Supplier<TemplateMultiblock> structure, @Nullable Consumer<MultiblockBuilder<S>> extras, BlockBehaviour.Properties prop) {
         MultiblockBuilder<S> builder = new MultiblockBuilder<>(logic, name)
                 .structure(structure)
                 .defaultBEs(BLOCK_ENTITY_TYPE_REGISTER)
@@ -159,8 +152,7 @@ public final class ICRegisters {
             super(logic, Resource.mod(name));
         }
 
-        public MultiblockBuilder<S> redstone(IMultiblockComponent.StateWrapper<S, RedstoneControl.RSState> getState,
-                BlockPos... positions) {
+        public MultiblockBuilder<S> redstone(IMultiblockComponent.StateWrapper<S, RedstoneControl.RSState> getState, BlockPos... positions) {
             redstoneAware();
             return selfWrappingComponent(new RedstoneControl<>(getState, positions));
         }
@@ -184,14 +176,11 @@ public final class ICRegisters {
         return registerBlock(name, blockConstructor, null);
     }
 
-    public static <T extends Block> DeferredHolder<Block, T> registerMultiblockBlock(String name,
-            Supplier<T> blockConstructor) {
+    public static <T extends Block> DeferredHolder<Block, T> registerMultiblockBlock(String name, Supplier<T> blockConstructor) {
         return registerBlock(name, blockConstructor, block -> new BlockItem(block, new Item.Properties()));
     }
 
-    public static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> blockConstructor,
-            @Nullable Function<T, ? extends BlockItem> blockItem) {
-        DeferredHolder<Block, T> block = BLOCK_REGISTER.register(name, blockConstructor);
+    public static <T extends Block> DeferredHolder<Block, T> registerBlock(String name, Supplier<T> blockConstructor, @Nullable Function<T, ? extends BlockItem> blockItem) {DeferredHolder<Block, T> block = BLOCK_REGISTER.register(name, blockConstructor);
         if (blockItem != null) {
             registerItem(name, () -> blockItem.apply(block.get()));
         }
@@ -210,20 +199,17 @@ public final class ICRegisters {
         return BLOCK_ENTITY_TYPE_REGISTER.register(name, () -> new BlockEntityType<>(factory, ImmutableSet.of(valid.get()), null));
     }
 
-    public static <T extends BlockEntity & IEBlockInterfaces.IGeneralMultiblock> MultiblockBEType<T> registerMultiblockBlockEntity(
-            String name, MultiblockBEType.BEWithTypeConstructor<T> factory, Supplier<? extends Block> valid) {
+    public static <T extends BlockEntity & IEBlockInterfaces.IGeneralMultiblock> MultiblockBEType<T> registerMultiblockBlockEntity(String name, MultiblockBEType.BEWithTypeConstructor<T> factory, Supplier<? extends Block> valid) {
         return new MultiblockBEType<>(name, BLOCK_ENTITY_TYPE_REGISTER, factory, valid,
                 state -> state.hasProperty(IEProperties.MULTIBLOCKSLAVE)
                         && !state.getValue(IEProperties.MULTIBLOCKSLAVE));
     }
 
-    public static <T extends RecipeSerializer<?>> DeferredHolder<RecipeSerializer<?>, T> registerSerializer(String name,
-            Supplier<T> serializer) {
+    public static <T extends RecipeSerializer<?>> DeferredHolder<RecipeSerializer<?>, T> registerSerializer(String name, Supplier<T> serializer) {
         return RECIPE_SERIALIZERS.register(name, serializer);
     }
 
-    public static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenu(String name,
-            Supplier<MenuType<T>> factory) {
+    public static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenu(String name, Supplier<MenuType<T>> factory) {
         return MENU_REGISTER.register(name, factory);
     }
 
@@ -242,7 +228,7 @@ public final class ICRegisters {
       * Must be called AFTER any code that triggers static initialization of classes
       * which call {@code registerStoneMultiblock} (e.g. {@code ICContent.Multiblock}),
       * otherwise those registrations never run and the resulting multiblock's
-      * structure template will fail to load (see grill_oven crash).
+      * structure template will fail to load.
       */
    public static void runCallbacks(IEventBus eventBus) {
        LOGGER.info("[DEBUG] runCallbacks() called, queued callbacks = {}", LAZY_MOD_BUS_REGISTRATION.size());

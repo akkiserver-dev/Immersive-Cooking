@@ -30,16 +30,8 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     public final ItemStack container;
     public final ItemStack result;
 
-    public FoodFermenterRecipe(NonNullList<IngredientWithSize> inputs,
-                               @Nullable SizedFluidIngredient fluidInput,
-                               ItemStack result, ItemStack container, int time, int energy) {
-        super(
-                TagOutput.EMPTY,
-                ICRecipes.Types.FOOD_FERMENTER,
-                time,
-                energy,
-                ICRecipes.NO_MULTIPLIER
-        );
+    public FoodFermenterRecipe(NonNullList<IngredientWithSize> inputs, @Nullable SizedFluidIngredient fluidInput, ItemStack result, ItemStack container, int time, int energy) {
+        super(TagOutput.EMPTY, ICRecipes.Types.FOOD_FERMENTER, time, energy, ICRecipes.NO_MULTIPLIER);
         this.fluidInput = fluidInput;
         this.container = container;
         this.result = result;
@@ -96,13 +88,7 @@ public class FoodFermenterRecipe extends MultiblockRecipe {
     }
 
     @SuppressWarnings("unchecked")
-    private static <I extends Recipe<?>> void tryConvert(
-            RecipeConverter<I, FoodFermenterRecipe> converter,
-            RecipeHolder<?> holder,
-            RecipeManager recipeManager,
-            HolderLookup.Provider provider,
-            Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> out
-    ) {
+    private static <I extends Recipe<?>> void tryConvert(RecipeConverter<I, FoodFermenterRecipe> converter, RecipeHolder<?> holder, RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodFermenterRecipe>> out) {
         if (holder.value().getType() != converter.sourceType()) return;
 
         converter.convert((RecipeHolder<I>) holder, recipeManager, provider).ifPresent(r -> out.put(r.id(), r));

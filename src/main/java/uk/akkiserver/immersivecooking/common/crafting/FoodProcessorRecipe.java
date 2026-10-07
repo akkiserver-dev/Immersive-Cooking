@@ -29,16 +29,8 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
     public final SizedFluidIngredient fluidInput;
     public final ItemStack result;
 
-    public FoodProcessorRecipe(NonNullList<IngredientWithSize> inputs,
-                               @Nullable SizedFluidIngredient fluidInput,
-                               ItemStack result, int time, int energy) {
-        super(
-                TagOutput.EMPTY,
-                ICRecipes.Types.FOOD_PROCESSOR,
-                time,
-                energy,
-                ICRecipes.NO_MULTIPLIER
-        );
+    public FoodProcessorRecipe(NonNullList<IngredientWithSize> inputs, @Nullable SizedFluidIngredient fluidInput, ItemStack result, int time, int energy) {
+        super(TagOutput.EMPTY, ICRecipes.Types.FOOD_PROCESSOR, time, energy, ICRecipes.NO_MULTIPLIER);
         this.fluidInput = fluidInput;
         this.result = result;
         this.inputs = inputs;
@@ -116,13 +108,7 @@ public class FoodProcessorRecipe extends MultiblockRecipe {
     }
 
     @SuppressWarnings("unchecked")
-    private static <I extends Recipe<?>> void tryConvert(
-            RecipeConverter<I, FoodProcessorRecipe> converter,
-            RecipeHolder<?> holder,
-            RecipeManager recipeManager,
-            HolderLookup.Provider provider,
-            Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> out
-    ) {
+    private static <I extends Recipe<?>> void tryConvert(RecipeConverter<I, FoodProcessorRecipe> converter, RecipeHolder<?> holder, RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<FoodProcessorRecipe>> out) {
         if (holder.value().getType() != converter.sourceType()) return;
 
         converter.convert((RecipeHolder<I>) holder, recipeManager, provider).ifPresent(r -> out.put(r.id(), r));

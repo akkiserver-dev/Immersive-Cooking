@@ -23,13 +23,8 @@ public class CookpotRecipe extends MultiblockRecipe {
     public final ItemStack container;
 
     public CookpotRecipe(NonNullList<IngredientWithSize> inputs, ItemStack result, ItemStack container, int cookTime, int energy) {
-        super(
-                TagOutput.EMPTY,
-                ICRecipes.Types.COOKPOT,
-                cookTime,
-                energy,
-                ICRecipes.NO_MULTIPLIER
-        );
+        super(TagOutput.EMPTY, ICRecipes.Types.COOKPOT, cookTime, energy, ICRecipes.NO_MULTIPLIER);
+
         this.inputs = inputs;
         this.result = result;
         this.container = container;
@@ -65,13 +60,7 @@ public class CookpotRecipe extends MultiblockRecipe {
     }
 
     @SuppressWarnings("unchecked")
-    private static <I extends Recipe<?>> void tryConvert(
-            RecipeConverter<I, CookpotRecipe> converter,
-            RecipeHolder<?> holder,
-            RecipeManager recipeManager,
-            HolderLookup.Provider provider,
-            Map<ResourceLocation, RecipeHolder<CookpotRecipe>> out
-    ) {
+    private static <I extends Recipe<?>> void tryConvert(RecipeConverter<I, CookpotRecipe> converter, RecipeHolder<?> holder, RecipeManager recipeManager, HolderLookup.Provider provider, Map<ResourceLocation, RecipeHolder<CookpotRecipe>> out) {
         if (holder.value().getType() != converter.sourceType()) return;
 
         converter.convert((RecipeHolder<I>) holder, recipeManager, provider).ifPresent(r -> out.put(r.id(), r));
@@ -101,7 +90,7 @@ public class CookpotRecipe extends MultiblockRecipe {
 
     @Override
     public boolean matches(RecipeInput inv, Level level) {
-        java.util.List<ItemStack> inventoryCopy = new java.util.ArrayList<>();
+        List<ItemStack> inventoryCopy = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty()) {
@@ -112,7 +101,7 @@ public class CookpotRecipe extends MultiblockRecipe {
         for (IngredientWithSize required : this.inputs) {
             int amountNeeded = required.getCount();
 
-            java.util.Iterator<ItemStack> it = inventoryCopy.iterator();
+            Iterator<ItemStack> it = inventoryCopy.iterator();
             while (it.hasNext()) {
                 ItemStack stack = it.next();
 

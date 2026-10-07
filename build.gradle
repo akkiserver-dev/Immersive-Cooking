@@ -123,12 +123,10 @@ dependencies {
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}")
     implementation("blusunrize.immersiveengineering:ImmersiveEngineering:${ie_version}:datagen")
     implementation("curse.maven:immersive-petroleum-268250:7512548")
+    implementation("curse.maven:immersive-convergence-1465236:8853701")
 
     // Farmersdelight
     implementation("curse.maven:farmers-delight-398521:8083481")
-
-    // Butchery
-    implementation("curse.maven:butchery-973620:8156003")
 
     // Let's Do
     implementation("curse.maven:architectury-api-419699:5786327")
