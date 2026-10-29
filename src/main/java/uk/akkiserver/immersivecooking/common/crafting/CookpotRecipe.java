@@ -8,6 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.RecipeMatcher;
+import org.jetbrains.annotations.Nullable;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.compat.RecipeConverter;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
@@ -90,42 +92,32 @@ public class CookpotRecipe extends MultiblockRecipe {
 
     @Override
     public boolean matches(RecipeInput inv, Level level) {
-        List<ItemStack> inventoryCopy = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        return findInputSlots(inv) != null;
+    }
+
+    /**
+     * Returns one inventory slot per ingredient, in recipe order. As in the
+     * original cooking pot, every occupied input slot must match one ingredient.
+     * Stack counts allow repeated batches, but cannot substitute for extra slots.
+     */
+    public int @Nullable [] findInputSlots(RecipeInput inv) {
+        List<ItemStack> stacks = new ArrayList<>();
+        List<Integer> slots = new ArrayList<>();
+        for (int i = 0; i < Math.min(6, inv.size()); i++) {
             ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty()) {
-                inventoryCopy.add(stack.copy());
+                stacks.add(stack);
+                slots.add(i);
             }
         }
 
-        for (IngredientWithSize required : this.inputs) {
-            int amountNeeded = required.getCount();
+        int[] ingredientsBySlot = RecipeMatcher.findMatches(stacks, inputs);
+        if (ingredientsBySlot == null || ingredientsBySlot.length == 0)
+            return null;
 
-            Iterator<ItemStack> it = inventoryCopy.iterator();
-            while (it.hasNext()) {
-                ItemStack stack = it.next();
-
-                if (required.test(stack)) {
-                    int amountTaken = Math.min(amountNeeded, stack.getCount());
-
-                    amountNeeded -= amountTaken;
-                    stack.shrink(amountTaken);
-
-                    if (stack.isEmpty()) {
-                        it.remove();
-                    }
-
-                    if (amountNeeded <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (amountNeeded > 0) {
-                return false;
-            }
-        }
-
-        return true;
+        int[] slotsByIngredient = new int[inputs.size()];
+        for (int i = 0; i < ingredientsBySlot.length; i++)
+            slotsByIngredient[ingredientsBySlot[i]] = slots.get(i);
+        return slotsByIngredient;
     }
 }

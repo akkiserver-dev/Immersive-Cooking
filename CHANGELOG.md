@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased] - 2026-??-??
+### Fixed
+- Fix #4: Match every occupied Cookpot input slot to a distinct recipe ingredient, preventing Chicken Soup ingredients from selecting Cabbage Rolls.
+- Fix #3: Generate Cookpot and Food Fermenter shapes from the rendered models.
 ### Changed
 - Project license changed from the MIT License to the Mozilla Public License 2.0 (MPL 2.0).
 - Fix: [Issue #7](https://github.com/akkiserver-dev/Immersive-Cooking/issues/7)

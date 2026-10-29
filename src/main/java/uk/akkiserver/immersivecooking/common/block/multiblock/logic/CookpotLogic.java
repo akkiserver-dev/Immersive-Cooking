@@ -1,6 +1,5 @@
 package uk.akkiserver.immersivecooking.common.block.multiblock.logic;
 
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
@@ -105,102 +104,16 @@ public class CookpotLogic implements IServerTickableComponent<State>, IClientTic
         if (recipeOpt.isPresent()) {
             CookpotRecipe recipe = recipeOpt.get().value();
             ImmersiveCooking.LOGGER.debug("enqueuing process for recipe {} (outputting {})", recipe, recipe.getResult());
-            int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
-            if (slotData != null) {
-                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipeOpt.get(), slotData[0]);
-                process.setInputAmounts(new int[slotData[1].length]);
+            int[] inputSlots = recipe.findInputSlots(wrapper);
+            if (inputSlots != null) {
+                MultiblockProcessInMachine<CookpotRecipe> process = new MultiblockProcessInMachine<>(recipeOpt.get(), inputSlots);
+                process.setInputAmounts(new int[inputSlots.length]);
                 if (state.processor.addProcessToQueue(process, level, false)) {
-                    for (int i = 0; i < slotData[0].length; i++) {
-                        int slot = slotData[0][i];
-                        int amount = slotData[1][i];
-                        if (amount > 0) {
-                            inputOnly.getStackInSlot(slot).shrink(amount);
-                        }
-                    }
+                    for (int i = 0; i < inputSlots.length; i++)
+                        inputOnly.getStackInSlot(inputSlots[i]).shrink(recipe.inputs.get(i).getCount());
                 }
             }
         }
-    }
-
-    private int[][] resolveSlotsForRecipe(IItemHandler handler, CookpotRecipe recipe, int offset) {
-        List<ItemStack> simulatedInv = new ArrayList<>();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            simulatedInv.add(handler.getStackInSlot(i).copy());
-        }
-
-        List<int[]> aggregated = new ArrayList<>();
-        boolean[] merged = new boolean[recipe.inputs.size()];
-
-        for (int i = 0; i < recipe.inputs.size(); i++) {
-            if (merged[i])
-                continue;
-            int total = recipe.inputs.get(i).getCount();
-            for (int j = i + 1; j < recipe.inputs.size(); j++) {
-                if (merged[j])
-                    continue;
-                if (ingredientsMatch(recipe.inputs.get(i), recipe.inputs.get(j), simulatedInv)) {
-                    total += recipe.inputs.get(j).getCount();
-                    merged[j] = true;
-                }
-            }
-            aggregated.add(new int[] { i, total });
-        }
-
-        LinkedHashMap<Integer, Integer> slotAmounts = new LinkedHashMap<>();
-
-        for (int[] entry : aggregated) {
-            IngredientWithSize component = recipe.inputs.get(entry[0]);
-            int remaining = entry[1];
-
-            List<int[]> matchingSlots = new ArrayList<>();
-            for (int i = 0; i < simulatedInv.size(); i++) {
-                ItemStack stack = simulatedInv.get(i);
-                if (!stack.isEmpty() && component.test(stack)) {
-                    matchingSlots.add(new int[] { i, stack.getCount() });
-                }
-            }
-
-            if (matchingSlots.isEmpty() || matchingSlots.stream().mapToInt(s -> s[1]).sum() < remaining)
-                return null;
-
-            while (remaining > 0 && !matchingSlots.isEmpty()) {
-                int perSlot = Math.max(1, remaining / matchingSlots.size());
-                Iterator<int[]> it = matchingSlots.iterator();
-                while (it.hasNext() && remaining > 0) {
-                    int[] slotInfo = it.next();
-                    int slotIdx = slotInfo[0];
-                    int available = slotInfo[1];
-                    int take = Math.min(Math.min(perSlot, available), remaining);
-                    if (take > 0) {
-                        simulatedInv.get(slotIdx).shrink(take);
-                        slotInfo[1] -= take;
-                        remaining -= take;
-                        slotAmounts.merge(offset + slotIdx, take, Integer::sum);
-                    }
-                    if (slotInfo[1] <= 0)
-                        it.remove();
-                }
-            }
-
-            if (remaining > 0)
-                return null;
-        }
-
-        int[] slots = slotAmounts.keySet().stream().mapToInt(Integer::intValue).toArray();
-        int[] amounts = slotAmounts.values().stream().mapToInt(Integer::intValue).toArray();
-        return new int[][] { slots, amounts };
-    }
-
-    /**
-     * Check if two IngredientWithSize match the same item types in the inventory
-     */
-    private boolean ingredientsMatch(IngredientWithSize a, IngredientWithSize b, List<ItemStack> inv) {
-        for (ItemStack stack : inv) {
-            if (!stack.isEmpty() && a.test(stack) != b.test(stack)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void handleItemOutput(IMultiblockContext<State> ctx) {

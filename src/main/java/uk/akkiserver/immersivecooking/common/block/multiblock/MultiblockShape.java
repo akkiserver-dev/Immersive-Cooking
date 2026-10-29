@@ -19,19 +19,9 @@ public abstract class MultiblockShape implements Function<BlockPos, VoxelShape> 
 
     @Override
     public VoxelShape apply(BlockPos posInMultiblock) {
-        List<AABB> list = getShape(posInMultiblock);
-
-        VoxelShape shape;
-        if (list.size() > 1) {
-            VoxelShape base = toVoxelShape(list.removeFirst());
-            shape = list.stream().map(MultiblockShape::toVoxelShape).reduce(base, Shapes::or);
-        } else {
-            if (!list.isEmpty()) {
-                shape = toVoxelShape(list.removeFirst());
-            } else {
-                shape = Shapes.empty();
-            }
-        }
+        VoxelShape shape = Shapes.empty();
+        for (AABB box : getShape(posInMultiblock))
+            shape = Shapes.or(shape, toVoxelShape(box));
         return shape;
     }
 
