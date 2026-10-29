@@ -8,6 +8,12 @@
 
 ---
 
+## Downloads
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/immersive-cookfarm)
+- [Modrinth](https://modrinth.com/mod/immersive-cooking-adoon)
+
+---
+
 ## Features
 ### Multiblocks
 - Industrial Cookpot
