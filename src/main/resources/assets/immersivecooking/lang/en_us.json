@@ -1,4 +1,7 @@
 {
+    "jei.immersivecooking.byproduct": "Byproducts",
+    "jei.immersivecooking.chance": "Chance: %s%%",
+    "block.immersivecooking.slicer": "Industrial Slicer",
     "itemGroup.immersivecooking": "Immersive Cooking & Farming",
     "manual.immersivecooking.main": "Immersive Cooking & Farming",
     "manual.immersivecooking.multiblocks": "Multiblocks",

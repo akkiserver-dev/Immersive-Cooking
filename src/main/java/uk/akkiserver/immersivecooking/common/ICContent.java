@@ -16,19 +16,12 @@ import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
-import uk.akkiserver.immersivecooking.common.block.multiblock.CookpotMultiblock;
-import uk.akkiserver.immersivecooking.common.block.multiblock.FoodFermenterMultiblock;
-import uk.akkiserver.immersivecooking.common.block.multiblock.FoodProcessorMultiblock;
-import uk.akkiserver.immersivecooking.common.block.multiblock.GrillOvenMultiblock;
-import uk.akkiserver.immersivecooking.common.block.multiblock.logic.CookpotLogic;
-import uk.akkiserver.immersivecooking.common.block.multiblock.logic.FoodFermenterLogic;
-import uk.akkiserver.immersivecooking.common.block.multiblock.logic.FoodProcessorLogic;
-import uk.akkiserver.immersivecooking.common.block.multiblock.logic.GrillOvenLogic;
+import uk.akkiserver.immersivecooking.common.block.multiblock.*;
+import uk.akkiserver.immersivecooking.common.block.multiblock.logic.*;
 import uk.akkiserver.immersivecooking.common.fluid.ICFluid;
 import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
 import uk.akkiserver.immersivecooking.common.gui.CookpotMenu;
 import uk.akkiserver.immersivecooking.common.gui.FoodFermenterMenu;
-import uk.akkiserver.immersivecooking.common.gui.FoodProcessorMenu;
 import uk.akkiserver.immersivecooking.common.gui.GrillOvenMenu;
 import uk.akkiserver.immersivecooking.common.util.Resource;
 
@@ -61,12 +54,12 @@ public final class ICContent {
                         () -> FoodFermenterMultiblock.INSTANCE,
                         builder -> builder.gui(MenuTypes.FOOD_FERMENTER).redstone(s -> s.rsState, FoodFermenterLogic.REDSTONE_POS));
 
-        public static final MultiblockRegistration<FoodProcessorLogic.State> FOOD_PROCESSOR = ICRegisters
+        public static final MultiblockRegistration<SlicerLogic.State> SLICER = ICRegisters
                 .registerMetalMultiblock(
-                        "food_processor",
-                        new FoodProcessorLogic(),
-                        () -> FoodProcessorMultiblock.INSTANCE,
-                        builder -> builder.gui(MenuTypes.FOOD_PROCESSOR).redstone(s -> s.rsState, FoodProcessorLogic.REDSTONE_POS));
+                        "slicer",
+                        new SlicerLogic(),
+                        () -> SlicerMultiblock.INSTANCE,
+                        builder -> builder.redstone(s -> s.rsState, SlicerLogic.REDSTONE_POS));
 
         public static void forceClassLoad() {
         }
@@ -90,12 +83,6 @@ public final class ICContent {
                         "food_fermenter",
                         FoodFermenterMenu::makeServer,
                         FoodFermenterMenu::makeClient);
-
-        public static final IEMenuTypes.MultiblockContainer<FoodProcessorLogic.State, FoodProcessorMenu> FOOD_PROCESSOR = IEMenuTypes
-                .registerMultiblock(
-                        "food_processor",
-                        FoodProcessorMenu::makeServer,
-                        FoodProcessorMenu::makeClient);
 
         public static void forceClassLoad() {
         }
@@ -173,6 +160,6 @@ public final class ICContent {
         MultiblockHandler.registerMultiblock(GrillOvenMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
-        //MultiblockHandler.registerMultiblock(FoodProcessorMultiblock.INSTANCE);
+        MultiblockHandler.registerMultiblock(SlicerMultiblock.INSTANCE);
     }
 }

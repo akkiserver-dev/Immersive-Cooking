@@ -1,0 +1,8 @@
+# Made in Blockbench 5.2.2
+newmtl m_dc7d9ad0-552b-98cb-3b4c-552b8f5c2153
+map_Kd immersivecooking:block/multiblock/slicer
+newmtl m_128bff1e-230f-fd5e-2a5d-39d9f78a2df8
+map_Kd immersivecooking:block/multiblock/multiblock_components
+newmtl m_d79440c5-785f-3285-73f1-98d0b51bacdd
+map_Kd immersiveengineering:block/conveyor/conveyor
+newmtl none

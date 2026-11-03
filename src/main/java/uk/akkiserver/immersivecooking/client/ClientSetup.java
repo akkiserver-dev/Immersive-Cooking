@@ -18,8 +18,10 @@ import net.neoforged.neoforge.common.NeoForge;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
-import uk.akkiserver.immersivecooking.client.gui.FoodProcessorScreen;
 import uk.akkiserver.immersivecooking.client.gui.GrillOvenScreen;
+import uk.akkiserver.immersivecooking.client.render.SlicerRenderer;
+import uk.akkiserver.immersivecooking.client.model.SlicerModel;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.block.multiblock.CookpotMultiblock;
 import uk.akkiserver.immersivecooking.common.block.multiblock.FoodFermenterMultiblock;
@@ -34,7 +36,14 @@ import uk.akkiserver.immersivecooking.common.util.Resource;
 public class ClientSetup {
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
-        NeoForge.EVENT_BUS.register(new RecipeReloadListener(null));
+        NeoForge.EVENT_BUS.addListener(net.neoforged.bus.api.EventPriority.HIGH, ClientSetup::recipesUpdated);
+    }
+
+    private static void recipesUpdated(net.neoforged.neoforge.client.event.RecipesUpdatedEvent event) {
+        var minecraft = net.minecraft.client.Minecraft.getInstance();
+        var connection = minecraft.getConnection();
+        if (!minecraft.hasSingleplayerServer() && connection != null)
+            RecipeReloadListener.loadRecipes(event.getRecipeManager(), connection.registryAccess());
     }
 
     @SubscribeEvent
@@ -47,7 +56,17 @@ public class ClientSetup {
         event.register(Resource.model("block/multiblock/cookpot"));
         event.register(Resource.model("block/multiblock/grill_oven"));
         event.register(Resource.model("block/multiblock/food_fermenter"));
-        event.register(Resource.model("block/multiblock/food_processor"));
+    }
+
+    @SubscribeEvent
+    public static void modifyBakedModels(ModelEvent.ModifyBakingResult event) {
+        event.getModels().replaceAll((location, model) -> location.id().equals(Resource.mod("slicer"))
+                && !location.variant().equals("inventory") ? new SlicerModel(model) : model);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(ICContent.Multiblock.SLICER.masterBE().get(), context -> new SlicerRenderer());
     }
 
     @SubscribeEvent
@@ -55,7 +74,6 @@ public class ClientSetup {
         event.register(ICContent.MenuTypes.GRILL_OVEN.getType(), GrillOvenScreen::new);
         event.register(ICContent.MenuTypes.COOKPOT.getType(), CookpotScreen::new);
         event.register(ICContent.MenuTypes.FOOD_FERMENTER.getType(), FoodFermenterScreen::new);
-        event.register(ICContent.MenuTypes.FOOD_PROCESSOR.getType(), FoodProcessorScreen::new);
 
         ICFluids.ALL_ENTRIES.forEach(entry -> {
             ItemBlockRenderTypes.setRenderLayer(entry.getStill(), RenderType.translucent());

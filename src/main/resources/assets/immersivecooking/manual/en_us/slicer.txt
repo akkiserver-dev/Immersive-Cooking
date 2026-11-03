@@ -1,0 +1,7 @@
+Industrial Slicer
+Keep your fingers clear!
+<&slicer0>
+Build the 2 by 3 base and upper components as shown. Click the redstone engineering block with an Engineer's Hammer to form the machine.<np>
+Insert ingredients at the open end of the belt, either with a conveyor or an item pipe. The slicer accepts one ingredient type per recipe and can process three batches along the belt. Supply FE at the top of the upper light engineering block.
+Finished slices leave the other end of the belt. An adjacent inventory receives them automatically; otherwise they are dropped into the world.
+Powering the redstone engineering block pauses processing. Its redstone mode can be inverted with an Engineer's Hammer.

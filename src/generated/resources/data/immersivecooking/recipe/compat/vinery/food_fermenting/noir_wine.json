@@ -13,7 +13,7 @@
   "energy": 9600,
   "fluid": {
     "amount": 250,
-    "tag": "neoforge:red_grapejuice"
+    "tag": "c:red_grapejuice"
   },
   "inputs": [
     {

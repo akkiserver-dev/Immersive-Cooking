@@ -156,5 +156,5 @@
   },
   "flip_v": true,
   "loader": "neoforge:obj",
-  "model": "immersivecooking:models/block/multiblock/food_processor.obj"
+  "model": "immersivecooking:models/block/multiblock/slicer.obj"
 }

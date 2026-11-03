@@ -7,9 +7,16 @@
       "automatic_culling": false,
       "flip_v": true,
       "loader": "neoforge:obj",
-      "model": "immersivecooking:models/block/multiblock/food_processor.obj",
+      "model": "immersivecooking:models/block/multiblock/slicer.obj",
       "textures": {
-        "particle": "immersiveengineering:block/multiblocks/mixer"
+        "particle": "immersivecooking:block/multiblock/slicer"
+      },
+      "transform": {
+        "translation": [
+          1.0,
+          -1.0,
+          0.0
+        ]
       }
     },
     "loader": "immersiveengineering:mirror"
@@ -17,24 +24,14 @@
   "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
-      1,
+      0,
       -1,
       1
     ],
     [
-      1,
-      0,
+      -1,
+      -1,
       0
-    ],
-    [
-      1,
-      0,
-      1
-    ],
-    [
-      0,
-      0,
-      -1
     ],
     [
       0,
@@ -42,44 +39,24 @@
       0
     ],
     [
-      -1,
       0,
-      -1
-    ],
-    [
-      -1,
-      0,
-      0
-    ],
-    [
-      -1,
       0,
       1
     ],
     [
       0,
-      1,
-      0
-    ],
-    [
-      1,
       -1,
       -1
     ],
     [
       0,
       -1,
-      -1
-    ],
-    [
-      -1,
-      -1,
-      -1
-    ],
-    [
-      -1,
-      -1,
       0
+    ],
+    [
+      -1,
+      -1,
+      -1
     ],
     [
       -1,
@@ -87,23 +64,18 @@
       1
     ],
     [
-      1,
-      1,
-      0
-    ],
-    [
-      1,
       -1,
-      0
-    ],
-    [
       0,
+      -1
+    ],
+    [
       -1,
+      0,
       0
     ],
     [
-      0,
       -1,
+      0,
       1
     ]
   ]

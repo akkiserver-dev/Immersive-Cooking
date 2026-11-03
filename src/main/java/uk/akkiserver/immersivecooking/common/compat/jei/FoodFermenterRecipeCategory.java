@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICContent;
@@ -29,7 +30,8 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
     }
 
     @Override
-    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull FoodFermenterRecipe recipe, @NotNull IFocusGroup focuses) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<FoodFermenterRecipe> holder, @NotNull IFocusGroup focuses) {
+        FoodFermenterRecipe recipe = holder.value();
         if (recipe.fluidInput != null) {
             builder.addSlot(RecipeIngredientRole.INPUT, 8, 14)
                     .setFluidRenderer(12000, false, 16, 47)
@@ -52,8 +54,8 @@ public class FoodFermenterRecipeCategory extends ICRecipeCategory<FoodFermenterR
     }
 
     @Override
-    public void draw(FoodFermenterRecipe recipe, @NotNull IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
-        String time = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.getTotalProcessTime() / 20f, "#.##"));
+    public void draw(RecipeHolder<FoodFermenterRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        String time = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.value().getTotalProcessTime() / 20f, "#.##"));
         graphics.drawString(
                 ClientUtils.font(),
                 time,

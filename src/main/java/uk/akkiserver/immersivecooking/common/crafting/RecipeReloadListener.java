@@ -1,7 +1,5 @@
 package uk.akkiserver.immersivecooking.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
@@ -11,9 +9,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICRecipes;
 
@@ -40,28 +35,20 @@ public class RecipeReloadListener implements ResourceManagerReloadListener {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void recipesUpdated(RecipesUpdatedEvent event) {
-        if (!Minecraft.getInstance().hasSingleplayerServer() && serverResources != null) {
-            loadRecipes(serverResources);
-        }
+    private static void loadRecipes(ReloadableServerResources serverResources) {
+        loadRecipes(serverResources.getRecipeManager(), serverResources.getRegistryLookup());
     }
 
-    private static void loadRecipes(ReloadableServerResources serverResources) {
-        RecipeManager recipeManager = serverResources.getRecipeManager();
-        HolderLookup.Provider provider = serverResources.getRegistryLookup();
-
+    public static void loadRecipes(RecipeManager recipeManager, HolderLookup.Provider provider) {
         Collection<RecipeHolder<?>> recipes = recipeManager.getRecipes();
-
-        if (recipes.isEmpty()) return;
 
         ImmersiveCooking.LOGGER.debug("Indexing and updating recipes of all machines... (found {} raw recipes)", recipes.size());
         ImmersiveCooking.LOGGER.info("Loading cookpot recipes...");
         CookpotRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.COOKPOT.get()));
-        ImmersiveCooking.LOGGER.info("Loading food processor recipes...");
-        FoodProcessorRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.FOOD_PROCESSOR.get()));
         ImmersiveCooking.LOGGER.info("Loading food fermenter recipes...");
         FoodFermenterRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.FOOD_FERMENTER.get()));
+        ImmersiveCooking.LOGGER.info("Loading slicer recipes...");
+        SlicerRecipe.updateRecipes(recipeManager, provider, indexRecipes(recipes, ICRecipes.Types.SLICER.get()));
     }
 
     @SuppressWarnings("unchecked")

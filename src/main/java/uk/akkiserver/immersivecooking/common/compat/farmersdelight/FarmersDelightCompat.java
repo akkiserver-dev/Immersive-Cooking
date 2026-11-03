@@ -2,6 +2,7 @@ package uk.akkiserver.immersivecooking.common.compat.farmersdelight;
 
 import uk.akkiserver.immersivecooking.common.compat.ModCompatibility;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
+import uk.akkiserver.immersivecooking.common.crafting.SlicerRecipe;
 
 public final class FarmersDelightCompat implements ModCompatibility {
     @Override
@@ -12,5 +13,6 @@ public final class FarmersDelightCompat implements ModCompatibility {
     @Override
     public void init() {
         CookpotRecipe.RECIPE_CONVERTERS.add(new FarmersDelightCookpotRecipeConverter());
+        SlicerRecipe.RECIPE_CONVERTERS.add(new FarmersDelightSlicerRecipeConverter());
     }
 }

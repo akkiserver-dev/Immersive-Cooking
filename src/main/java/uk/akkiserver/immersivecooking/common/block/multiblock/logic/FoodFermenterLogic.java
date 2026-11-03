@@ -113,7 +113,6 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
         if (state.processor.getQueueSize() > 0) return;
 
         ItemStack containerStack = state.inventory.getStackInSlot(INPUT_CONTAINER_SLOT);
-        if (containerStack.isEmpty()) return;
 
         int inputStart = 0;
         RangedWrapper inputOnly = new RangedWrapper(state.inventory, inputStart, NUM_INPUT_SLOTS);
@@ -125,7 +124,9 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
             RecipeHolder<FoodFermenterRecipe> holder = recipeOpt.get();
             FoodFermenterRecipe recipe = holder.value();
 
-            if (!ItemStack.isSameItem(containerStack, recipe.container)) return;
+            if (!recipe.container.isEmpty()
+                    && !ItemStack.isSameItem(containerStack, recipe.container)
+                    && recipe.container.getCount() > containerStack.getCount()) return;
 
             int[][] slotData = resolveSlotsForRecipe(inputOnly, recipe, inputStart);
             if (slotData != null) {
@@ -147,7 +148,9 @@ public class FoodFermenterLogic implements IMultiblockLogic<State>, IServerTicka
                         FluidStack toDrain = state.tank.getFluid().copyWithAmount(recipe.fluidInput.amount());
                         state.tank.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
                     }
-                    containerStack.shrink(1);
+                    if (!recipe.container.isEmpty()) {
+                        containerStack.shrink(recipe.container.getCount());
+                    }
                     if (containerStack.isEmpty()) {
                         state.inventory.setStackInSlot(INPUT_CONTAINER_SLOT, ItemStack.EMPTY);
                     }

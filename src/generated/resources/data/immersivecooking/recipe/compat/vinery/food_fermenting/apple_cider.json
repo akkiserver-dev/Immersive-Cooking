@@ -13,7 +13,7 @@
   "energy": 9600,
   "fluid": {
     "amount": 250,
-    "tag": "neoforge:apple_juice"
+    "tag": "c:apple_juice"
   },
   "inputs": [
     {

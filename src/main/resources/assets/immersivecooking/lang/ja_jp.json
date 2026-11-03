@@ -1,4 +1,7 @@
 {
+    "jei.immersivecooking.byproduct": "副産物",
+    "jei.immersivecooking.chance": "排出確率: %s%%",
+    "block.immersivecooking.slicer": "工業用スライサー",
     "itemGroup.immersivecooking": "Immersive Cooking & Farming",
     "manual.immersivecooking.main": "Immersive Cooking & Farming",
     "manual.immersivecooking.multiblocks": "マルチブロック",

@@ -14,6 +14,7 @@ import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.common.ICTags;
 import uk.akkiserver.immersivecooking.common.fluid.ICFluids;
 import uk.akkiserver.immersivecooking.common.compat.vinery.VineryJuices;
+import uk.akkiserver.immersivecooking.common.util.Resource;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -26,13 +27,13 @@ public class ICFluidTags extends FluidTagsProvider {
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         for (ICFluids.FluidEntry entry : ICFluids.ALL_ENTRIES) {
             tag(TagKey.create(Registries.FLUID, entry.type().getId())).add(entry.getStill(), entry.getFlowing());
-            tag(TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", entry.type().getId().getPath()))).add(entry.getStill(), entry.getFlowing());
+            tag(TagKey.create(Registries.FLUID, Resource.common(entry.type().getId().getPath()))).add(entry.getStill(), entry.getFlowing());
         }
 
         for (VineryJuices juice : VineryJuices.values()) {
-            TagKey<Fluid> forgeTag = ICTags.Fluids.create(ResourceLocation.fromNamespaceAndPath("c", juice.getName()));
+            TagKey<Fluid> commonTag = ICTags.Fluids.create(Resource.common(juice.getName()));
 
-            tag(forgeTag).add(
+            tag(commonTag).add(
                     juice.getFluidEntry().getStill(),
                     juice.getFluidEntry().getFlowing()
             );

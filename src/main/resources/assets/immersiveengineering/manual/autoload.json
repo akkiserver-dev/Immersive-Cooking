@@ -4,7 +4,8 @@
         "category_weight": 100,
         "entry_list": [
             "immersivecooking:cookpot",
-            "immersivecooking:grill_oven"
+            "immersivecooking:grill_oven",
+            "immersivecooking:slicer"
         ]
     }
 }

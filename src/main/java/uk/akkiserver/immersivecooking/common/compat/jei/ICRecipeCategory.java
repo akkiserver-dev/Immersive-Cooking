@@ -1,5 +1,6 @@
 package uk.akkiserver.immersivecooking.common.compat.jei;
 
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -9,24 +10,26 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ICRecipeCategory<T> implements IRecipeCategory<T> {
+public abstract class ICRecipeCategory<T extends Recipe<?>> implements IRecipeCategory<RecipeHolder<T>> {
     protected final IGuiHelper guiHelper;
-    private final RecipeType<T> type;
+    private final RecipeType<RecipeHolder<T>> type;
     public MutableComponent title;
     private IDrawableStatic background;
     private IDrawable icon;
 
-    public ICRecipeCategory(IGuiHelper guiHelper, RecipeType<T> type, String localKey) {
-        this.guiHelper = guiHelper;
+    public ICRecipeCategory(IGuiHelper guiHelper, RecipeType<RecipeHolder<T>> type, String localKey) {
         this.type = type;
+        this.guiHelper = guiHelper;
         this.title = Component.translatable(localKey);
     }
 
     @Override
-    public @NotNull RecipeType<T> getRecipeType() {
+    public @NotNull RecipeType<RecipeHolder<T>> getRecipeType() {
         return type;
     }
 

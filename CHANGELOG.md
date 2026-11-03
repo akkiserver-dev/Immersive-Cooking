@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased] - 2026-??-??
+## [NEOFORGE 1.21.1] 0.2.0-beta-10 - 2026-11-03
+### Added
+- New Multiblock: Slicer
+  - it can slice anything (maybe)
 ### Fixed
 - Fix #4: Match every occupied Cookpot input slot to a distinct recipe ingredient, preventing Chicken Soup ingredients from selecting Cabbage Rolls.
 - Fix #3: Generate Cookpot and Food Fermenter shapes from the rendered models.

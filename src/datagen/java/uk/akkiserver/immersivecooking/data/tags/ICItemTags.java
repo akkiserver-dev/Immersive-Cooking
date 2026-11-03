@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,12 @@ public class ICItemTags extends ItemTagsProvider {
         for (var juice : VineryJuices.values()) {
             tag(juice.getJuiceTag()).add(juice.getIngredient().getItem());
         }
+
+        tag(ItemTags.create(
+                Resource.common("foods/milk")
+        )).addOptionalTag(
+                Resource.common("drinks/milk")
+        );
     }
 
     private static ResourceLocation vinery(String id) {

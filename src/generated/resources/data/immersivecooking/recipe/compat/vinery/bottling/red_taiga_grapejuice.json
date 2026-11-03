@@ -8,7 +8,7 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 250,
-    "tag": "neoforge:red_taiga_grapejuice"
+    "tag": "c:red_taiga_grapejuice"
   },
   "input": {
     "item": "vinery:wine_bottle"

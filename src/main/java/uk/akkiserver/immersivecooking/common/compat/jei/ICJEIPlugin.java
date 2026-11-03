@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import uk.akkiserver.immersivecooking.ImmersiveCooking;
 import uk.akkiserver.immersivecooking.client.gui.CookpotScreen;
 import uk.akkiserver.immersivecooking.client.gui.FoodFermenterScreen;
-import uk.akkiserver.immersivecooking.client.gui.FoodProcessorScreen;
 import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.crafting.CookpotRecipe;
 import uk.akkiserver.immersivecooking.common.crafting.FoodFermenterRecipe;
-import uk.akkiserver.immersivecooking.common.crafting.FoodProcessorRecipe;
+import uk.akkiserver.immersivecooking.common.crafting.SlicerRecipe;
 import uk.akkiserver.immersivecooking.common.util.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JeiPlugin
@@ -39,24 +39,24 @@ public class ICJEIPlugin implements IModPlugin {
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new CookpotRecipeCategory(guiHelper));
         registry.addRecipeCategories(new FoodFermenterRecipeCategory(guiHelper));
-        registry.addRecipeCategories(new FoodProcessorRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new SlicerRecipeCategory(guiHelper));
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
         ImmersiveCooking.LOGGER.debug("Registering recipes to JEI...");
-        List<CookpotRecipe> cookpotRecipes = CookpotRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
+
+        List<RecipeHolder<CookpotRecipe>> cookpotRecipes = new ArrayList<>(CookpotRecipe.RECIPES.values());
         ImmersiveCooking.LOGGER.debug("Found {} Cookpot recipes.", cookpotRecipes.size());
         registration.addRecipes(ICJEIRecipeTypes.COOKPOT, cookpotRecipes);
-        List<FoodFermenterRecipe> foodFermenterRecipes = FoodFermenterRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
+
+        List<RecipeHolder<FoodFermenterRecipe>> foodFermenterRecipes = new ArrayList<>(FoodFermenterRecipe.RECIPES.values());
         ImmersiveCooking.LOGGER.debug("Found {} Food Fermenter recipes.", foodFermenterRecipes.size());
         registration.addRecipes(ICJEIRecipeTypes.FOOD_FERMENTER, foodFermenterRecipes);
-        List<FoodProcessorRecipe> foodProcessorRecipes = FoodProcessorRecipe.RECIPES.values().stream().map(RecipeHolder::value).toList();
-        ImmersiveCooking.LOGGER.debug("Found {} Food Processor recipes.", foodProcessorRecipes.size());
 
-        registration.addRecipes(ICJEIRecipeTypes.COOKPOT, cookpotRecipes);
-        registration.addRecipes(ICJEIRecipeTypes.FOOD_FERMENTER, foodFermenterRecipes);
-        registration.addRecipes(ICJEIRecipeTypes.FOOD_PROCESSOR, foodProcessorRecipes);
+        List<RecipeHolder<SlicerRecipe>> slicerRecipes = new ArrayList<>(SlicerRecipe.RECIPES.values());
+        ImmersiveCooking.LOGGER.debug("Found {} Slicer recipes.", slicerRecipes.size());
+        registration.addRecipes(ICJEIRecipeTypes.SLICER, slicerRecipes);
     }
 
     @Override
@@ -70,6 +70,7 @@ public class ICJEIPlugin implements IModPlugin {
         ImmersiveCooking.LOGGER.debug("Registering recipe catalysts to JEI...");
         registration.addRecipeCatalyst(ICContent.Multiblock.COOKPOT.iconStack(), ICJEIRecipeTypes.COOKPOT);
         registration.addRecipeCatalyst(ICContent.Multiblock.FOOD_FERMENTER.iconStack(), ICJEIRecipeTypes.FOOD_FERMENTER);
+        registration.addRecipeCatalyst(ICContent.Multiblock.SLICER.iconStack(), ICJEIRecipeTypes.SLICER);
     }
 
     @Override
@@ -78,6 +79,5 @@ public class ICJEIPlugin implements IModPlugin {
         registration.addRecipeClickArea(CookpotScreen.class, 91, 19, 16, 12, ICJEIRecipeTypes.COOKPOT);
         //@TODO fix clicking areas
         registration.addRecipeClickArea(FoodFermenterScreen.class, 91, 19, 16, 12, ICJEIRecipeTypes.FOOD_FERMENTER);
-        registration.addRecipeClickArea(FoodProcessorScreen.class, 91, 19, 16, 12, ICJEIRecipeTypes.FOOD_PROCESSOR);
     }
 }

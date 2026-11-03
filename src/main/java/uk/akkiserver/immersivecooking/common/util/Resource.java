@@ -30,7 +30,15 @@ public final class Resource {
         return ResourceLocation.fromNamespaceAndPath(Lib.MODID, id);
     }
 
+    public static ResourceLocation common(String id) {
+        return ResourceLocation.fromNamespaceAndPath("c", id);
+    }
+
     public static ResourceLocation mc(String id) {
-        return ResourceLocation.fromNamespaceAndPath("minecraft", id);
-    };
+        return ResourceLocation.withDefaultNamespace(id);
+    }
+
+    public static ResourceLocation neoforge(String id) {
+        return ResourceLocation.fromNamespaceAndPath("neoforge", id);
+    }
 }

@@ -8,7 +8,7 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 250,
-    "tag": "neoforge:apple_juice"
+    "tag": "c:apple_juice"
   },
   "input": {
     "item": "vinery:wine_bottle"
