@@ -1,0 +1,10 @@
+# Made in Blockbench 5.2.2
+newmtl m_1af4341a-f2cc-d1b1-cc54-172e96dc827d
+map_Kd immersivecooking:block/multiblock/tunnel_oven/multiblock_base
+newmtl m_eafd8a44-e9cf-3ff4-8c65-a0a096287d74
+map_Kd immersivecooking:block/multiblock/tunnel_oven/multiblock_components
+newmtl m_1df85ea0-b4c3-499a-3bf1-ddbcc4f251ad
+map_Kd immersivecooking:block/multiblock/tunnel_oven/tunnel_oven
+newmtl m_d3a0f90a-02cd-a79d-c1fe-26da47932c5a
+map_Kd immersiveengineering:block/conveyor/conveyor
+newmtl none

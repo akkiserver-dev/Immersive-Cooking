@@ -1,5 +1,5 @@
 # Changelog
-## [NEOFORGE 1.21.1] 0.2.0-beta-10 - 2026-11-03
+## [NEOFORGE 1.21.1] 0.2.0-beta-10 - 2026/11/03
 ### Added
 - New Multiblock: Slicer
   - it can slice anything (maybe)

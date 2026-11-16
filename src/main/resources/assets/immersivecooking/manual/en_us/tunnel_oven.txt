@@ -1,0 +1,4 @@
+Tunnel Oven
+From the belt into the oven!
+<&tunnel_oven0>
+The Tunnel Oven is an industrial oven with conveyors at both ends of its heating chamber.

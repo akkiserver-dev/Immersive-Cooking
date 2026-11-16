@@ -34,6 +34,7 @@ import uk.akkiserver.immersivecooking.common.ICContent;
 import uk.akkiserver.immersivecooking.common.block.multiblock.CookpotMultiblock;
 import uk.akkiserver.immersivecooking.common.block.multiblock.FoodFermenterMultiblock;
 import uk.akkiserver.immersivecooking.common.block.multiblock.SlicerMultiblock;
+import uk.akkiserver.immersivecooking.common.block.multiblock.TunnelOvenMultiblock;
 import uk.akkiserver.immersivecooking.common.block.multiblock.ICTemplateMultiblock;
 import uk.akkiserver.immersivecooking.common.util.Resource;
 
@@ -91,6 +92,14 @@ public class ICBlockStates extends BlockStateProvider {
 
         createMultiblock(innerObj("block/multiblock/cookpot.obj"), CookpotMultiblock.INSTANCE);
         createMultiblock(innerObj("block/multiblock/food_fermenter.obj"), FoodFermenterMultiblock.INSTANCE);
+        NongeneratedModel tunnelOven = innerObj("block/multiblock/tunnel_oven.obj");
+        var tunnelMultiblock = TunnelOvenMultiblock.INSTANCE;
+        int tunnelMasterX = tunnelMultiblock.getMasterFromOriginOffset().getX();
+        UnaryOperator<BlockPos> tunnelMirror = p -> new BlockPos(2 * tunnelMasterX - p.getX(), p.getY(), p.getZ());
+        createMultiblock(tunnelMultiblock::getBlock,
+                split(tunnelOven, tunnelMultiblock),
+                split(mirror(tunnelOven, innerModels), tunnelMultiblock, tunnelMirror, false),
+                IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED);
         // Render the complete body and continuously animated belt in the chunk mesh,
         // giving each formed block normal world lighting and ambient occlusion.
         NongeneratedModel slicer = innerObj("block/multiblock/slicer.obj");

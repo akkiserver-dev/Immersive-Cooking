@@ -1,0 +1,6 @@
+{
+  "tunnel_oven0": {
+    "type": "multiblock",
+    "name": "immersivecooking:multiblocks/tunnel_oven"
+  }
+}

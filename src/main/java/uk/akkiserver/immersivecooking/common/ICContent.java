@@ -61,6 +61,9 @@ public final class ICContent {
                         () -> SlicerMultiblock.INSTANCE,
                         builder -> builder.redstone(s -> s.rsState, SlicerLogic.REDSTONE_POS));
 
+        public static final MultiblockRegistration<TunnelOvenLogic.State> TUNNEL_OVEN = ICRegisters
+                .registerMetalMultiblock("tunnel_oven", new TunnelOvenLogic(), () -> TunnelOvenMultiblock.INSTANCE);
+
         public static void forceClassLoad() {
         }
     }
@@ -161,5 +164,6 @@ public final class ICContent {
         MultiblockHandler.registerMultiblock(CookpotMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(FoodFermenterMultiblock.INSTANCE);
         MultiblockHandler.registerMultiblock(SlicerMultiblock.INSTANCE);
+        MultiblockHandler.registerMultiblock(TunnelOvenMultiblock.INSTANCE);
     }
 }

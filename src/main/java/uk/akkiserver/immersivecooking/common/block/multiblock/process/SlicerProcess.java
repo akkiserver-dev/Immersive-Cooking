@@ -13,24 +13,34 @@ import net.minecraft.world.level.Level;
 import uk.akkiserver.immersivecooking.common.crafting.SlicerRecipe;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiFunction;
 
 /** Keeps a batch's rolled outputs identical for rendering, saving and final output. */
 public class SlicerProcess extends MultiblockProcessInWorld<SlicerRecipe> {
+    private final long displaySeed;
     private NonNullList<ItemStack> outputs;
 
     public SlicerProcess(RecipeHolder<SlicerRecipe> recipe, ItemStack input) {
         super(recipe, input);
+        displaySeed = ThreadLocalRandom.current().nextLong();
     }
 
     public SlicerProcess(BiFunction<Level, ResourceLocation, SlicerRecipe> getRecipe,
                          CompoundTag tag, HolderLookup.Provider provider) {
         super(getRecipe, tag, provider);
+        displaySeed = tag.contains("slicerDisplaySeed")
+                ? tag.getLong("slicerDisplaySeed")
+                : ThreadLocalRandom.current().nextLong();
         if (tag.contains("slicerOutputs")) {
             CompoundTag outputTag = tag.getCompound("slicerOutputs");
             outputs = NonNullList.withSize(outputTag.getInt("size"), ItemStack.EMPTY);
             ContainerHelper.loadAllItems(outputTag, outputs, provider);
         }
+    }
+
+    public long getDisplaySeed() {
+        return displaySeed;
     }
 
     public boolean prepareOutputs(Level level) {
@@ -56,6 +66,7 @@ public class SlicerProcess extends MultiblockProcessInWorld<SlicerRecipe> {
     @Override
     public void writeExtraDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
         super.writeExtraDataToNBT(tag, provider);
+        tag.putLong("slicerDisplaySeed", displaySeed);
         if (outputs != null) {
             CompoundTag outputTag = new CompoundTag();
             outputTag.putInt("size", outputs.size());

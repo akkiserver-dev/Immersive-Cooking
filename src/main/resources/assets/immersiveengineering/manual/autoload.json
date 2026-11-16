@@ -5,7 +5,8 @@
         "entry_list": [
             "immersivecooking:cookpot",
             "immersivecooking:grill_oven",
-            "immersivecooking:slicer"
+            "immersivecooking:slicer",
+            "immersivecooking:tunnel_oven"
         ]
     }
 }
